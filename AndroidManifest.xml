@@ -33,6 +33,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.pron.MainActivity" />
         </activity>
+        <activity android:label="@string/week_view_activity" android:name="WeekViewActivity" />
+        <activity android:label="@string/search_view_activity" android:name="SearchViewActivity" />
     </application>
 
 </manifest>

@@ -21,29 +21,40 @@ public final class R {
         public static final int activity_vertical_margin=0x7f040001;
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
+        public static final int back_button=0x7f020000;
+        public static final int border=0x7f020001;
+        public static final int border2=0x7f020002;
+        public static final int gradient_bg=0x7f020003;
+        public static final int gradient_bg_hover=0x7f020004;
+        public static final int ic_launcher=0x7f020005;
+        public static final int image_bg=0x7f020006;
+        public static final int list_selector=0x7f020007;
+        public static final int sunny=0x7f020008;
     }
     public static final class id {
         public static final int action_settings=0x7f08000f;
-        public static final int chanceRainLabel=0x7f08000a;
-        public static final int forecastImage=0x7f080008;
-        public static final int humidityLabel=0x7f08000b;
-        public static final int linearLayout1=0x7f080002;
-        public static final int location=0x7f080003;
-        public static final int relativeLayout1=0x7f08000c;
+        public static final int cityTextView=0x7f080002;
+        public static final int dateTextView=0x7f080003;
+        public static final int highLowTempTextView=0x7f080009;
+        public static final int humidTextView=0x7f080007;
+        public static final int imageButton=0x7f08000a;
+        public static final int imageView=0x7f080004;
+        public static final int nextDayTextView=0x7f080008;
+        public static final int rainTextView=0x7f080006;
+        public static final int row_day=0x7f08000c;
+        public static final int row_image=0x7f08000d;
+        public static final int row_temp=0x7f08000e;
         public static final int searchView1=0x7f080000;
-        public static final int seekBar1=0x7f080007;
-        public static final int tempLabel=0x7f080009;
+        public static final int tempTextView=0x7f080005;
+        public static final int textView=0x7f08000b;
         public static final int textView1=0x7f080001;
-        public static final int textView2=0x7f080004;
-        public static final int textView3=0x7f080005;
-        public static final int textView4=0x7f080006;
-        public static final int tomorrowLabel=0x7f08000d;
-        public static final int tomorrowTemp=0x7f08000e;
     }
     public static final class layout {
         public static final int activity_choose_location=0x7f030000;
         public static final int activity_main=0x7f030001;
+        public static final int activity_search_view=0x7f030002;
+        public static final int activity_week_view=0x7f030003;
+        public static final int list_row=0x7f030004;
     }
     public static final class menu {
         public static final int choose_location=0x7f070000;
@@ -56,9 +67,11 @@ public final class R {
         public static final int hello_world=0x7f050002;
         public static final int humidity=0x7f050006;
         public static final int location_name=0x7f050003;
+        public static final int search_view_activity=0x7f05000a;
         public static final int temperature=0x7f050004;
         public static final int title_activity_choose_location=0x7f050008;
         public static final int tomorrow=0x7f050007;
+        public static final int week_view_activity=0x7f050009;
     }
     public static final class style {
         /** 
