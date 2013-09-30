@@ -1,22 +1,32 @@
 package com.example.pron;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
-import android.view.View;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener{
 	protected LocationManager locationManager;
-	TextView text;
+	TextView locationTextView, httpText;
 	private String provider;
 
 	@Override
@@ -24,7 +34,8 @@ public class MainActivity extends Activity implements LocationListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		text = (TextView) findViewById(R.id.cityTextView);
+		locationTextView = (TextView) findViewById(R.id.cityTextView);
+		httpText = (TextView) findViewById(R.id.tempTextView);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 		
@@ -38,13 +49,27 @@ public class MainActivity extends Activity implements LocationListener{
 	    if (location != null) {
 	      System.out.println("Provider " + provider + " has been selected.");
 	      onLocationChanged(location);
+	      new ReverseGeocoding().execute("http://maps.googleapis.com/maps/api/geocode/json?latlng="+location.getLatitude()+","+location.getLongitude()+"&sensor=true");
 	    } else {
-	      text.setText(provider + "Location not available");
+	      locationTextView.setText(provider + "Location not available");
 	    }
-		//text.setText(LocationManager.GPS_PROVIDER+LOCATION_SERVICE+location);
+	    
+	    
+
 	}
 	
-	/* Request updates at startup */
+	public boolean isNetworkAvailable() {
+	    ConnectivityManager cm = (ConnectivityManager) 
+	      getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+	    // if no network is available networkInfo will be null
+	    // otherwise check if we are connected
+	    if (networkInfo != null && networkInfo.isConnected()) {
+	        return true;
+	    }
+	    return false;
+	} 
+	
 	@Override
 	protected void onResume() {
 	  super.onResume();
@@ -60,7 +85,7 @@ public class MainActivity extends Activity implements LocationListener{
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		text.setText(location.toString());
+		locationTextView.setText(location.toString());
 	}
 	
 	@Override
@@ -93,6 +118,87 @@ public class MainActivity extends Activity implements LocationListener{
     public void searchCity(View view) {
         Intent intent = new Intent(this, SearchViewActivity.class);
         startActivity(intent);
+    }
+    
+    private class NetworkThread extends AsyncTask<String,Void,String>{
+    	
+    	@Override
+    	protected void onPreExecute (){
+    		locationTextView.setText("loading...");
+    	}
+    	@Override
+		protected String doInBackground(String... params) {
+			String s = "";
+    		
+    	    try {
+    	    	URL url = new URL(params[0]);
+    	    	HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+    	    	InputStream in = urlConnection.getInputStream();
+    	    	InputStreamReader isw = new InputStreamReader(in);
+    	    	int data = isw.read();
+    	    	
+    	        while (data != -1) {
+    	            char current = (char) data;
+    	            s = s + current;
+    	            data = isw.read();
+    	            System.out.print(current);
+    	        }
+
+    	    } catch(Exception e){
+    	    	e.printStackTrace();
+    	    	httpText.setText(e.toString());
+    	    }
+    	    return s;
+		}
+    	
+    	@Override
+        protected void onPostExecute(String s) {
+           httpText.setText(s);
+        }
+    }
+    
+    private class ReverseGeocoding extends AsyncTask<String,Void,String>{
+    	JSONObject jsonobject;
+    	
+    	@Override
+    	protected void onPreExecute (){
+    		locationTextView.setText("loading location...");
+    	}
+    	
+    	@Override
+		protected String doInBackground(String... params) {
+			String s = "";
+    		String location = "";
+    	    try {
+    	    	URL url = new URL(params[0]);
+    	    	HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+    	    	InputStream in = urlConnection.getInputStream();
+    	    	InputStreamReader isw = new InputStreamReader(in);
+    	    	int data = isw.read();
+    	    	
+    	        while (data != -1) {
+    	            char current = (char) data;
+    	            s = s + current;
+    	            data = isw.read();
+    	            System.out.print(current);
+    	        }
+    	        
+    	        jsonobject = new JSONObject(s);
+    	        JSONArray results = jsonobject.getJSONArray("results");
+    	        JSONObject j = results.getJSONObject(1);
+    	        
+    	        location = j.getString("formatted_address");
+
+    	    } catch(Exception e){
+    	    	e.printStackTrace();
+    	    }
+    	    return location;
+		}
+    	
+    	@Override
+        protected void onPostExecute(String s) {
+           locationTextView.setText(s);
+        }
     }
 
 }
