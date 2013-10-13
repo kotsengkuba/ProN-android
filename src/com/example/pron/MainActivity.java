@@ -5,8 +5,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.Attributes;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,12 +26,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener{
 	protected LocationManager locationManager;
-	TextView locationTextView, httpText;
+	TextView locationTextView, httpTextView;
+	WebView webView;
 	private String provider;
 
 	@Override
@@ -35,7 +42,8 @@ public class MainActivity extends Activity implements LocationListener{
 		setContentView(R.layout.activity_main);
 		
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
-		httpText = (TextView) findViewById(R.id.tempTextView);
+		httpTextView = (TextView) findViewById(R.id.tempTextView);
+		webView = (WebView) findViewById(R.id.webView1);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 		
@@ -53,6 +61,8 @@ public class MainActivity extends Activity implements LocationListener{
 	    } else {
 	      locationTextView.setText(provider + "Location not available");
 	    }
+	    
+	    new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
 	    
 	    
 
@@ -119,12 +129,78 @@ public class MainActivity extends Activity implements LocationListener{
         Intent intent = new Intent(this, SearchViewActivity.class);
         startActivity(intent);
     }
-    
+
+    private class SAXHandler extends DefaultHandler{
+    	String xml = "";
+		public void startDocument ()
+	    {
+			//System.out.println("Start document");
+	    }
+
+
+	    public void endDocument ()
+	    {
+	    	//System.out.println("End document");
+	    }
+
+
+	    public void startElement (String uri, String name, String qName, Attributes atts)
+	    {
+	    	xml= xml + "Start element: " + qName + "\n";
+	    }
+
+
+	    public void endElement (String uri, String name, String qName)
+	    {
+	    	xml= xml + "End element: " + qName + "\n";
+	    }
+
+
+	    public void characters (char ch[], int start, int length)
+	    {
+	    	xml= xml + "Characters: " + new String(ch, start, length) + "\n";
+		}
+	    
+	    public String get_string(){
+	    	return xml;
+	    }
+    }
+    private class XMLparser extends AsyncTask<String,Void,String>{
+    	SAXParserFactory factory;
+    	SAXParser saxParser;
+    	SAXHandler handler;
+    	
+    	@Override
+    	protected void onPreExecute (){
+    		httpTextView.setText("loading...");
+    	}
+    	@Override
+		protected String doInBackground(String... params) {
+			String s = "";
+    		
+    	    try {
+    	        factory = SAXParserFactory.newInstance();
+    			saxParser = factory.newSAXParser();
+    			handler = new SAXHandler();
+                saxParser.parse(params[0], handler);
+                s = handler.get_string();
+
+    	    } catch(Exception e){
+    	    	e.printStackTrace();
+    	    }
+    	    return s;
+		}
+    	
+    	@Override
+        protected void onPostExecute(String s) {
+          webView.loadData(s,"text/html",null);
+        }
+    }
     private class NetworkThread extends AsyncTask<String,Void,String>{
     	
     	@Override
     	protected void onPreExecute (){
-    		locationTextView.setText("loading...");
+    		httpTextView.setText("loading...");
     	}
     	@Override
 		protected String doInBackground(String... params) {
@@ -146,14 +222,13 @@ public class MainActivity extends Activity implements LocationListener{
 
     	    } catch(Exception e){
     	    	e.printStackTrace();
-    	    	httpText.setText(e.toString());
     	    }
     	    return s;
 		}
     	
     	@Override
         protected void onPostExecute(String s) {
-           httpText.setText(s);
+          httpTextView.setText(s);
         }
     }
     
