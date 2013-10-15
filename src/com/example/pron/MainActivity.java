@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -16,7 +17,9 @@ import org.xml.sax.Attributes;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,6 +27,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.webkit.WebView;
@@ -32,53 +36,30 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener{
 	protected LocationManager locationManager;
-	TextView locationTextView, httpTextView;
+	TextView locationTextView, tempTextView, humTextView, rainTextView;
 	WebView webView;
 	private String provider;
+	Geocoder geocoder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main_v2);
 		
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
-		httpTextView = (TextView) findViewById(R.id.tempTextView);
-		webView = (WebView) findViewById(R.id.webView1);
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-		
-		// Define the criteria how to select the locatioin provider -> use
-	    // default
-	    Criteria criteria = new Criteria();
-	    provider = locationManager.getBestProvider(criteria, false);
-	    Location location = locationManager.getLastKnownLocation(provider);
+		tempTextView = (TextView) findViewById(R.id.tempTextView);	
+		humTextView = (TextView) findViewById(R.id.humidTextView);
+		rainTextView = (TextView) findViewById(R.id.rainTextView);
 	    
-	    // Initialize the location fields
-	    if (location != null) {
-	      System.out.println("Provider " + provider + " has been selected.");
-	      onLocationChanged(location);
-	      new ReverseGeocoding().execute("http://maps.googleapis.com/maps/api/geocode/json?latlng="+location.getLatitude()+","+location.getLongitude()+"&sensor=true");
-	    } else {
-	      locationTextView.setText(provider + "Location not available");
-	    }
-	    
-	    new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
+		init_location();
+		geocoder = new Geocoder(this);
+	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
 	    
 	    
 
 	}
 	
-	public boolean isNetworkAvailable() {
-	    ConnectivityManager cm = (ConnectivityManager) 
-	      getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-	    // if no network is available networkInfo will be null
-	    // otherwise check if we are connected
-	    if (networkInfo != null && networkInfo.isConnected()) {
-	        return true;
-	    }
-	    return false;
-	} 
+	
 	
 	@Override
 	protected void onResume() {
@@ -95,7 +76,9 @@ public class MainActivity extends Activity implements LocationListener{
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		locationTextView.setText(location.toString());
+		new AddressFromLocation().execute(location);
+		//new ReverseGeocoding().execute("http://maps.googleapis.com/maps/api/geocode/json?latlng="+location.getLatitude()+","+location.getLongitude()+"&sensor=true");
+		//locationTextView.setText(location.toString());
 	}
 	
 	@Override
@@ -119,16 +102,46 @@ public class MainActivity extends Activity implements LocationListener{
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
-    public void viewNextDay(View view) {
+	
+	public void viewNextDay(View view) {
         Intent intent = new Intent(this, WeekViewActivity.class);
         startActivity(intent);
     }
 
     public void searchCity(View view) {
+        //Intent intent = new Intent(this, SearchViewActivity.class);
         Intent intent = new Intent(this, SearchViewActivity.class);
         startActivity(intent);
     }
+    
+	public void init_location(){
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+		
+		// Define the criteria how to select the location provider -> use default
+	    Criteria criteria = new Criteria();
+	    provider = locationManager.getBestProvider(criteria, false);
+	    Location location = locationManager.getLastKnownLocation(provider);
+	    
+	    // Initialize the location fields
+	    if (location != null) {
+	      onLocationChanged(location);
+	    } else {
+	      locationTextView.setText(provider + "Location not available");
+	    }
+	}
+	
+	public boolean isNetworkAvailable() {
+	    ConnectivityManager cm = (ConnectivityManager) 
+	      getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+	    // if no network is available networkInfo will be null
+	    // otherwise check if we are connected
+	    if (networkInfo != null && networkInfo.isConnected()) {
+	        return true;
+	    }
+	    return false;
+	} 
 
     private class SAXHandler extends DefaultHandler{
     	String xml = "";
@@ -172,7 +185,7 @@ public class MainActivity extends Activity implements LocationListener{
     	
     	@Override
     	protected void onPreExecute (){
-    		httpTextView.setText("loading...");
+    		
     	}
     	@Override
 		protected String doInBackground(String... params) {
@@ -200,7 +213,7 @@ public class MainActivity extends Activity implements LocationListener{
     	
     	@Override
     	protected void onPreExecute (){
-    		httpTextView.setText("loading...");
+    		
     	}
     	@Override
 		protected String doInBackground(String... params) {
@@ -228,7 +241,6 @@ public class MainActivity extends Activity implements LocationListener{
     	
     	@Override
         protected void onPostExecute(String s) {
-          httpTextView.setText(s);
         }
     }
     
@@ -264,6 +276,43 @@ public class MainActivity extends Activity implements LocationListener{
     	        
     	        location = j.getString("formatted_address");
 
+    	    } catch(Exception e){
+    	    	e.printStackTrace();
+    	    }
+    	    return location;
+		}
+    	
+    	@Override
+        protected void onPostExecute(String s) {
+           locationTextView.setText(s);
+        }
+    }
+    
+    private class AddressFromLocation extends AsyncTask<Location,Void,String>{
+
+    	@Override
+    	protected void onPreExecute (){
+    		locationTextView.setText("loading location...");
+    	}
+    	
+    	@Override
+		protected String doInBackground(Location... params) {
+    		String location = "";
+    	    try {
+    	    	List<Address> addresses = geocoder.getFromLocation(params[0].getLatitude(), params[0].getLongitude(), 10);
+    	    	int index = 2;
+    	    	if(addresses != null) {
+		    		   Address returnedAddress = addresses.get(index);
+		    		   StringBuilder strReturnedAddress = new StringBuilder("");
+		    		   for(int i=0; i<returnedAddress.getMaxAddressLineIndex(); i++) {
+		    		    strReturnedAddress.append(returnedAddress.getAddressLine(i));
+		    		    Log.i("address", returnedAddress.getAddressLine(i));
+		    		   }
+		    		   location = strReturnedAddress.toString();
+	    		}
+	    		else{
+	    		   location = "No Address returned!";
+	    		}
     	    } catch(Exception e){
     	    	e.printStackTrace();
     	    }

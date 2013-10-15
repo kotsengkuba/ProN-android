@@ -44,6 +44,7 @@
         </activity>
         <activity android:label="@string/week_view_activity" android:name="WeekViewActivity" />
         <activity android:label="@string/search_view_activity" android:name="SearchViewActivity" />
+        <activity android:label="@string/main_activity_v2" android:name="MainActivity_v2" />
     </application>
 
 </manifest>

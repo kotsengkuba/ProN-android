@@ -10,41 +10,52 @@
         android:layout_weight="0.13" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/cityTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="66dp"
+            android:layout_marginTop="61dp"
             android:text="Quezon City" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tempTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView1"
+            android:layout_below="@+id/cityTextView"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="24dp"
             android:text="34°"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/humidTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textView2"
-            android:layout_toRightOf="@+id/textView1"
+            android:layout_alignBaseline="@+id/tempTextView"
+            android:layout_alignBottom="@+id/tempTextView"
+            android:layout_toRightOf="@+id/cityTextView"
             android:text="80%" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/rainTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/textView3"
-            android:layout_alignBottom="@+id/textView3"
-            android:layout_toLeftOf="@+id/textView1"
+            android:layout_alignBaseline="@+id/tempTextView"
+            android:layout_alignBottom="@+id/tempTextView"
+            android:layout_toLeftOf="@+id/cityTextView"
             android:text="45" />
 
     </RelativeLayout>
+
+    <com.example.pron.TemperatureGraphDrawableView
+        android:layout_width="wrap_content"
+        android:layout_height="246dp"
+        android:layout_weight="0.05" />
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp" />
 
 </LinearLayout>

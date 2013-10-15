@@ -194,33 +194,31 @@ containing a value of this type.
         public static final int sunny=0x7f020024;
     }
     public static final class id {
-        public static final int action_settings=0x7f05001b;
+        public static final int action_settings=0x7f050019;
         public static final int cityTextView=0x7f050007;
         public static final int dateTextView=0x7f050008;
         public static final int highLowTempTextView=0x7f05000f;
         public static final int humidTextView=0x7f05000d;
         public static final int hybrid=0x7f050004;
-        public static final int imageButton=0x7f050015;
+        public static final int imageButton=0x7f050013;
         public static final int imageView=0x7f050009;
-        public static final int imageView1=0x7f050014;
-        public static final int map=0x7f05001a;
+        public static final int imageView1=0x7f050012;
+        public static final int map=0x7f050018;
         public static final int nextDayTextView=0x7f05000e;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int rainTextView=0x7f05000c;
-        public static final int row_day=0x7f050017;
-        public static final int row_image=0x7f050018;
-        public static final int row_temp=0x7f050019;
+        public static final int row_day=0x7f050015;
+        public static final int row_image=0x7f050016;
+        public static final int row_temp=0x7f050017;
         public static final int satellite=0x7f050002;
         public static final int searchView1=0x7f050005;
         public static final int tempTextView=0x7f05000b;
         public static final int terrain=0x7f050003;
-        public static final int textView=0x7f050016;
+        public static final int textView=0x7f050014;
         public static final int textView1=0x7f050006;
-        public static final int textView2=0x7f050010;
-        public static final int textView3=0x7f050011;
-        public static final int textView4=0x7f050012;
-        public static final int webView=0x7f050013;
+        public static final int view1=0x7f050010;
+        public static final int webView=0x7f050011;
         public static final int webView1=0x7f05000a;
     }
     public static final class layout {
@@ -333,6 +331,7 @@ containing a value of this type.
         public static final int hello_world=0x7f06001b;
         public static final int humidity=0x7f06001f;
         public static final int location_name=0x7f06001c;
+        public static final int main_activity_v2=0x7f060024;
         public static final int search_view_activity=0x7f060023;
         public static final int temperature=0x7f06001d;
         public static final int title_activity_choose_location=0x7f060021;
