@@ -9,7 +9,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -21,35 +23,45 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.webkit.WebView;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Created by Jasper on 9/22/13.
- */
-public class SearchViewActivity extends Activity {
 
+public class SearchViewActivity extends Activity {
+	List citiesList = new ArrayList();
+	LinearLayout ll;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        setupMap();
+        setContentView(R.layout.activity_search_view);
+        
+        citiesList.add("Quezon City");
+        citiesList.add("Manila");
+        citiesList.add("Cebu City");
+        
+        ll = (LinearLayout)findViewById(R.id.citiesLinearLayout);
+        init_list();
+        
         //setContentView(R.layout.activity_search_view);
 	    //new DownloadXmlTask().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML");
 	    //new DownloadImageTask().execute("http://main.noahsark.webfactional.com/static/images/rain_value_contour.png");
     }
     
-    private void setupMap(){}
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    public void init_list(){
+    	for (int i = 0; i < citiesList.size(); i++) {
+    		//TextView tv = new TextView(this);
+    		//tv.setText(citiesList.get(i).toString());
+    		//ll.addView(tv);
+    		
+    		CityItemView civ = new CityItemView(this);
+    		civ.setText(citiesList.get(i).toString());
+    		civ.setImage(getResources().getDrawable(R.drawable.sunny));
+    		ll.addView(civ);
+    	}
+    	
     }
-    
     private class DownloadXmlTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
@@ -71,8 +83,8 @@ public class SearchViewActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {  
             // Displays the HTML string in the UI via a WebView
-            WebView myWebView = (WebView) findViewById(R.id.webView);
-            myWebView.loadData(result, "text/html", null);
+            //WebView myWebView = (WebView) findViewById(R.id.webView);
+            //myWebView.loadData(result, "text/html", null);
         }
     }
     
@@ -172,8 +184,8 @@ public class SearchViewActivity extends Activity {
 	        
 	        @Override
 	        protected void onPostExecute(Bitmap result) {  
-	            ImageView iv = (ImageView) findViewById(R.id.imageView1);
-	            iv.setImageBitmap(result);
+	            //ImageView iv = (ImageView) findViewById(R.id.imageView1);
+	            //iv.setImageBitmap(result);
 	        }
 	        private Bitmap download_Image(String url) {
 	            //---------------------------------------------------

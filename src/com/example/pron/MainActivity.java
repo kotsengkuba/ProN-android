@@ -50,11 +50,12 @@ public class MainActivity extends Activity implements LocationListener{
 		tempTextView = (TextView) findViewById(R.id.tempTextView);	
 		humTextView = (TextView) findViewById(R.id.humidTextView);
 		rainTextView = (TextView) findViewById(R.id.rainTextView);
+		webView = (WebView) findViewById(R.id.webView1);
 	    
 		init_location();
 		geocoder = new Geocoder(this);
-	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
-	    
+	    new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
+	    //new XMLparser().execute("https://dl.dropboxusercontent.com/u/15122106/testkml.kml");
 	    
 
 	}
@@ -109,7 +110,6 @@ public class MainActivity extends Activity implements LocationListener{
     }
 
     public void searchCity(View view) {
-        //Intent intent = new Intent(this, SearchViewActivity.class);
         Intent intent = new Intent(this, SearchViewActivity.class);
         startActivity(intent);
     }
@@ -145,33 +145,66 @@ public class MainActivity extends Activity implements LocationListener{
 
     private class SAXHandler extends DefaultHandler{
     	String xml = "";
+    	boolean is_name, found, is_body;
 		public void startDocument ()
 	    {
 			//System.out.println("Start document");
+			is_name = false;
+			is_body = false;
+			found = false;
 	    }
 
 
 	    public void endDocument ()
 	    {
 	    	//System.out.println("End document");
+	    	webView.loadData(xml, "text/html",null);
 	    }
 
 
 	    public void startElement (String uri, String name, String qName, Attributes atts)
 	    {
-	    	xml= xml + "Start element: " + qName + "\n";
+	    	//xml= xml + "Start element: " + qName + "\n";
+	    	Log.i("kml","Start: "+qName);
+	    	
+	    	if(qName.equals("name")){
+	    		is_name = true;
+	    	}
+	    	else if(qName.equals("description")){
+	    		is_body = true;
+	    	}
+
 	    }
 
 
 	    public void endElement (String uri, String name, String qName)
 	    {
-	    	xml= xml + "End element: " + qName + "\n";
+	    	//xml= xml + "End element: " + qName + "\n";
+	    	Log.i("kml","End: "+qName);
+	    	
+	    	if(qName.equals("name")){
+	    		is_name = false;
+	    	}
+	    	else if(qName.equals("description")){
+	    		is_body = false;
+	    		found = false;
+	    	}
 	    }
 
 
 	    public void characters (char ch[], int start, int length)
 	    {
-	    	xml= xml + "Characters: " + new String(ch, start, length) + "\n";
+	    	String s = new String(ch, start, length);
+	    	//xml= xml + "Characters: " + s + "\n";
+	    	Log.i("kml",s);
+	    	
+	    	if(is_name && s.equals("Quezon City")){
+	    		found = true;
+	    	}
+	    	
+	    	if(is_body && found){
+	    		xml = xml + s;
+	    	}
 		}
 	    
 	    public String get_string(){
@@ -206,7 +239,7 @@ public class MainActivity extends Activity implements LocationListener{
     	
     	@Override
         protected void onPostExecute(String s) {
-          webView.loadData(s,"text/html",null);
+          //webView.loadData(s,"text/html",null);
         }
     }
     private class NetworkThread extends AsyncTask<String,Void,String>{

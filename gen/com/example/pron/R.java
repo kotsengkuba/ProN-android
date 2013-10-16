@@ -195,6 +195,9 @@ containing a value of this type.
     }
     public static final class id {
         public static final int action_settings=0x7f050019;
+        public static final int citiesLinearLayout=0x7f050012;
+        public static final int citiesScrollView=0x7f050011;
+        public static final int citiesSearchView=0x7f050005;
         public static final int cityTextView=0x7f050007;
         public static final int dateTextView=0x7f050008;
         public static final int highLowTempTextView=0x7f05000f;
@@ -202,7 +205,6 @@ containing a value of this type.
         public static final int hybrid=0x7f050004;
         public static final int imageButton=0x7f050013;
         public static final int imageView=0x7f050009;
-        public static final int imageView1=0x7f050012;
         public static final int map=0x7f050018;
         public static final int nextDayTextView=0x7f05000e;
         public static final int none=0x7f050000;
@@ -212,13 +214,11 @@ containing a value of this type.
         public static final int row_image=0x7f050016;
         public static final int row_temp=0x7f050017;
         public static final int satellite=0x7f050002;
-        public static final int searchView1=0x7f050005;
         public static final int tempTextView=0x7f05000b;
         public static final int terrain=0x7f050003;
         public static final int textView=0x7f050014;
         public static final int textView1=0x7f050006;
         public static final int view1=0x7f050010;
-        public static final int webView=0x7f050011;
         public static final int webView1=0x7f05000a;
     }
     public static final class layout {
