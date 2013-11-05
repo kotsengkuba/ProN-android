@@ -57,7 +57,7 @@ public class SearchViewActivity extends Activity {
     		
     		CityItemView civ = new CityItemView(this);
     		civ.setText(citiesList.get(i).toString());
-    		civ.setImage(getResources().getDrawable(R.drawable.sunny));
+    		civ.setImage(getResources().getDrawable(R.drawable.clear));
     		ll.addView(civ);
     	}
     	

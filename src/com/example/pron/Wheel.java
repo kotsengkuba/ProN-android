@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,11 +24,15 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
 	WindowManager wm;
 	String DEBUG_TAG = "touch event";
 	
-	private GestureDetectorCompat mDetector; 
+	//private GestureDetectorCompat mDetector; 
 	private VelocityTracker mVelocityTracker = null;
 	
 	float width,height,cx,cy,r,delta,lasty,ex,ey,rad;
 	boolean snap = true, onWheelArea = false;
+	int [] icon_array = new int[]{R.drawable.clear, R.drawable.cloudy, R.drawable.cloudy, R.drawable.rainy, R.drawable.rainy, R.drawable.rainy, R.drawable.clear, R.drawable.cloudy};
+	Paint p = new Paint();
+	int [] pie_colors_array = new int [] {Color.rgb(50,55,120),Color.rgb(50,55,140),Color.rgb(50,55,160),Color.rgb(50,55,180),Color.rgb(255,241,151),Color.rgb(255,236,95),Color.rgb(255,221,0),Color.rgb(242,201,0)};
+	int [] circle_colors_array = new int [] {Color.BLUE,Color.BLUE,Color.BLUE,Color.BLUE,Color.rgb(255,147,30),Color.rgb(255,147,30),Color.rgb(255,147,30),Color.rgb(255,147,30)};
 
 	public Wheel(Context context) {
 	    super(context);
@@ -39,7 +42,7 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
         super(context, attrs);
         wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         
-        mDetector = new GestureDetectorCompat(context,this);
+        //mDetector = new GestureDetectorCompat(context,this);
         
         Display display = wm.getDefaultDisplay();
 		Point size = new Point();
@@ -87,13 +90,12 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
 		//canvas.drawCircle(cx, cy, r, p);
 		//canvas.drawLine(cx, cy, ex, ey, p);
 		int blue = 120;
-		Paint p = new Paint();
 		p.setAntiAlias(true);
 		p.setStyle(Paint.Style.FILL_AND_STROKE); 
 		p.setStrokeWidth(4.5f);
 		RectF rect = new RectF(cx-r, cy-r, cx+r, cy+r);
-		Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.icon_sunny);
 		
+						
 		float nex, ney, angle;
 		
 		for(int i=0; i<8; i++){
@@ -102,7 +104,7 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
 			ney = cy + (float) (r*Math.sin(rad+angle));
 			//canvas.drawLine(cx, cy, nex, ney, p);
 
-			p.setColor(Color.rgb(50,55,blue));
+			p.setColor(pie_colors_array[i]);
 			p.setStyle(Paint.Style.FILL_AND_STROKE);
 			canvas.drawArc(rect, (((rad+angle)*180)/(float)Math.PI)%360, 45, true, p);
 			
@@ -119,25 +121,27 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
 			nex = cx + (float) ((r+10)*Math.cos(rad+angle));
 			ney = cy + (float) ((r+10)*Math.sin(rad+angle));
 			
-			bmp = Bitmap.createScaledBitmap(bmp, 150, 150, true);
-			if(ney-1>=cy-r*Math.sin(Math.PI/4) && ney+1<=cy+r*Math.sin(Math.PI/4)){
-				bmp = Bitmap.createScaledBitmap(bmp, (int)(bmp.getWidth()*1.5), (int)(bmp.getHeight()*1.5), true);
-				p.setColor(Color.BLUE);
-				p.setStyle(Paint.Style.FILL_AND_STROKE);
-				canvas.drawCircle(nex, ney, 120, p);
-				
-				p.setColor(Color.WHITE);
-				p.setStyle(Paint.Style.FILL_AND_STROKE);
-				canvas.drawCircle(nex, ney, 100, p);
-			}
-			else{
-				p.setColor(Color.BLUE);
+			Bitmap bmp = BitmapFactory.decodeResource(getResources(), icon_array[i]);
+			bmp = Bitmap.createScaledBitmap(bmp, 200, 200, true);
+			
+			if(!(ney-1>=cy-r*Math.sin(Math.PI/4) && ney+1<=cy+r*Math.sin(Math.PI/4))){
+				bmp = Bitmap.createScaledBitmap(bmp, (int)(bmp.getWidth()*0.8), (int)(bmp.getHeight()*0.8), true);
+				p.setColor(circle_colors_array[i]);
 				p.setStyle(Paint.Style.FILL_AND_STROKE);
 				canvas.drawCircle(nex, ney, 90, p);
 				
 				p.setColor(Color.WHITE);
 				p.setStyle(Paint.Style.FILL_AND_STROKE);
 				canvas.drawCircle(nex, ney, 70, p);
+			}
+			else{
+				p.setColor(circle_colors_array[i]);
+				p.setStyle(Paint.Style.FILL_AND_STROKE);
+				canvas.drawCircle(nex, ney, 120, p);
+				
+				p.setColor(Color.WHITE);
+				p.setStyle(Paint.Style.FILL_AND_STROKE);
+				canvas.drawCircle(nex, ney, 100, p);
 			}
 	        canvas.drawBitmap(bmp, nex-bmp.getWidth()/2, ney-bmp.getHeight()/2, null);
 		}

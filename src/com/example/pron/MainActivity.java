@@ -56,9 +56,8 @@ public class MainActivity extends Activity implements LocationListener{
 		rainLabelTextView.setTypeface(font);
 	    
 		init_location();
-		geocoder = new Geocoder(this);
+		//geocoder = new Geocoder(this);
 	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
-	    //new XMLparser().execute("https://dl.dropboxusercontent.com/u/15122106/testkml.kml");
 	}
 	
 	@Override
@@ -119,8 +118,12 @@ public class MainActivity extends Activity implements LocationListener{
 	    if (location != null) {
 	      onLocationChanged(location);
 	    } else {
-	      locationTextView.setText(provider + "Location not available");
+	      //locationTextView.setText(provider + "Location not available");
 	    }
+	}
+	
+	public void setTempText(String s){
+		tempTextView.setText(s);
 	}
 	
 	// Check network connection
