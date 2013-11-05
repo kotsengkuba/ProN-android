@@ -11,12 +11,13 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.Attributes;
+import org.xml.sax.helpers.DefaultHandler;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -51,16 +52,18 @@ public class MainActivity extends Activity implements LocationListener{
 		humTextView = (TextView) findViewById(R.id.humidTextView);
 		rainTextView = (TextView) findViewById(R.id.rainTextView);
 		webView = (WebView) findViewById(R.id.webView1);
+		
+		//Get the typeface from assets
+		Typeface font = Typeface.createFromAsset(getAssets(), "Bender-Solid.otf");
+		//Set the TextView's typeface (font)
+		locationTextView.setTypeface(font);
+		rainTextView.setTypeface(font);
 	    
 		init_location();
 		geocoder = new Geocoder(this);
-	    new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
+	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
 	    //new XMLparser().execute("https://dl.dropboxusercontent.com/u/15122106/testkml.kml");
-	    
-
 	}
-	
-	
 	
 	@Override
 	protected void onResume() {
@@ -74,7 +77,7 @@ public class MainActivity extends Activity implements LocationListener{
       super.onPause();
       locationManager.removeUpdates(this);
     }
-	
+
 	@Override
 	public void onLocationChanged(Location location) {
 		new AddressFromLocation().execute(location);
@@ -111,6 +114,11 @@ public class MainActivity extends Activity implements LocationListener{
 
     public void searchCity(View view) {
         Intent intent = new Intent(this, SearchViewActivity.class);
+        startActivity(intent);
+    }
+    
+    public void gotoOpenGLView(View view) {
+        Intent intent = new Intent(this, OpenGLES20.class);
         startActivity(intent);
     }
     

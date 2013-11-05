@@ -9,60 +9,67 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.13" >
 
+        <com.example.pron.Wheel
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_weight="0.05" />
+
         <TextView
             android:id="@+id/cityTextView"
-            android:onClick="searchCity"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="61dp"
-            android:text="Quezon City" />
+            android:clickable="true"
+            android:onClick="searchCity"
+            android:text="Quezon City"
+            android:textSize="@dimen/bigtext" />
 
-        <TextView
-            android:id="@+id/tempTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/cityTextView"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
-            android:text="34°"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        <TextView
-            android:id="@+id/humidTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tempTextView"
-            android:layout_alignBottom="@+id/tempTextView"
-            android:layout_toRightOf="@+id/cityTextView"
-            android:text="80%" />
-
-        <TextView
-            android:id="@+id/rainTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/tempTextView"
-            android:layout_alignBottom="@+id/tempTextView"
-            android:layout_toLeftOf="@+id/cityTextView"
-            android:text="45" />
-
-        <WebView
+        <!-- <WebView
             android:id="@+id/webView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tempTextView"
-            android:layout_weight="0.13" />
+            android:layout_weight="0.13" /> -->
+
+        <TextView
+            android:id="@+id/rainTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tempTextView"
+            android:layout_below="@+id/tempTextView"
+            android:layout_marginTop="32dp"
+            android:text="45" />
+
+        <TextView
+            android:id="@+id/humidTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/cityTextView"
+            android:layout_below="@+id/rainTextView"
+            android:layout_marginTop="40dp"
+            android:text="80%" />
+
+        <android.widget.TextView
+            android:id="@+id/tempTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/humidTextView"
+            android:layout_centerVertical="true"
+            android:text="34°"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="@dimen/bigtext" />
 
     </RelativeLayout>
 
-    <com.example.pron.TemperatureGraphDrawableView
+    <!-- <com.example.pron.TemperatureGraphDrawableView
         android:layout_width="wrap_content"
         android:layout_height="246dp"
-        android:layout_weight="0.05" />
+        android:layout_weight="0.05" /> -->
 
     <View
         android:id="@+id/view1"
