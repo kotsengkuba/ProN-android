@@ -19,19 +19,19 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.WindowManager;
 
-public class Wheel extends View implements GestureDetector.OnGestureListener{
+public class Wheel extends View{
 	ShapeDrawable wheel;
 	WindowManager wm;
 	String DEBUG_TAG = "touch event";
 	
 	//private GestureDetectorCompat mDetector; 
-	private VelocityTracker mVelocityTracker = null;
+	public VelocityTracker mVelocityTracker = null;
 	
 	float width,height,cx,cy,r,delta,lasty,ex,ey,rad;
 	boolean snap = true, onWheelArea = false;
 	int [] icon_array = new int[]{R.drawable.clear, R.drawable.cloudy, R.drawable.cloudy, R.drawable.rainy, R.drawable.rainy, R.drawable.rainy, R.drawable.clear, R.drawable.cloudy};
 	Paint p = new Paint();
-	int [] pie_colors_array = new int [] {Color.rgb(50,55,120),Color.rgb(50,55,140),Color.rgb(50,55,160),Color.rgb(50,55,180),Color.rgb(255,241,151),Color.rgb(255,236,95),Color.rgb(255,221,0),Color.rgb(242,201,0)};
+	int [] pie_colors_array = new int [] {Color.rgb(50,55,180),Color.rgb(50,55,160),Color.rgb(50,55,140),Color.rgb(50,55,120),Color.rgb(255,241,151),Color.rgb(255,236,95),Color.rgb(255,221,0),Color.rgb(242,201,0)};
 	int [] circle_colors_array = new int [] {Color.BLUE,Color.BLUE,Color.BLUE,Color.BLUE,Color.rgb(255,147,30),Color.rgb(255,147,30),Color.rgb(255,147,30),Color.rgb(255,147,30)};
 
 	public Wheel(Context context) {
@@ -148,7 +148,7 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
 		
     }
     
-    @Override
+    /*@Override
     public boolean onTouchEvent(MotionEvent event) {
         int index = event.getActionIndex();
         int action = event.getActionMasked();
@@ -240,5 +240,5 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
     public boolean onSingleTapUp(MotionEvent event) {
         Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
         return true;
-    }
+    }*/
 }

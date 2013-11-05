@@ -34,6 +34,7 @@
                 android:clickable="true"
                 android:onClick="searchCity"
                 android:text="Quezon City"
+                android:textColor="#3A3A3A"
                 android:textSize="@dimen/bigtext" />
 
             <LinearLayout
@@ -47,6 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="0dp"
                     android:text="3pm"
+                    android:textColor="#A60000"
                     android:textSize="@dimen/smalltext" />
 
                 <TextView
@@ -55,6 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="0dp"
                     android:text="Today"
+                    android:textColor="#4D4D4D"
                     android:textSize="@dimen/medtext" />
 
             </LinearLayout>
@@ -75,6 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
                 android:text="34°"
+                android:textColor="#3A3A3A"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textSize="@dimen/xltext" />
 
@@ -85,6 +89,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="10dp"
                 android:text="45%"
+                android:textColor="#5D745A"
                 android:textSize="@dimen/bigtext" />
 
             <TextView
@@ -93,6 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:text="Rain"
+                android:textColor="#5D745A"
                 android:textSize="@dimen/xstext" />
 
         </LinearLayout>

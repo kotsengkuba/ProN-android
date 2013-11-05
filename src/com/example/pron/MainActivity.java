@@ -22,16 +22,25 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.VelocityTrackerCompat;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements LocationListener{
+public class MainActivity extends Activity implements LocationListener,GestureDetector.OnGestureListener{
 	protected LocationManager locationManager;
 	TextView locationTextView, tempTextView, timeTextView, rainTextView, dayTextView, rainLabelTextView;
+	Wheel wheelView;
 	private String provider;
 	Geocoder geocoder;
+	String DEBUG_TAG = "touch event";
+	String [] time_array = new String[] {"6PM","9PM","12MN","3AM","6AM","9AM","12NN","3PM"};
+	String [] temp_array = new String[] {"34°","36°","36°","35°","33°","30°","30°","31°"};
+	String [] rain_array = new String[] {"45%","47%","54%","33%","80%","80%","90%","0%"};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +53,7 @@ public class MainActivity extends Activity implements LocationListener{
 		timeTextView = (TextView) findViewById(R.id.timeTextView);
 		dayTextView = (TextView) findViewById(R.id.dayTextView);
 		rainLabelTextView = (TextView) findViewById(R.id.rainLabelTextView);
+		wheelView = (Wheel) findViewById(R.id.wheelView);
 		
 		//Get the typeface from assets
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
@@ -54,6 +64,8 @@ public class MainActivity extends Activity implements LocationListener{
 		timeTextView.setTypeface(font);
 		dayTextView.setTypeface(font);
 		rainLabelTextView.setTypeface(font);
+		
+		setTimeText("6PM");
 	    
 		init_location();
 		//geocoder = new Geocoder(this);
@@ -122,8 +134,16 @@ public class MainActivity extends Activity implements LocationListener{
 	    }
 	}
 	
+	public void setTimeText(String s){
+		timeTextView.setText(s);
+	}
+	
 	public void setTempText(String s){
 		tempTextView.setText(s);
+	}
+	
+	public void setRainText(String s){
+		rainTextView.setText(s);
 	}
 	
 	// Check network connection
@@ -275,6 +295,112 @@ public class MainActivity extends Activity implements LocationListener{
            //locationTextView.setText("Location: "+s);
     		locationTextView.setText("QUEZON CITY");
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int index = event.getActionIndex();
+        int action = event.getActionMasked();
+        int pointerId = event.getPointerId(index);
+        float i;
+
+        switch(action) {
+            case MotionEvent.ACTION_DOWN:
+            	Log.d(DEBUG_TAG,"onDown: " + event.getX() + event.getY());
+            	wheelView.lasty = event.getY();
+            	if(event.getX() > wheelView.width*0.8)
+            		wheelView.onWheelArea = false;
+            	else
+            		wheelView.onWheelArea = true;
+            	
+                if(wheelView.mVelocityTracker == null) {
+                    // Retrieve a new VelocityTracker object to watch the velocity of a motion.
+                	wheelView.mVelocityTracker = VelocityTracker.obtain();
+                }
+                else {
+                    // Reset the velocity tracker back to its initial state.
+                	wheelView.mVelocityTracker.clear();
+                }
+                // Add a user's movement to the tracker.
+                wheelView.mVelocityTracker.addMovement(event);
+                break;
+            case MotionEvent.ACTION_MOVE:
+            	wheelView.delta = event.getY() - wheelView.lasty;
+            	wheelView.lasty = event.getY();
+            	wheelView.snap = false;
+            	if(wheelView.onWheelArea)
+            		wheelView.invalidate();
+            	
+            	wheelView.mVelocityTracker.addMovement(event);
+                // When you want to determine the velocity, call 
+                // computeCurrentVelocity(). Then call getXVelocity() 
+                // and getYVelocity() to retrieve the velocity for each pointer ID. 
+            	wheelView.mVelocityTracker.computeCurrentVelocity(1000);
+                // Log velocity of pixels per second
+                // Best practice to use VelocityTrackerCompat where possible.
+                Log.d(DEBUG_TAG, "X velocity: " + 
+                        VelocityTrackerCompat.getXVelocity(wheelView.mVelocityTracker, 
+                        pointerId));
+                Log.d(DEBUG_TAG, "Y velocity: " + 
+                        VelocityTrackerCompat.getYVelocity(wheelView.mVelocityTracker,
+                        pointerId));
+                break;
+            case MotionEvent.ACTION_UP:
+            	wheelView.snap = true;
+            	wheelView.invalidate();
+            	i = -wheelView.rad;
+            	while(0.0f>i || i>(float)(2*Math.PI)){
+            		if(i<0)
+            			i+=(float) 2*Math.PI;
+            		else
+            			i-=(float) 2*Math.PI;
+            	}
+            	setTimeText(time_array[(int) (Math.round(4*i/Math.PI)%8)]);
+            	setTempText(temp_array[(int) (Math.round(4*i/Math.PI)%8)]);
+            	setRainText(rain_array[(int) (Math.round(4*i/Math.PI)%8)]);
+            	Log.d("snap", ""+wheelView.rad);
+            case MotionEvent.ACTION_CANCEL:
+                // Return a VelocityTracker object back to be re-used by others.
+            	wheelView.mVelocityTracker.recycle();
+                break;
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean onDown(MotionEvent event) { 
+        Log.d(DEBUG_TAG,"onDown: " + event.toString()); 
+        return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent event1, MotionEvent event2, 
+            float velocityX, float velocityY) {
+        Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString());
+        return true;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent event) {
+        Log.d(DEBUG_TAG, "onLongPress: " + event.toString()); 
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+            float distanceY) {
+        Log.d(DEBUG_TAG, "onScroll: " + e1.toString()+e2.toString());
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent event) {
+        Log.d(DEBUG_TAG, "onShowPress: " + event.toString());
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent event) {
+        Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
+        return true;
     }
 
 }
