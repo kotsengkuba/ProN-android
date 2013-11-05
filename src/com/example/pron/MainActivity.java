@@ -1,16 +1,10 @@
 package com.example.pron;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -29,16 +23,13 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener{
 	protected LocationManager locationManager;
-	TextView locationTextView, tempTextView, humTextView, rainTextView;
-	WebView webView;
+	TextView locationTextView, tempTextView, timeTextView, rainTextView, dayTextView, rainLabelTextView;
 	private String provider;
 	Geocoder geocoder;
 
@@ -49,15 +40,20 @@ public class MainActivity extends Activity implements LocationListener{
 		
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
 		tempTextView = (TextView) findViewById(R.id.tempTextView);	
-		humTextView = (TextView) findViewById(R.id.humidTextView);
 		rainTextView = (TextView) findViewById(R.id.rainTextView);
-		webView = (WebView) findViewById(R.id.webView1);
+		timeTextView = (TextView) findViewById(R.id.timeTextView);
+		dayTextView = (TextView) findViewById(R.id.dayTextView);
+		rainLabelTextView = (TextView) findViewById(R.id.rainLabelTextView);
 		
 		//Get the typeface from assets
-		Typeface font = Typeface.createFromAsset(getAssets(), "Bender-Solid.otf");
+		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		//Set the TextView's typeface (font)
 		locationTextView.setTypeface(font);
+		tempTextView.setTypeface(font);
 		rainTextView.setTypeface(font);
+		timeTextView.setTypeface(font);
+		dayTextView.setTypeface(font);
+		rainLabelTextView.setTypeface(font);
 	    
 		init_location();
 		geocoder = new Geocoder(this);
@@ -80,9 +76,8 @@ public class MainActivity extends Activity implements LocationListener{
 
 	@Override
 	public void onLocationChanged(Location location) {
-		new AddressFromLocation().execute(location);
-		//new ReverseGeocoding().execute("http://maps.googleapis.com/maps/api/geocode/json?latlng="+location.getLatitude()+","+location.getLongitude()+"&sensor=true");
-		//locationTextView.setText(location.toString());
+		// Set text for location textview
+		new SetAddressFromLocation().execute(location);
 	}
 	
 	@Override
@@ -100,13 +95,6 @@ public class MainActivity extends Activity implements LocationListener{
 		
 	}
 	
-	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-	
 	public void viewNextDay(View view) {
         Intent intent = new Intent(this, WeekViewActivity.class);
         startActivity(intent);
@@ -117,10 +105,6 @@ public class MainActivity extends Activity implements LocationListener{
         startActivity(intent);
     }
     
-    public void gotoOpenGLView(View view) {
-        Intent intent = new Intent(this, OpenGLES20.class);
-        startActivity(intent);
-    }
     
 	public void init_location(){
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -139,6 +123,7 @@ public class MainActivity extends Activity implements LocationListener{
 	    }
 	}
 	
+	// Check network connection
 	public boolean isNetworkAvailable() {
 	    ConnectivityManager cm = (ConnectivityManager) 
 	      getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -166,7 +151,7 @@ public class MainActivity extends Activity implements LocationListener{
 	    public void endDocument ()
 	    {
 	    	//System.out.println("End document");
-	    	webView.loadData(xml, "text/html",null);
+	    	//webView.loadData(xml, "text/html",null);
 	    }
 
 
@@ -250,86 +235,8 @@ public class MainActivity extends Activity implements LocationListener{
           //webView.loadData(s,"text/html",null);
         }
     }
-    private class NetworkThread extends AsyncTask<String,Void,String>{
-    	
-    	@Override
-    	protected void onPreExecute (){
-    		
-    	}
-    	@Override
-		protected String doInBackground(String... params) {
-			String s = "";
-    		
-    	    try {
-    	    	URL url = new URL(params[0]);
-    	    	HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-    	    	InputStream in = urlConnection.getInputStream();
-    	    	InputStreamReader isw = new InputStreamReader(in);
-    	    	int data = isw.read();
-    	    	
-    	        while (data != -1) {
-    	            char current = (char) data;
-    	            s = s + current;
-    	            data = isw.read();
-    	            System.out.print(current);
-    	        }
-
-    	    } catch(Exception e){
-    	    	e.printStackTrace();
-    	    }
-    	    return s;
-		}
-    	
-    	@Override
-        protected void onPostExecute(String s) {
-        }
-    }
     
-    private class ReverseGeocoding extends AsyncTask<String,Void,String>{
-    	JSONObject jsonobject;
-    	
-    	@Override
-    	protected void onPreExecute (){
-    		locationTextView.setText("loading location...");
-    	}
-    	
-    	@Override
-		protected String doInBackground(String... params) {
-			String s = "";
-    		String location = "";
-    	    try {
-    	    	URL url = new URL(params[0]);
-    	    	HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-    	    	InputStream in = urlConnection.getInputStream();
-    	    	InputStreamReader isw = new InputStreamReader(in);
-    	    	int data = isw.read();
-    	    	
-    	        while (data != -1) {
-    	            char current = (char) data;
-    	            s = s + current;
-    	            data = isw.read();
-    	            System.out.print(current);
-    	        }
-    	        
-    	        jsonobject = new JSONObject(s);
-    	        JSONArray results = jsonobject.getJSONArray("results");
-    	        JSONObject j = results.getJSONObject(1);
-    	        
-    	        location = j.getString("formatted_address");
-
-    	    } catch(Exception e){
-    	    	e.printStackTrace();
-    	    }
-    	    return location;
-		}
-    	
-    	@Override
-        protected void onPostExecute(String s) {
-           locationTextView.setText(s);
-        }
-    }
-    
-    private class AddressFromLocation extends AsyncTask<Location,Void,String>{
+    private class SetAddressFromLocation extends AsyncTask<Location,Void,String>{
 
     	@Override
     	protected void onPreExecute (){
@@ -342,7 +249,7 @@ public class MainActivity extends Activity implements LocationListener{
     	    try {
     	    	List<Address> addresses = geocoder.getFromLocation(params[0].getLatitude(), params[0].getLongitude(), 10);
     	    	int index = 2;
-    	    	if(addresses != null) {
+    	    	if(addresses.size() != 0) {
 		    		   Address returnedAddress = addresses.get(index);
 		    		   StringBuilder strReturnedAddress = new StringBuilder("");
 		    		   for(int i=0; i<returnedAddress.getMaxAddressLineIndex(); i++) {
@@ -362,7 +269,8 @@ public class MainActivity extends Activity implements LocationListener{
     	
     	@Override
         protected void onPostExecute(String s) {
-           locationTextView.setText(s);
+           //locationTextView.setText("Location: "+s);
+    		locationTextView.setText("QUEZON CITY");
         }
     }
 

@@ -29,7 +29,7 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
 	private VelocityTracker mVelocityTracker = null;
 	
 	float width,height,cx,cy,r,delta,lasty,ex,ey,rad;
-	boolean snap = true;
+	boolean snap = true, onWheelArea = false;
 
 	public Wheel(Context context) {
 	    super(context);
@@ -94,25 +94,30 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
 		RectF rect = new RectF(cx-r, cy-r, cx+r, cy+r);
 		Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.icon_sunny);
 		
-		for(float i=0; i<2*Math.PI; i=i+((float)Math.PI/4)){
-			float nex = cx + (float) (r*Math.cos(rad+i));
-			float ney = cy + (float) (r*Math.sin(rad+i));
+		float nex, ney, angle;
+		
+		for(int i=0; i<8; i++){
+			angle = (float) (i*(Math.PI/4));
+			nex = cx + (float) (r*Math.cos(rad+angle));
+			ney = cy + (float) (r*Math.sin(rad+angle));
 			//canvas.drawLine(cx, cy, nex, ney, p);
 
 			p.setColor(Color.rgb(50,55,blue));
 			p.setStyle(Paint.Style.FILL_AND_STROKE);
-			canvas.drawArc(rect, (((rad+i)*180)/(float)Math.PI)%360, 45, true, p);
+			canvas.drawArc(rect, (((rad+angle)*180)/(float)Math.PI)%360, 45, true, p);
+			
 			p.setColor(Color.WHITE);
 			p.setStyle(Paint.Style.STROKE); 
-			canvas.drawArc(rect, (((rad+i)*180)/(float)Math.PI)%360, 45, true, p);
+			canvas.drawArc(rect, (((rad+angle)*180)/(float)Math.PI)%360, 45, true, p);
 		
 			blue = blue + 10;
 		}
 		
 		
-		for(float i=0; i<2*Math.PI; i=i+((float)Math.PI/4)){
-			float nex = cx + (float) ((r+20)*Math.cos(rad+i));
-			float ney = cy + (float) ((r+20)*Math.sin(rad+i));
+		for(int i=0; i<8; i++){
+			angle = (float) (i*(Math.PI/4));
+			nex = cx + (float) ((r+10)*Math.cos(rad+angle));
+			ney = cy + (float) ((r+10)*Math.sin(rad+angle));
 			
 			bmp = Bitmap.createScaledBitmap(bmp, 150, 150, true);
 			if(ney-1>=cy-r*Math.sin(Math.PI/4) && ney+1<=cy+r*Math.sin(Math.PI/4)){
@@ -134,7 +139,7 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
 				p.setStyle(Paint.Style.FILL_AND_STROKE);
 				canvas.drawCircle(nex, ney, 70, p);
 			}
-	        canvas.drawBitmap(bmp, nex-bmp.getWidth()/2, ney-bmp.getHeight()/2, null); // 24 is the height of image
+	        canvas.drawBitmap(bmp, nex-bmp.getWidth()/2, ney-bmp.getHeight()/2, null);
 		}
 		
     }
@@ -149,6 +154,11 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
             case MotionEvent.ACTION_DOWN:
             	Log.d(DEBUG_TAG,"onDown: " + event.getX() + event.getY());
             	lasty = event.getY();
+            	if(event.getX() > width*0.8)
+            		onWheelArea = false;
+            	else
+            		onWheelArea = true;
+            	
                 if(mVelocityTracker == null) {
                     // Retrieve a new VelocityTracker object to watch the velocity of a motion.
                     mVelocityTracker = VelocityTracker.obtain();
@@ -164,7 +174,9 @@ public class Wheel extends View implements GestureDetector.OnGestureListener{
             	delta = event.getY() - lasty;
             	lasty = event.getY();
             	snap = false;
-            	invalidate();
+            	if(onWheelArea)
+            		invalidate();
+            	
                 mVelocityTracker.addMovement(event);
                 // When you want to determine the velocity, call 
                 // computeCurrentVelocity(). Then call getXVelocity() 
