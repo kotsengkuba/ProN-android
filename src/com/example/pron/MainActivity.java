@@ -28,6 +28,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,12 +36,15 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	protected LocationManager locationManager;
 	TextView locationTextView, tempTextView, timeTextView, rainTextView, dayTextView, rainLabelTextView;
 	Wheel wheelView;
+	WebView webview;
 	private String provider;
 	Geocoder geocoder;
 	String DEBUG_TAG = "touch event";
 	String [] time_array = new String[] {"6PM","9PM","12MN","3AM","6AM","9AM","12NN","3PM"};
 	String [] temp_array = new String[] {"34°","36°","36°","35°","33°","30°","30°","31°"};
 	String [] rain_array = new String[] {"45%","47%","54%","33%","80%","80%","90%","0%"};
+	
+	String fourdaydata;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,8 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		dayTextView = (TextView) findViewById(R.id.dayTextView);
 		rainLabelTextView = (TextView) findViewById(R.id.rainLabelTextView);
 		wheelView = (Wheel) findViewById(R.id.wheelView);
+		
+		webview = (WebView) findViewById(R.id.webView1);
 		
 		//Get the typeface from assets
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
@@ -69,7 +75,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    
 		init_location();
 		//geocoder = new Geocoder(this);
-	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
+	    new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
 	}
 	
 	@Override
@@ -180,7 +186,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 
 	    public void startElement (String uri, String name, String qName, Attributes atts)
 	    {
-	    	//xml= xml + "Start element: " + qName + "\n";
+	    	xml= xml + "Start element: " + qName + "\n";
 	    	Log.i("kml","Start: "+qName);
 	    	
 	    	if(qName.equals("name")){
@@ -195,7 +201,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 
 	    public void endElement (String uri, String name, String qName)
 	    {
-	    	//xml= xml + "End element: " + qName + "\n";
+	    	xml= xml + "End element: " + qName + "\n";
 	    	Log.i("kml","End: "+qName);
 	    	
 	    	if(qName.equals("name")){
@@ -211,7 +217,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    public void characters (char ch[], int start, int length)
 	    {
 	    	String s = new String(ch, start, length);
-	    	//xml= xml + "Characters: " + s + "\n";
+	    	xml= xml + "Characters: " + s + "\n";
 	    	Log.i("kml",s);
 	    	
 	    	if(is_name && s.equals("Quezon City")){
@@ -234,7 +240,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	
     	@Override
     	protected void onPreExecute (){
-    		
+    		webview.loadData("loading...","text/html",null);
     	}
     	@Override
 		protected String doInBackground(String... params) {
@@ -255,7 +261,8 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	
     	@Override
         protected void onPostExecute(String s) {
-          //webView.loadData(s,"text/html",null);
+    	  fourdaydata = s;
+          webview.loadData("data: "+fourdaydata,"text/html",null);
         }
     }
     
