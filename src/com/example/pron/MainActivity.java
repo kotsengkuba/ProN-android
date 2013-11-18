@@ -1,5 +1,10 @@
 package com.example.pron;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import javax.xml.parsers.SAXParser;
@@ -11,6 +16,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Criteria;
@@ -22,6 +28,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -45,6 +52,10 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	String [] rain_array = new String[] {"45%","47%","54%","33%","80%","80%","90%","0%"};
 	
 	String fourdaydata;
+	public static final String PREFS_NAME = "MyPrefsFile";
+	SharedPreferences settings;
+	SharedPreferences.Editor editor;
+	final File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "asd");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +71,11 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		wheelView = (Wheel) findViewById(R.id.wheelView);
 		
 		webview = (WebView) findViewById(R.id.webView1);
+		settings = getSharedPreferences(PREFS_NAME, 0);
+		editor = settings.edit();
+		editor.putBoolean("silentMode", true);
+		// Commit the edits!
+	      editor.commit();
 		
 		//Get the typeface from assets
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
@@ -74,8 +90,10 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		setTimeText("6PM");
 	    
 		init_location();
+		saveFile("Hello World!", "test.txt");
 		//geocoder = new Geocoder(this);
-	    new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
+	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
+		loadWebViewFromFile("fourday.txt");
 	}
 	
 	@Override
@@ -163,7 +181,26 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	        return true;
 	    }
 	    return false;
-	} 
+	}
+	
+	/* Checks if external storage is available for read and write */
+	public boolean isExternalStorageWritable() {
+	    String state = Environment.getExternalStorageState();
+	    if (Environment.MEDIA_MOUNTED.equals(state)) {
+	        return true;
+	    }
+	    return false;
+	}
+
+	/* Checks if external storage is available to at least read */
+	public boolean isExternalStorageReadable() {
+	    String state = Environment.getExternalStorageState();
+	    if (Environment.MEDIA_MOUNTED.equals(state) ||
+	        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+	        return true;
+	    }
+	    return false;
+	}
 
     private class SAXHandler extends DefaultHandler{
     	String xml = "";
@@ -240,7 +277,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	
     	@Override
     	protected void onPreExecute (){
-    		webview.loadData("loading...","text/html",null);
+    		webview.loadData("silent mode: "+settings.getBoolean("silentMode", false),"text/html",null);
     	}
     	@Override
 		protected String doInBackground(String... params) {
@@ -263,6 +300,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
         protected void onPostExecute(String s) {
     	  fourdaydata = s;
           webview.loadData("data: "+fourdaydata,"text/html",null);
+          saveFile(fourdaydata,"fourday.txt");
         }
     }
     
@@ -302,6 +340,46 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
            //locationTextView.setText("Location: "+s);
     		locationTextView.setText("QUEZON CITY");
         }
+    }
+    
+    public void saveFile(String s, String filename){
+    	String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/pron/saved_files");    
+        myDir.mkdirs();
+        File file = new File (myDir, filename);
+        if (file.exists ()) file.delete (); 
+        try {
+               FileOutputStream out = new FileOutputStream(file);
+               out.write(s.getBytes());
+               out.flush();
+               out.close();
+
+        } catch (Exception e) {
+               e.printStackTrace();
+        }
+    }
+    
+    public void loadWebViewFromFile(String filename){
+    	String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/pron/saved_files");    
+        //myDir.mkdirs();
+        File file = new File (myDir, filename);
+        String s = "";
+        StringBuffer stringBuffer = new StringBuffer();
+        try {
+        	FileInputStream in = new FileInputStream(file);
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        	String content = "";
+        	while((content = reader.readLine()) != null){
+	        	//s = s+content;
+        		stringBuffer.append(content);
+        	}
+            in.close();
+
+        } catch (Exception e) {
+               e.printStackTrace();
+        }
+    	webview.loadData(stringBuffer.toString(), "text/html", null);
     }
 
     @Override
