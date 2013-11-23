@@ -94,6 +94,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		//geocoder = new Geocoder(this);
 	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
 		loadWebViewFromFile("fourday.txt");
+		webview.setVisibility(View.INVISIBLE);
 	}
 	
 	@Override

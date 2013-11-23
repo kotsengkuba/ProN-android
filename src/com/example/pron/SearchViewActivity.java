@@ -18,11 +18,15 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +34,7 @@ import android.widget.Toast;
 
 public class SearchViewActivity extends Activity {
 	List citiesList = new ArrayList();
+	List tempList = new ArrayList();
 	LinearLayout ll;
 	
     @Override
@@ -40,6 +45,10 @@ public class SearchViewActivity extends Activity {
         citiesList.add("Quezon City");
         citiesList.add("Manila");
         citiesList.add("Cebu City");
+        
+        tempList.add(30);
+        tempList.add(31);
+        tempList.add(32);
         
         ll = (LinearLayout)findViewById(R.id.citiesLinearLayout);
         init_list();
@@ -57,8 +66,20 @@ public class SearchViewActivity extends Activity {
     		
     		CityItemView civ = new CityItemView(this);
     		civ.setText(citiesList.get(i).toString());
+    		civ.setTemp(tempList.get(i).toString()+"°");
     		civ.setImage(getResources().getDrawable(R.drawable.clear));
+    		civ.setFont(Typeface.createFromAsset(getAssets(), "TRACK.OTF"));
     		ll.addView(civ);
+    		
+    		civ.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+			        startActivity(intent);
+				}
+			});
     	}
     	
     }
