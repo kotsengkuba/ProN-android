@@ -47,7 +47,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="0dp"
-                    android:text="3pm"
                     android:textColor="#A60000"
                     android:textSize="@dimen/smalltext" />
 
@@ -56,12 +55,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="0dp"
+                    android:clickable="true"
+                    android:onClick="toggleFourDay"
                     android:text="Today"
                     android:textColor="#4D4D4D"
                     android:textSize="@dimen/medtext" />
-
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -77,9 +76,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
-                android:text="34°"
-                android:textColor="#3A3A3A"
                 android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#3A3A3A"
                 android:textSize="@dimen/xltext" />
 
             <TextView
@@ -88,7 +86,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="10dp"
-                android:text="45%"
                 android:textColor="#5D745A"
                 android:textSize="@dimen/bigtext" />
 
@@ -100,7 +97,6 @@
                 android:text="Rain"
                 android:textColor="#5D745A"
                 android:textSize="@dimen/xstext" />
-
         </LinearLayout>
 
         <WebView
@@ -110,6 +106,24 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="117dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/linearLayout1"
+            android:orientation="vertical" >
+
+            <com.example.pron.FourDayView
+                android:id="@+id/fourDayView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+            </com.example.pron.FourDayView>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

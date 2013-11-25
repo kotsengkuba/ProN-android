@@ -77,6 +77,7 @@ public class SearchViewActivity extends Activity {
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+					intent.putExtra("key", 2);
 			        startActivity(intent);
 				}
 			});

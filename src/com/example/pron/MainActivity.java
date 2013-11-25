@@ -10,6 +10,8 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -44,12 +46,16 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	TextView locationTextView, tempTextView, timeTextView, rainTextView, dayTextView, rainLabelTextView;
 	Wheel wheelView;
 	WebView webview;
+	FourDayView fourDayView;
 	private String provider;
 	Geocoder geocoder;
 	String DEBUG_TAG = "touch event";
-	String [] time_array = new String[] {"6PM","9PM","12MN","3AM","6AM","9AM","12NN","3PM"};
-	String [] temp_array = new String[] {"34°","36°","36°","35°","33°","30°","30°","31°"};
-	String [] rain_array = new String[] {"45%","47%","54%","33%","80%","80%","90%","0%"};
+	//String [] time_array = new String[] {"6PM","9PM","12MN","3AM","6AM","9AM","12NN","3PM"};
+	//String [] temp_array = new String[] {"34°","36°","36°","35°","33°","30°","30°","31°"};
+	//String [] rain_array = new String[] {"45%","47%","54%","33%","80%","80%","90%","0%"};
+	String [] time_array = new String[8];
+	String [] temp_array = new String[8];
+	String [] rain_array = new String[8];
 	
 	String fourdaydata;
 	public static final String PREFS_NAME = "MyPrefsFile";
@@ -69,8 +75,11 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		dayTextView = (TextView) findViewById(R.id.dayTextView);
 		rainLabelTextView = (TextView) findViewById(R.id.rainLabelTextView);
 		wheelView = (Wheel) findViewById(R.id.wheelView);
+		fourDayView = (FourDayView) findViewById(R.id.fourDayView);
 		
 		webview = (WebView) findViewById(R.id.webView1);
+		
+		//preferences
 		settings = getSharedPreferences(PREFS_NAME, 0);
 		editor = settings.edit();
 		editor.putBoolean("silentMode", true);
@@ -87,13 +96,19 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		dayTextView.setTypeface(font);
 		rainLabelTextView.setTypeface(font);
 		
-		setTimeText("6PM");
-	    
 		init_location();
 		saveFile("Hello World!", "test.txt");
+		
 		//geocoder = new Geocoder(this);
 	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
-		loadWebViewFromFile("fourday.txt");
+		
+		Bundle b = getIntent().getExtras();
+		//int value = b.getInt("key");
+		//Toast.makeText(this, "Bundle: "+b,Toast.LENGTH_LONG).show();
+		
+		readJSON(0, fileToString("sample.json"));
+		init_values();
+		setFourDayView();
 		webview.setVisibility(View.INVISIBLE);
 	}
 	
@@ -141,6 +156,14 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
         startActivity(intent);
     }
     
+    public void toggleFourDay(View view){
+    	if (fourDayView.getVisibility() == View.VISIBLE)
+    		fourDayView.setVisibility(View.INVISIBLE);
+    	else
+    		fourDayView.setVisibility(View.VISIBLE);
+    		fourDayView.bringToFront();
+    }
+    
     
 	public void init_location(){
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -159,6 +182,12 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    }
 	}
 	
+	public void init_values(){
+		setTimeText(time_array[0]);
+		setTempText(temp_array[0]);
+		setRainText(rain_array[0]);
+	}
+	
 	public void setTimeText(String s){
 		timeTextView.setText(s);
 	}
@@ -169,6 +198,23 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	
 	public void setRainText(String s){
 		rainTextView.setText(s);
+	}
+	
+	public void setFourDayView(){
+		fourDayView.setTemp(0, 30);
+		fourDayView.setTemp(1, 31);
+		fourDayView.setTemp(2, 32);
+		fourDayView.setTemp(3, 33);
+		
+		fourDayView.setImage(0, getResources().getDrawable(R.drawable.clear));
+		fourDayView.setImage(1, getResources().getDrawable(R.drawable.cloudy));
+		fourDayView.setImage(2, getResources().getDrawable(R.drawable.rainy));
+		fourDayView.setImage(3, getResources().getDrawable(R.drawable.clear));
+		
+		fourDayView.setDay(0, "Tomorrow");
+		fourDayView.setDay(1, "Nov 27");
+		fourDayView.setDay(2, "Nov 28");
+		fourDayView.setDay(3, "Nov 29");
 	}
 	
 	// Check network connection
@@ -360,7 +406,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
         }
     }
     
-    public void loadWebViewFromFile(String filename){
+    public String fileToString(String filename){
     	String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/pron/saved_files");    
         //myDir.mkdirs();
@@ -380,7 +426,32 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
         } catch (Exception e) {
                e.printStackTrace();
         }
-    	webview.loadData(stringBuffer.toString(), "text/html", null);
+    	return stringBuffer.toString();
+    }
+    
+    public void readJSON(int index, String s){
+    	JSONObject jsonobject;
+    	try{
+    		jsonobject = new JSONObject(s);
+    		if(index == 0){
+    			JSONArray jsonarray = jsonobject.getJSONArray("places");
+        		for(int i = 0; i < jsonarray.length(); i++){
+        			JSONObject place = jsonarray.getJSONObject(i);
+        			JSONArray dates = place.getJSONArray("dates");
+        			
+        			JSONObject first = dates.getJSONObject(0);
+        			JSONArray data = first.getJSONArray("data");
+					for(int j = 0; j < data.length(); j++){
+						JSONObject o = data.getJSONObject(j);
+						time_array[j] = o.getString("time");
+						temp_array[j] = o.getString("temp")+"°";
+						rain_array[j] = o.getString("rain")+"%";
+					}
+        		}
+        	}
+    	} catch(Exception e){}
+    	
+    	
     }
 
     @Override
