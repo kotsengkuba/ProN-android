@@ -71,13 +71,15 @@ public class SearchViewActivity extends Activity {
     		civ.setFont(Typeface.createFromAsset(getAssets(), "TRACK.OTF"));
     		ll.addView(civ);
     		
+    		final int j = i;
     		civ.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					//Toast.makeText(v.getContext(), "CLass: "+(this.getClass().toString()),Toast.LENGTH_LONG).show();
 					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-					intent.putExtra("key", 2);
+					intent.putExtra("key", citiesList.get(j).toString());
 			        startActivity(intent);
 				}
 			});

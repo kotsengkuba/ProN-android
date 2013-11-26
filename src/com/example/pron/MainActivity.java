@@ -56,6 +56,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	String [] time_array = new String[8];
 	String [] temp_array = new String[8];
 	String [] rain_array = new String[8];
+	String currentCity = "Manila";
 	
 	String fourdaydata;
 	public static final String PREFS_NAME = "MyPrefsFile";
@@ -103,8 +104,11 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
 		
 		Bundle b = getIntent().getExtras();
-		//int value = b.getInt("key");
-		//Toast.makeText(this, "Bundle: "+b,Toast.LENGTH_LONG).show();
+		if(b != null){
+			String value = b.getString("key");
+			//Toast.makeText(this, "Value: "+value,Toast.LENGTH_LONG).show();
+			currentCity = value;
+		}
 		
 		readJSON(0, fileToString("sample.json"));
 		init_values();
@@ -183,6 +187,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	}
 	
 	public void init_values(){
+		setLocationText();
 		setTimeText(time_array[0]);
 		setTempText(temp_array[0]);
 		setRainText(rain_array[0]);
@@ -199,7 +204,9 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	public void setRainText(String s){
 		rainTextView.setText(s);
 	}
-	
+	public void setLocationText(){
+		locationTextView.setText(currentCity);
+	}
 	public void setFourDayView(){
 		fourDayView.setTemp(0, 30);
 		fourDayView.setTemp(1, 31);
@@ -385,7 +392,9 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	@Override
         protected void onPostExecute(String s) {
            //locationTextView.setText("Location: "+s);
-    		locationTextView.setText("QUEZON CITY");
+    		//locationTextView.setText("QUEZON CITY");
+    		currentCity = s;
+    		setLocationText();
         }
     }
     
@@ -437,15 +446,17 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     			JSONArray jsonarray = jsonobject.getJSONArray("places");
         		for(int i = 0; i < jsonarray.length(); i++){
         			JSONObject place = jsonarray.getJSONObject(i);
-        			JSONArray dates = place.getJSONArray("dates");
-        			
-        			JSONObject first = dates.getJSONObject(0);
-        			JSONArray data = first.getJSONArray("data");
-					for(int j = 0; j < data.length(); j++){
-						JSONObject o = data.getJSONObject(j);
-						time_array[j] = o.getString("time");
-						temp_array[j] = o.getString("temp")+"°";
-						rain_array[j] = o.getString("rain")+"%";
+        			if(place.getString("name").equals(currentCity)){
+        				JSONArray dates = place.getJSONArray("dates");
+            			JSONObject first = dates.getJSONObject(0);
+            			JSONArray data = first.getJSONArray("data");
+    					for(int j = 0; j < data.length(); j++){
+    						JSONObject o = data.getJSONObject(j);
+    						time_array[j] = o.getString("time");
+    						temp_array[j] = o.getString("temp")+"°";
+    						rain_array[j] = o.getString("rain")+"%";
+    					}
+    					break;
 					}
         		}
         	}
