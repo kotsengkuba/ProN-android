@@ -106,7 +106,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		Bundle b = getIntent().getExtras();
 		if(b != null){
 			String value = b.getString("key");
-			//Toast.makeText(this, "Value: "+value,Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Value: "+value,Toast.LENGTH_LONG).show();
 			currentCity = value;
 		}
 		
@@ -152,6 +152,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	
 	public void viewNextDay(View view) {
         Intent intent = new Intent(this, WeekViewActivity.class);
+        //Intent intent = new Intent(this, SampleSearchActivity.class);
         startActivity(intent);
     }
 
@@ -391,10 +392,10 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	
     	@Override
         protected void onPostExecute(String s) {
-           //locationTextView.setText("Location: "+s);
-    		//locationTextView.setText("QUEZON CITY");
+           if(s != ""){
     		currentCity = s;
     		setLocationText();
+           }
         }
     }
     
