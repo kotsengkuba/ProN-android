@@ -31,6 +31,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -63,6 +64,8 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	SharedPreferences settings;
 	SharedPreferences.Editor editor;
 	final File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "asd");
+	
+	GestureDetectorCompat mDetector;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +117,22 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		init_values();
 		setFourDayView();
 		webview.setVisibility(View.INVISIBLE);
+		
+		// Instantiate the gesture detector with the
+        // application context and an implementation of
+        // GestureDetector.OnGestureListener
+        mDetector = new GestureDetectorCompat(this,this);
+        
+        dayTextView.setOnTouchListener(new View.OnTouchListener(){
+        	GestureDetectorCompat d = new GestureDetectorCompat(MainActivity.this, MainActivity.this);
+        	
+        	@Override
+            public boolean onTouch(final View view, final MotionEvent event) {
+                d.onTouchEvent(event);
+                return true;
+            }
+        	
+        });
 	}
 	
 	@Override
@@ -476,6 +495,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
         switch(action) {
             case MotionEvent.ACTION_DOWN:
             	Log.d(DEBUG_TAG,"onDown: " + event.getX() + event.getY());
+            	Toast.makeText(this, "Downd",Toast.LENGTH_SHORT).show();
             	wheelView.lasty = event.getY();
             	if(event.getX() > wheelView.width*0.8)
             		wheelView.onWheelArea = false;
@@ -533,12 +553,16 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
             	wheelView.mVelocityTracker.recycle();
                 break;
         }
+    	Log.d(DEBUG_TAG,"onTouch: " + event.toString());
+    	this.mDetector.onTouchEvent(event);
+        // Be sure to call the superclass implementation
         return true;
     }
     
     @Override
     public boolean onDown(MotionEvent event) { 
         Log.d(DEBUG_TAG,"onDown: " + event.toString()); 
+        Toast.makeText(this, "Down",Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -546,6 +570,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     public boolean onFling(MotionEvent event1, MotionEvent event2, 
             float velocityX, float velocityY) {
         Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString());
+        Toast.makeText(this, "Fling",Toast.LENGTH_SHORT).show();
         return true;
     }
 

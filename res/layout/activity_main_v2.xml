@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="0dp"
                     android:clickable="true"
-                    android:onClick="viewNextDay"
+                    android:onClick="toggleFourDay"
                     android:text="Today"
                     android:textColor="#4D4D4D"
                     android:textSize="@dimen/medtext" />
