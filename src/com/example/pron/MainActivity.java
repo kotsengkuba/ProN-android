@@ -35,9 +35,11 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,21 +53,25 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	private String provider;
 	Geocoder geocoder;
 	String DEBUG_TAG = "touch event";
-	//String [] time_array = new String[] {"6PM","9PM","12MN","3AM","6AM","9AM","12NN","3PM"};
-	//String [] temp_array = new String[] {"34°","36°","36°","35°","33°","30°","30°","31°"};
-	//String [] rain_array = new String[] {"45%","47%","54%","33%","80%","80%","90%","0%"};
+	
 	String [] time_array = new String[8];
 	String [] temp_array = new String[8];
 	String [] rain_array = new String[8];
 	String currentCity = "Manila";
+	String day = "Today";
+	int dayIndex = 0;
+	
+	JSONObject cityData = new JSONObject();
 	
 	String fourdaydata;
+	
 	public static final String PREFS_NAME = "MyPrefsFile";
 	SharedPreferences settings;
 	SharedPreferences.Editor editor;
+	
 	final File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "asd");
 	
-	GestureDetectorCompat mDetector;
+	GestureDetectorCompat dayGDetector;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +87,8 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		wheelView = (Wheel) findViewById(R.id.wheelView);
 		fourDayView = (FourDayView) findViewById(R.id.fourDayView);
 		
-		webview = (WebView) findViewById(R.id.webView1);
-		
 		//preferences
+		// ?
 		settings = getSharedPreferences(PREFS_NAME, 0);
 		editor = settings.edit();
 		editor.putBoolean("silentMode", true);
@@ -106,33 +111,65 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		//geocoder = new Geocoder(this);
 	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
 		
+		// Get city kung galing sa search city activity
 		Bundle b = getIntent().getExtras();
 		if(b != null){
 			String value = b.getString("key");
-			Toast.makeText(this, "Value: "+value,Toast.LENGTH_LONG).show();
 			currentCity = value;
 		}
 		
+		// read local json file -> json object
+		// initialize
 		readJSON(0, fileToString("sample.json"));
+		setDataStrings(0);
 		init_values();
 		setFourDayView();
-		webview.setVisibility(View.INVISIBLE);
 		
-		// Instantiate the gesture detector with the
-        // application context and an implementation of
-        // GestureDetector.OnGestureListener
-        mDetector = new GestureDetectorCompat(this,this);
-        
-        dayTextView.setOnTouchListener(new View.OnTouchListener(){
-        	GestureDetectorCompat d = new GestureDetectorCompat(MainActivity.this, MainActivity.this);
-        	
-        	@Override
-            public boolean onTouch(final View view, final MotionEvent event) {
-                d.onTouchEvent(event);
-                return true;
-            }
-        	
-        });
+		// Gesture Detector for dayTextView
+        dayGDetector = new GestureDetectorCompat(this, new GestureListener(){
+
+			@Override
+			public void flinged() {
+				// TODO Auto-generated method stub
+				Toast.makeText(MainActivity.this, "FLINGED",Toast.LENGTH_LONG).show();
+			}
+
+			@Override
+			public void onRightToLeft() {
+				// TODO Auto-generated method stub
+				dayIndex = (dayIndex+1)%4;
+				setDataStrings(dayIndex);
+				init_values();
+			}
+
+			@Override
+			public void onLeftToRight() {
+				// TODO Auto-generated method stub
+				dayIndex = (dayIndex+3)%4;
+				setDataStrings(dayIndex);
+				init_values();
+			}
+
+			@Override
+			public void onTopToBottom() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onBottomToTop() {
+				// TODO Auto-generated method stub
+				
+			}});
+		
+		dayTextView.setOnTouchListener(new OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				dayGDetector.onTouchEvent(event);
+				return true;
+			}});
 	}
 	
 	@Override
@@ -208,6 +245,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	
 	public void init_values(){
 		setLocationText();
+		setDayText();
 		setTimeText(time_array[0]);
 		setTempText(temp_array[0]);
 		setRainText(rain_array[0]);
@@ -227,6 +265,16 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	public void setLocationText(){
 		locationTextView.setText(currentCity);
 	}
+	public void setDayText(){
+		if(dayIndex == 0)
+			dayTextView.setText("Today");
+		else if(dayIndex == 1)
+			dayTextView.setText("Tomorrow");
+		else if(dayIndex == 2)
+			dayTextView.setText("Next Next day");
+		else if(dayIndex == 3)
+			dayTextView.setText("Next NExt Next day");
+	}
 	public void setFourDayView(){
 		fourDayView.setTemp(0, 30);
 		fourDayView.setTemp(1, 31);
@@ -243,6 +291,20 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		fourDayView.setDay(2, "Nov 28");
 		fourDayView.setDay(3, "Nov 29");
 	}
+	
+	public void setDataStrings(int day){
+    	try{
+	    	JSONArray dates = cityData.getJSONArray("dates");
+	    	JSONObject first = dates.getJSONObject(day);
+			JSONArray data = first.getJSONArray("data");
+			for(int j = 0; j < data.length(); j++){
+				JSONObject o = data.getJSONObject(j);
+				time_array[j] = o.getString("time");
+				temp_array[j] = o.getString("temp")+"°";
+				rain_array[j] = o.getString("rain")+"%";
+			}
+    	}catch(Exception e){}
+    }
 	
 	// Check network connection
 	public boolean isNetworkAvailable() {
@@ -291,7 +353,6 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    public void endDocument ()
 	    {
 	    	//System.out.println("End document");
-	    	//webView.loadData(xml, "text/html",null);
 	    }
 
 
@@ -351,7 +412,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	
     	@Override
     	protected void onPreExecute (){
-    		webview.loadData("silent mode: "+settings.getBoolean("silentMode", false),"text/html",null);
+    	
     	}
     	@Override
 		protected String doInBackground(String... params) {
@@ -373,7 +434,6 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	@Override
         protected void onPostExecute(String s) {
     	  fourdaydata = s;
-          webview.loadData("data: "+fourdaydata,"text/html",null);
           saveFile(fourdaydata,"fourday.txt");
         }
     }
@@ -467,7 +527,8 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
         		for(int i = 0; i < jsonarray.length(); i++){
         			JSONObject place = jsonarray.getJSONObject(i);
         			if(place.getString("name").equals(currentCity)){
-        				JSONArray dates = place.getJSONArray("dates");
+        				cityData = place;
+        				/*JSONArray dates = place.getJSONArray("dates");
             			JSONObject first = dates.getJSONObject(0);
             			JSONArray data = first.getJSONArray("data");
     					for(int j = 0; j < data.length(); j++){
@@ -475,14 +536,12 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     						time_array[j] = o.getString("time");
     						temp_array[j] = o.getString("temp")+"°";
     						rain_array[j] = o.getString("rain")+"%";
-    					}
+    					}*/
     					break;
 					}
         		}
         	}
     	} catch(Exception e){}
-    	
-    	
     }
 
     @Override
@@ -495,7 +554,6 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
         switch(action) {
             case MotionEvent.ACTION_DOWN:
             	Log.d(DEBUG_TAG,"onDown: " + event.getX() + event.getY());
-            	Toast.makeText(this, "Downd",Toast.LENGTH_SHORT).show();
             	wheelView.lasty = event.getY();
             	if(event.getX() > wheelView.width*0.8)
             		wheelView.onWheelArea = false;
@@ -554,47 +612,45 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
                 break;
         }
     	Log.d(DEBUG_TAG,"onTouch: " + event.toString());
-    	this.mDetector.onTouchEvent(event);
         // Be sure to call the superclass implementation
         return true;
     }
-    
-    @Override
-    public boolean onDown(MotionEvent event) { 
-        Log.d(DEBUG_TAG,"onDown: " + event.toString()); 
-        Toast.makeText(this, "Down",Toast.LENGTH_SHORT).show();
-        return true;
-    }
 
-    @Override
-    public boolean onFling(MotionEvent event1, MotionEvent event2, 
-            float velocityX, float velocityY) {
-        Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString());
-        Toast.makeText(this, "Fling",Toast.LENGTH_SHORT).show();
-        return true;
-    }
+	@Override
+	public boolean onDown(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    @Override
-    public void onLongPress(MotionEvent event) {
-        Log.d(DEBUG_TAG, "onLongPress: " + event.toString()); 
-    }
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-            float distanceY) {
-        Log.d(DEBUG_TAG, "onScroll: " + e1.toString()+e2.toString());
-        return true;
-    }
+	@Override
+	public void onLongPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
-    @Override
-    public void onShowPress(MotionEvent event) {
-        Log.d(DEBUG_TAG, "onShowPress: " + event.toString());
-    }
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent event) {
-        Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
-        return true;
-    }
+	@Override
+	public void onShowPress(MotionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

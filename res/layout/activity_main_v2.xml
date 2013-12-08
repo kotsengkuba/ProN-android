@@ -96,16 +96,8 @@
                 android:layout_marginRight="5dp"
                 android:text="Rain"
                 android:textColor="#5D745A"
-                android:textSize="@dimen/xstext" />
+                android:textSize="@dimen/smalltext" />
         </LinearLayout>
-
-        <WebView
-            android:id="@+id/webView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="117dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
