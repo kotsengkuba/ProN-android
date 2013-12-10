@@ -28,6 +28,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,7 +36,6 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -45,11 +45,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener,GestureDetector.OnGestureListener{
-	protected LocationManager locationManager;
+	
 	TextView locationTextView, tempTextView, timeTextView, rainTextView, dayTextView, rainLabelTextView;
 	Wheel wheelView;
 	WebView webview;
-	FourDayView fourDayView;
+	
+	protected LocationManager locationManager;
 	private String provider;
 	Geocoder geocoder;
 	String DEBUG_TAG = "touch event";
@@ -57,6 +58,8 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	String [] time_array = new String[8];
 	String [] temp_array = new String[8];
 	String [] rain_array = new String[8];
+	
+	// default values
 	String currentCity = "Manila";
 	String day = "Today";
 	int dayIndex = 0;
@@ -64,12 +67,6 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	JSONObject cityData = new JSONObject();
 	
 	String fourdaydata;
-	
-	public static final String PREFS_NAME = "MyPrefsFile";
-	SharedPreferences settings;
-	SharedPreferences.Editor editor;
-	
-	final File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "asd");
 	
 	GestureDetectorCompat dayGDetector;
 
@@ -85,15 +82,6 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		dayTextView = (TextView) findViewById(R.id.dayTextView);
 		rainLabelTextView = (TextView) findViewById(R.id.rainLabelTextView);
 		wheelView = (Wheel) findViewById(R.id.wheelView);
-		fourDayView = (FourDayView) findViewById(R.id.fourDayView);
-		
-		//preferences
-		// ?
-		settings = getSharedPreferences(PREFS_NAME, 0);
-		editor = settings.edit();
-		editor.putBoolean("silentMode", true);
-		// Commit the edits!
-	      editor.commit();
 		
 		//Get the typeface from assets
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
@@ -118,47 +106,39 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 			currentCity = value;
 		}
 		
-		// read local json file -> json object
-		// initialize
 		readJSON(0, fileToString("sample.json"));
 		setDataStrings(0);
-		init_values();
-		setFourDayView();
+		reset_values();
 		
 		// Gesture Detector for dayTextView
         dayGDetector = new GestureDetectorCompat(this, new GestureListener(){
 
 			@Override
 			public void flinged() {
-				// TODO Auto-generated method stub
 				Toast.makeText(MainActivity.this, "FLINGED",Toast.LENGTH_LONG).show();
 			}
 
 			@Override
 			public void onRightToLeft() {
-				// TODO Auto-generated method stub
 				dayIndex = (dayIndex+1)%4;
 				setDataStrings(dayIndex);
-				init_values();
+				reset_values();
 			}
 
 			@Override
 			public void onLeftToRight() {
-				// TODO Auto-generated method stub
 				dayIndex = (dayIndex+3)%4;
 				setDataStrings(dayIndex);
-				init_values();
+				reset_values();
 			}
 
 			@Override
 			public void onTopToBottom() {
-				// TODO Auto-generated method stub
-				
+				viewMap();
 			}
 
 			@Override
 			public void onBottomToTop() {
-				// TODO Auto-generated method stub
 				
 			}});
 		
@@ -166,7 +146,6 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				// TODO Auto-generated method stub
 				dayGDetector.onTouchEvent(event);
 				return true;
 			}});
@@ -205,27 +184,22 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	public void onStatusChanged(String provider, int status, Bundle extras){
 		
 	}
-	
-	public void viewNextDay(View view) {
-        Intent intent = new Intent(this, WeekViewActivity.class);
-        //Intent intent = new Intent(this, SampleSearchActivity.class);
-        startActivity(intent);
-    }
 
     public void searchCity(View view) {
         Intent intent = new Intent(this, SearchViewActivity.class);
         startActivity(intent);
     }
     
-    public void toggleFourDay(View view){
-    	if (fourDayView.getVisibility() == View.VISIBLE)
-    		fourDayView.setVisibility(View.INVISIBLE);
-    	else
-    		fourDayView.setVisibility(View.VISIBLE);
-    		fourDayView.bringToFront();
+    public void viewMap() {
+        //Intent intent = new Intent(this, MapActivity.class);
+        //startActivity(intent);
+    	final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML"));
+    	startActivity(myIntent);
     }
     
-    
+    /*
+     *  Get location from gps
+     * */
 	public void init_location(){
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
@@ -243,7 +217,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    }
 	}
 	
-	public void init_values(){
+	public void reset_values(){
 		setLocationText();
 		setDayText();
 		setTimeText(time_array[0]);
@@ -275,23 +249,8 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		else if(dayIndex == 3)
 			dayTextView.setText("Next NExt Next day");
 	}
-	public void setFourDayView(){
-		fourDayView.setTemp(0, 30);
-		fourDayView.setTemp(1, 31);
-		fourDayView.setTemp(2, 32);
-		fourDayView.setTemp(3, 33);
-		
-		fourDayView.setImage(0, getResources().getDrawable(R.drawable.clear));
-		fourDayView.setImage(1, getResources().getDrawable(R.drawable.cloudy));
-		fourDayView.setImage(2, getResources().getDrawable(R.drawable.rainy));
-		fourDayView.setImage(3, getResources().getDrawable(R.drawable.clear));
-		
-		fourDayView.setDay(0, "Tomorrow");
-		fourDayView.setDay(1, "Nov 27");
-		fourDayView.setDay(2, "Nov 28");
-		fourDayView.setDay(3, "Nov 29");
-	}
 	
+	/* set string arrays depende sa day */
 	public void setDataStrings(int day){
     	try{
 	    	JSONArray dates = cityData.getJSONArray("dates");
@@ -306,7 +265,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	}catch(Exception e){}
     }
 	
-	// Check network connection
+	/* Check network connection */
 	public boolean isNetworkAvailable() {
 	    ConnectivityManager cm = (ConnectivityManager) 
 	      getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -338,6 +297,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    return false;
 	}
 
+	/* SAX Parser */
     private class SAXHandler extends DefaultHandler{
     	String xml = "";
     	boolean is_name, found, is_body;
@@ -348,7 +308,6 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 			is_body = false;
 			found = false;
 	    }
-
 
 	    public void endDocument ()
 	    {
@@ -405,6 +364,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    	return xml;
 	    }
     }
+    
     private class XMLparser extends AsyncTask<String,Void,String>{
     	SAXParserFactory factory;
     	SAXParser saxParser;
@@ -518,6 +478,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	return stringBuffer.toString();
     }
     
+    /* set json object */
     public void readJSON(int index, String s){
     	JSONObject jsonobject;
     	try{
@@ -528,15 +489,6 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
         			JSONObject place = jsonarray.getJSONObject(i);
         			if(place.getString("name").equals(currentCity)){
         				cityData = place;
-        				/*JSONArray dates = place.getJSONArray("dates");
-            			JSONObject first = dates.getJSONObject(0);
-            			JSONArray data = first.getJSONArray("data");
-    					for(int j = 0; j < data.length(); j++){
-    						JSONObject o = data.getJSONObject(j);
-    						time_array[j] = o.getString("time");
-    						temp_array[j] = o.getString("temp")+"°";
-    						rain_array[j] = o.getString("rain")+"%";
-    					}*/
     					break;
 					}
         		}
@@ -544,6 +496,9 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	} catch(Exception e){}
     }
 
+    
+    /* Gestures */
+    
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int index = event.getActionIndex();

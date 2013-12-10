@@ -99,24 +99,6 @@
                 android:textSize="@dimen/smalltext" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/linearLayout1"
-            android:orientation="vertical" >
-
-            <com.example.pron.FourDayView
-                android:id="@+id/fourDayView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-            </com.example.pron.FourDayView>
-
-        </LinearLayout>
-
     </RelativeLayout>
 
     <!-- <com.example.pron.TemperatureGraphDrawableView
