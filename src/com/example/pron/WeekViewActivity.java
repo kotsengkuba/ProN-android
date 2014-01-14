@@ -28,16 +28,16 @@ public class WeekViewActivity extends ListActivity {
             ArrayList<HashMap> logSet = new ArrayList<HashMap>();
             ArrayList<String[]> split = new ArrayList<String[]>();
 
-            int id = R.drawable.sunny;
+            int id = R.drawable.clear;
 
             split.add(new String[]{"Tomorrow", "33/28", String.valueOf(id)});
             split.add(new String[]{"Sunday", "34/29", String.valueOf(id)});
 
             logSet = getLogSet(split, logSet);
 
-            ListView lview = (ListView) findViewById(android.R.id.list);
-            entryAdapter adapter = new entryAdapter(this, logSet);
-            lview.setAdapter(adapter);
+            //ListView lview = (ListView) findViewById(android.R.id.list);
+            //entryAdapter adapter = new entryAdapter(this, logSet);
+            //lview.setAdapter(adapter);
         }
         catch (Exception e){
             e.printStackTrace();

@@ -14,7 +14,7 @@
         android:orientation="vertical" >
 
         <SearchView
-            android:id="@+id/searchView1"
+            android:id="@+id/citiesSearchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         </SearchView>
@@ -25,7 +25,7 @@
             android:layout_weight="1" >
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/dayTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView" />
