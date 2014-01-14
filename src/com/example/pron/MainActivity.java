@@ -11,14 +11,16 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Criteria;
@@ -65,10 +67,13 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	int dayIndex = 0;
 	
 	JSONObject cityData = new JSONObject();
+	JSONObject rainData = new JSONObject();
 	
 	String fourdaydata;
 	
 	GestureDetectorCompat dayGDetector;
+	
+	HtmlParser html_parser = new HtmlParser();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +102,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		saveFile("Hello World!", "test.txt");
 		
 		//geocoder = new Geocoder(this);
+		
 	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
 		
 		// Get city kung galing sa search city activity
@@ -106,7 +112,8 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 			currentCity = value;
 		}
 		
-		readJSON(0, fileToString("sample.json"));
+		//readJSON(0, fileToString("sample.json"));
+		readJSON(0, fileToString("fourdaylive.json"));
 		setDataStrings(0);
 		reset_values();
 		
@@ -258,9 +265,13 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 			JSONArray data = first.getJSONArray("data");
 			for(int j = 0; j < data.length(); j++){
 				JSONObject o = data.getJSONObject(j);
-				time_array[j] = o.getString("time");
-				temp_array[j] = o.getString("temp")+"°";
-				rain_array[j] = o.getString("rain")+"%";
+				//time_array[j] = o.getString("time");
+				//temp_array[j] = o.getString("temp")+"°";
+				//rain_array[j] = o.getString("rain")+"%";
+				
+				time_array[j] = o.getString("Time");
+				temp_array[j] = o.getString("Temperature")+"°";
+				rain_array[j] = o.getString("Rainfall")+"%";
 			}
     	}catch(Exception e){}
     }
@@ -298,15 +309,18 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	}
 
 	/* SAX Parser */
-    private class SAXHandler extends DefaultHandler{
+    /* private class SAXHandler extends DefaultHandler{
     	String xml = "";
-    	boolean is_name, found, is_body;
+    	String html = "";
+    	JSONArray json_array = new JSONArray();
+    	JSONObject json_obj = new JSONObject();
+    	boolean is_name, is_body;
+    	int counter = 0;
 		public void startDocument ()
 	    {
 			//System.out.println("Start document");
 			is_name = false;
-			is_body = false;
-			found = false;
+			is_body = false;			
 	    }
 
 	    public void endDocument ()
@@ -318,29 +332,49 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    public void startElement (String uri, String name, String qName, Attributes atts)
 	    {
 	    	xml= xml + "Start element: " + qName + "\n";
-	    	Log.i("kml","Start: "+qName);
+	    	//Log.i("kml","Start: "+qName);
 	    	
 	    	if(qName.equals("name")){
 	    		is_name = true;
+	    		
 	    	}
 	    	else if(qName.equals("description")){
 	    		is_body = true;
+	    		html = "";
 	    	}
-
+	    	else if(qName.equals("Document")){
+	    		Log.d("jsoup", "Document start tag");
+	    	}
 	    }
 
 
 	    public void endElement (String uri, String name, String qName)
 	    {
 	    	xml= xml + "End element: " + qName + "\n";
-	    	Log.i("kml","End: "+qName);
+	    	//Log.i("kml","End: "+qName);
 	    	
 	    	if(qName.equals("name")){
 	    		is_name = false;
 	    	}
 	    	else if(qName.equals("description")){
 	    		is_body = false;
-	    		found = false;
+	    		
+				HtmlParser p = new HtmlParser();
+	    		String[] labels = {"Time", "Weather Outlook", "Temperature", "Real Feel", "Relative Humidity", "Rainfall", "Windspeed", "Wind Direction"};
+	    		
+	    		try{
+	    			json_obj.put("dates", p.toFourDayJSON(html, labels));
+	    			json_array.put(json_array.length(), new JSONObject(json_obj.toString()));
+	    		} catch(JSONException e){}
+	    	}
+	    	else if(qName.equals("Document")){
+	    		Log.i("kml","End: "+qName);
+    			JSONObject json_final = new JSONObject();
+    			try{
+    				json_final.put("places", json_array);
+    			} catch(JSONException e){}
+    			
+    			saveFile(json_final.toString(),"fourdaylive.json");
 	    	}
 	    }
 
@@ -349,41 +383,57 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    {
 	    	String s = new String(ch, start, length);
 	    	xml= xml + "Characters: " + s + "\n";
-	    	Log.i("kml",s);
-	    	
-	    	if(is_name && s.equals("Quezon City")){
-	    		found = true;
+	    		    	
+	    	if(is_name && !s.equalsIgnoreCase("4-Day Forecast")){
+	    		counter ++;
+	    		Log.i("kml",s);
+	    		
+	    		try{
+	    			//json_obj = new JSONObject();
+	    			json_obj.put("name", s);
+	    		} catch(JSONException e){}
+
+	    	}
+	    	else if(is_name && s.equalsIgnoreCase("4-Day Forecast")){
+	    		is_name = false;
 	    	}
 	    	
-	    	if(is_body && found){
+	    	if(is_body){
 	    		xml = xml + s;
+	    		html += s;
+	    		//saveFile(p.toJSON(s, labels), "QC_data.txt");
 	    	}
 		}
 	    
 	    public String get_string(){
 	    	return xml;
 	    }
+	    
+	    public String get_json_string(){
+	    	return json_obj.toString();
+	    }
     }
+    */
     
     private class XMLparser extends AsyncTask<String,Void,String>{
     	SAXParserFactory factory;
     	SAXParser saxParser;
-    	SAXHandler handler;
+    	FourDayXMLParser handler;
     	
     	@Override
     	protected void onPreExecute (){
-    	
     	}
     	@Override
 		protected String doInBackground(String... params) {
 			String s = "";
     		
     	    try {
+    	    	Log.i("kml","Starting parse... "+params[0]);
     	        factory = SAXParserFactory.newInstance();
     			saxParser = factory.newSAXParser();
-    			handler = new SAXHandler();
+    			handler = new FourDayXMLParser();
                 saxParser.parse(params[0], handler);
-                s = handler.get_string();
+                s = handler.get_json_string();
 
     	    } catch(Exception e){
     	    	e.printStackTrace();
@@ -393,8 +443,9 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     	
     	@Override
         protected void onPostExecute(String s) {
-    	  fourdaydata = s;
-          saveFile(fourdaydata,"fourday.txt");
+    	  Log.i("kml","End parse...");
+    	  //fourdaydata = s;
+          saveFile(s,"fourdaylive.json");
         }
     }
     
@@ -402,7 +453,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 
     	@Override
     	protected void onPreExecute (){
-    		locationTextView.setText("loading location...");
+    		//locationTextView.setText("loading location...");
     	}
     	
     	@Override
@@ -439,6 +490,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
     }
     
     public void saveFile(String s, String filename){
+    	Log.d("jsoup", "Saving file..." + "TO: " + filename);
     	String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/pron/saved_files");    
         myDir.mkdirs();
