@@ -66,8 +66,47 @@ public class HtmlParser {
 		return dates;
 	}
 	
-	public JSONArray toRainChanceJSON(String html){
+	public JSONArray toRainChanceJSON(String html, String [] labels){
+		Document doc = Jsoup.parse(html);
 		JSONArray times = new JSONArray();
+		
+		try{
+			Element table = doc.select("table").first();
+			Elements rows = table.select("tr");
+			
+			JSONObject date_item = new JSONObject();	
+			JSONArray row_json = new JSONArray();
+			
+			for(Element row : rows){
+				Elements data = row.select("td");
+				data.remove(0);
+				if(!data.isEmpty()){
+					JSONObject details = new JSONObject();
+					
+					String str = data.get(0).text();
+					String delims = "[ ]";
+					String[] tokens = str.split(delims);
+					details.put(labels[0], tokens[1]);
+					
+					str = data.get(1).text();
+					delims = "[()]";
+					tokens = str.split(delims);
+					Log.d("jsoup", "str: "+str);
+					details.put(labels[1], tokens[1]);
+					
+					//for(Element dataItem : data){							
+					//	details.put(labels[data.indexOf(dataItem)], dataItem.text());
+					//}
+					times.put(details);
+				}
+			}
+			
+		}catch (JSONException e){
+			e.printStackTrace();
+		}
+		
+		Log.d("jsoup", times.toString());
+		//return s;
 		
 		return times;
 	}

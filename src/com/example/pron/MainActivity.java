@@ -48,7 +48,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener,GestureDetector.OnGestureListener{
 	
-	TextView locationTextView, tempTextView, timeTextView, rainTextView, dayTextView, rainLabelTextView;
+	TextView locationTextView, tempTextView, timeTextView, rainTextView1, rainTextView2, rainTextView3, dayTextView, rainLabelTextView;
 	Wheel wheelView;
 	WebView webview;
 	
@@ -59,7 +59,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	
 	String [] time_array = new String[8];
 	String [] temp_array = new String[8];
-	String [] rain_array = new String[8];
+	String [] rain_array = new String[3];
 	
 	// default values
 	String currentCity = "Manila";
@@ -82,10 +82,12 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
 		tempTextView = (TextView) findViewById(R.id.tempTextView);	
-		rainTextView = (TextView) findViewById(R.id.rainTextView);
+		rainTextView1 = (TextView) findViewById(R.id.rainTextView1);
+		rainTextView2 = (TextView) findViewById(R.id.rainTextView2);
+		rainTextView3 = (TextView) findViewById(R.id.rainTextView3);
 		timeTextView = (TextView) findViewById(R.id.timeTextView);
 		dayTextView = (TextView) findViewById(R.id.dayTextView);
-		rainLabelTextView = (TextView) findViewById(R.id.rainLabelTextView);
+		rainLabelTextView = (TextView) findViewById(R.id.rainLabelTextView);		
 		wheelView = (Wheel) findViewById(R.id.wheelView);
 		
 		//Get the typeface from assets
@@ -93,17 +95,20 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		//Set the TextView's typeface (font)
 		locationTextView.setTypeface(font);
 		tempTextView.setTypeface(font);
-		rainTextView.setTypeface(font);
+		rainTextView1.setTypeface(font);
+		rainTextView2.setTypeface(font);
+		rainTextView3.setTypeface(font);
 		timeTextView.setTypeface(font);
 		dayTextView.setTypeface(font);
 		rainLabelTextView.setTypeface(font);
 		
 		init_location();
-		saveFile("Hello World!", "test.txt");
+		new Filer().saveFile("Hello World!", "test.txt");
 		
 		//geocoder = new Geocoder(this);
 		
-	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML");
+	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+		//new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
 		
 		// Get city kung galing sa search city activity
 		Bundle b = getIntent().getExtras();
@@ -113,7 +118,10 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		}
 		
 		//readJSON(0, fileToString("sample.json"));
-		readJSON(0, fileToString("fourdaylive.json"));
+		cityData = readJSON(0, 0, new Filer().fileToString("fourdaylive.json"));
+		rainData = readJSON(1, 0, new Filer().fileToString("rainchancelive.json"));
+		if(rainData == null)
+			Log.d("jsoup", "Rain data from file: NULL");
 		setDataStrings(0);
 		reset_values();
 		
@@ -229,7 +237,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		setDayText();
 		setTimeText(time_array[0]);
 		setTempText(temp_array[0]);
-		setRainText(rain_array[0]);
+		setRainText(rain_array);
 	}
 	
 	public void setTimeText(String s){
@@ -240,8 +248,10 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 		tempTextView.setText(s);
 	}
 	
-	public void setRainText(String s){
-		rainTextView.setText(s);
+	public void setRainText(String [] s){
+		rainTextView1.setText(s[0]);
+		rainTextView2.setText(s[1]);
+		rainTextView3.setText(s[2]);
 	}
 	public void setLocationText(){
 		locationTextView.setText(currentCity);
@@ -271,7 +281,12 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 				
 				time_array[j] = o.getString("Time");
 				temp_array[j] = o.getString("Temperature")+"°";
-				rain_array[j] = o.getString("Rainfall")+"%";
+			}
+			
+			data = rainData.getJSONArray("data");
+			for(int j = 0; j < data.length(); j++){
+				JSONObject o = data.getJSONObject(j);
+				rain_array[j] = o.getString("Rain");
 			}
     	}catch(Exception e){}
     }
@@ -307,118 +322,12 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    }
 	    return false;
 	}
-
-	/* SAX Parser */
-    /* private class SAXHandler extends DefaultHandler{
-    	String xml = "";
-    	String html = "";
-    	JSONArray json_array = new JSONArray();
-    	JSONObject json_obj = new JSONObject();
-    	boolean is_name, is_body;
-    	int counter = 0;
-		public void startDocument ()
-	    {
-			//System.out.println("Start document");
-			is_name = false;
-			is_body = false;			
-	    }
-
-	    public void endDocument ()
-	    {
-	    	//System.out.println("End document");
-	    }
-
-
-	    public void startElement (String uri, String name, String qName, Attributes atts)
-	    {
-	    	xml= xml + "Start element: " + qName + "\n";
-	    	//Log.i("kml","Start: "+qName);
-	    	
-	    	if(qName.equals("name")){
-	    		is_name = true;
-	    		
-	    	}
-	    	else if(qName.equals("description")){
-	    		is_body = true;
-	    		html = "";
-	    	}
-	    	else if(qName.equals("Document")){
-	    		Log.d("jsoup", "Document start tag");
-	    	}
-	    }
-
-
-	    public void endElement (String uri, String name, String qName)
-	    {
-	    	xml= xml + "End element: " + qName + "\n";
-	    	//Log.i("kml","End: "+qName);
-	    	
-	    	if(qName.equals("name")){
-	    		is_name = false;
-	    	}
-	    	else if(qName.equals("description")){
-	    		is_body = false;
-	    		
-				HtmlParser p = new HtmlParser();
-	    		String[] labels = {"Time", "Weather Outlook", "Temperature", "Real Feel", "Relative Humidity", "Rainfall", "Windspeed", "Wind Direction"};
-	    		
-	    		try{
-	    			json_obj.put("dates", p.toFourDayJSON(html, labels));
-	    			json_array.put(json_array.length(), new JSONObject(json_obj.toString()));
-	    		} catch(JSONException e){}
-	    	}
-	    	else if(qName.equals("Document")){
-	    		Log.i("kml","End: "+qName);
-    			JSONObject json_final = new JSONObject();
-    			try{
-    				json_final.put("places", json_array);
-    			} catch(JSONException e){}
-    			
-    			saveFile(json_final.toString(),"fourdaylive.json");
-	    	}
-	    }
-
-
-	    public void characters (char ch[], int start, int length)
-	    {
-	    	String s = new String(ch, start, length);
-	    	xml= xml + "Characters: " + s + "\n";
-	    		    	
-	    	if(is_name && !s.equalsIgnoreCase("4-Day Forecast")){
-	    		counter ++;
-	    		Log.i("kml",s);
-	    		
-	    		try{
-	    			//json_obj = new JSONObject();
-	    			json_obj.put("name", s);
-	    		} catch(JSONException e){}
-
-	    	}
-	    	else if(is_name && s.equalsIgnoreCase("4-Day Forecast")){
-	    		is_name = false;
-	    	}
-	    	
-	    	if(is_body){
-	    		xml = xml + s;
-	    		html += s;
-	    		//saveFile(p.toJSON(s, labels), "QC_data.txt");
-	    	}
-		}
-	    
-	    public String get_string(){
-	    	return xml;
-	    }
-	    
-	    public String get_json_string(){
-	    	return json_obj.toString();
-	    }
-    }
-    */
     
     private class XMLparser extends AsyncTask<String,Void,String>{
     	SAXParserFactory factory;
     	SAXParser saxParser;
-    	FourDayXMLParser handler;
+    	FourDayXMLParser fourday_handler;
+    	RainChanceXMLParser rainchance_handler;
     	
     	@Override
     	protected void onPreExecute (){
@@ -428,24 +337,33 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 			String s = "";
     		
     	    try {
-    	    	Log.i("kml","Starting parse... "+params[0]);
     	        factory = SAXParserFactory.newInstance();
     			saxParser = factory.newSAXParser();
-    			handler = new FourDayXMLParser();
-                saxParser.parse(params[0], handler);
-                s = handler.get_json_string();
+    			if(params[1].equals("fourday")){
+    				fourday_handler = new FourDayXMLParser();
+	                saxParser.parse(params[0], fourday_handler);
+	                s = fourday_handler.get_json_string();
+	                new Filer().saveFile(s,"fourdaylive.json");
+    			}
+    			else if(params[1].equals("rainchance")){
+    				rainchance_handler = new RainChanceXMLParser();
+    				Log.i("kml","Starting (rainchance) parse... "+params[0]);
+	                saxParser.parse(params[0], rainchance_handler);
+	                s = rainchance_handler.get_json_string();
+	                Log.i("kml","s = "+s);
+	                new Filer().saveFile(s,"rainchancelive.json");
+    			}
 
     	    } catch(Exception e){
     	    	e.printStackTrace();
     	    }
+    	    
     	    return s;
 		}
     	
     	@Override
         protected void onPostExecute(String s) {
     	  Log.i("kml","End parse...");
-    	  //fourdaydata = s;
-          saveFile(s,"fourdaylive.json");
         }
     }
     
@@ -489,63 +407,40 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
         }
     }
     
-    public void saveFile(String s, String filename){
-    	Log.d("jsoup", "Saving file..." + "TO: " + filename);
-    	String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/pron/saved_files");    
-        myDir.mkdirs();
-        File file = new File (myDir, filename);
-        if (file.exists ()) file.delete (); 
-        try {
-               FileOutputStream out = new FileOutputStream(file);
-               out.write(s.getBytes());
-               out.flush();
-               out.close();
-
-        } catch (Exception e) {
-               e.printStackTrace();
-        }
-    }
-    
-    public String fileToString(String filename){
-    	String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/pron/saved_files");    
-        //myDir.mkdirs();
-        File file = new File (myDir, filename);
-        String s = "";
-        StringBuffer stringBuffer = new StringBuffer();
-        try {
-        	FileInputStream in = new FileInputStream(file);
-        	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        	String content = "";
-        	while((content = reader.readLine()) != null){
-	        	//s = s+content;
-        		stringBuffer.append(content);
-        	}
-            in.close();
-
-        } catch (Exception e) {
-               e.printStackTrace();
-        }
-    	return stringBuffer.toString();
-    }
-    
     /* set json object */
-    public void readJSON(int index, String s){
+    public JSONObject readJSON(int x, int index, String s){
     	JSONObject jsonobject;
     	try{
     		jsonobject = new JSONObject(s);
-    		if(index == 0){
+    		
+    		// 0 for fourday file
+    		// 1 for rain file
+    		
+    		if(x == 0){
+	    		if(index == 0){
+	    			JSONArray jsonarray = jsonobject.getJSONArray("places");
+	        		for(int i = 0; i < jsonarray.length(); i++){
+	        			JSONObject place = jsonarray.getJSONObject(i);
+	        			if(place.getString("name").equals(currentCity)){
+	        				return place;
+						}
+	        		}
+	        	}
+    		}
+    		else if(x == 1){
     			JSONArray jsonarray = jsonobject.getJSONArray("places");
         		for(int i = 0; i < jsonarray.length(); i++){
         			JSONObject place = jsonarray.getJSONObject(i);
-        			if(place.getString("name").equals(currentCity)){
-        				cityData = place;
-    					break;
+        			if(place.getString("name").indexOf(currentCity) == 0){
+        				return place;
 					}
         		}
-        	}
+    			//Log.d("jsoup", jsonarray.getJSONObject(0).toString());
+    			//return jsonarray.getJSONObject(0);
+    		}
     	} catch(Exception e){}
+    	
+    	return null;
     }
 
     
@@ -611,7 +506,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
             	}
             	setTimeText(time_array[(int) (Math.round(4*i/Math.PI)%8)]);
             	setTempText(temp_array[(int) (Math.round(4*i/Math.PI)%8)]);
-            	setRainText(rain_array[(int) (Math.round(4*i/Math.PI)%8)]);
+            	
             	Log.d("snap", ""+wheelView.rad);
             case MotionEvent.ACTION_CANCEL:
                 // Return a VelocityTracker object back to be re-used by others.

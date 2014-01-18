@@ -8,9 +8,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.Log;
 
-public class FourDayXMLParser extends DefaultHandler{
+public class RainChanceXMLParser extends DefaultHandler{
 	
-	String xml = "";
 	String html = "";
 	JSONObject json_final = new JSONObject();
 	JSONArray json_array = new JSONArray();
@@ -20,7 +19,9 @@ public class FourDayXMLParser extends DefaultHandler{
 	public void startDocument ()
     {
 		is_name = false;
-		is_body = false;			
+		is_body = false;	
+		
+		Log.i("kml","rainchance kml start");
     }
 
     public void endDocument ()
@@ -29,8 +30,6 @@ public class FourDayXMLParser extends DefaultHandler{
 
     public void startElement (String uri, String name, String qName, Attributes atts)
     {
-    	xml= xml + "Start element: " + qName + "\n";
-    	
     	if(qName.equals("name")){
     		is_name = true;
     		
@@ -46,9 +45,7 @@ public class FourDayXMLParser extends DefaultHandler{
 
 
     public void endElement (String uri, String name, String qName)
-    {
-    	xml= xml + "End element: " + qName + "\n";
-    	
+    {	
     	if(qName.equals("name")){
     		is_name = false;
     	}
@@ -56,10 +53,10 @@ public class FourDayXMLParser extends DefaultHandler{
     		is_body = false;
     		
 			HtmlParser p = new HtmlParser();
-    		String[] labels = {"Time", "Weather Outlook", "Temperature", "Real Feel", "Relative Humidity", "Rainfall", "Windspeed", "Wind Direction"};
+    		String[] labels = {"Time", "Rain"};
     		
     		try{
-    			json_obj.put("dates", p.toFourDayJSON(html, labels));
+    			json_obj.put("data", p.toRainChanceJSON(html, labels));
     			json_array.put(json_array.length(), new JSONObject(json_obj.toString()));
     		} catch(JSONException e){}
     	}
@@ -75,31 +72,23 @@ public class FourDayXMLParser extends DefaultHandler{
     public void characters (char ch[], int start, int length)
     {
     	String s = new String(ch, start, length);
-    	xml= xml + "Characters: " + s + "\n";
-    		    	
-    	if(is_name && !s.equalsIgnoreCase("4-Day Forecast")){
+    	if(is_name && !s.equalsIgnoreCase("rain-forecast.KML")){
     		counter ++;
     		Log.i("kml",s);
     		
     		try{
-    			//json_obj = new JSONObject();
     			json_obj.put("name", s);
     		} catch(JSONException e){}
 
     	}
-    	else if(is_name && s.equalsIgnoreCase("4-Day Forecast")){
+    	else if(is_name && s.equalsIgnoreCase("rain-forecast.KML")){
     		is_name = false;
     	}
     	
     	if(is_body){
-    		xml = xml + s;
     		html += s;
     	}
 	}
-    
-    public String get_string(){
-    	return xml;
-    }
     
     public String get_json_string(){
     	return json_final.toString();
