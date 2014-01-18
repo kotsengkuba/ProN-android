@@ -110,21 +110,8 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    //new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 		//new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
 		
-		// Get city kung galing sa search city activity
-		Bundle b = getIntent().getExtras();
-		if(b != null){
-			String value = b.getString("key");
-			currentCity = value;
-		}
-		
-		//readJSON(0, fileToString("sample.json"));
-		cityData = readJSON(0, 0, new Filer().fileToString("fourdaylive.json"));
-		rainData = readJSON(1, 0, new Filer().fileToString("rainchancelive.json"));
-		if(rainData == null)
-			Log.d("jsoup", "Rain data from file: NULL");
-		setDataStrings(0);
-		reset_values();
-		
+		setDataFromLocation();
+				
 		// Gesture Detector for dayTextView
         dayGDetector = new GestureDetectorCompat(this, new GestureListener(){
 
@@ -137,14 +124,14 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 			public void onRightToLeft() {
 				dayIndex = (dayIndex+1)%4;
 				setDataStrings(dayIndex);
-				reset_values();
+				reset_textviews();
 			}
 
 			@Override
 			public void onLeftToRight() {
 				dayIndex = (dayIndex+3)%4;
 				setDataStrings(dayIndex);
-				reset_values();
+				reset_textviews();
 			}
 
 			@Override
@@ -170,6 +157,7 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	protected void onResume() {
 	  super.onResume();
 	  locationManager.requestLocationUpdates(provider, 400, 1, this);
+	  setDataFromLocation();
 	}
 	
 	/* Remove the locationlistener updates when Activity is paused */
@@ -202,7 +190,22 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 
     public void searchCity(View view) {
         Intent intent = new Intent(this, SearchViewActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
+    }
+    
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("jsoup", "REQUEST CODE:" + requestCode);
+        switch (requestCode) {
+        case 0:
+            if (resultCode == RESULT_OK) {
+            	// Get city from search view activity
+    			currentCity = data.getStringExtra("key");
+    			Log.d("jsoup", "intent");       		
+            }
+            break;
+        default:
+            break;
+        }
     }
     
     public void viewMap() {
@@ -232,7 +235,17 @@ public class MainActivity extends Activity implements LocationListener,GestureDe
 	    }
 	}
 	
-	public void reset_values(){
+	public void setDataFromLocation(){
+		// read and search files for location data
+		cityData = readJSON(0, 0, new Filer().fileToString("fourdaylive.json"));
+		rainData = readJSON(1, 0, new Filer().fileToString("rainchancelive.json"));
+		if(rainData == null)
+			Log.d("jsoup", "Rain data from file: NULL");
+		setDataStrings(0);
+		reset_textviews();
+	}
+	
+	public void reset_textviews(){
 		setLocationText();
 		setDayText();
 		setTimeText(time_array[0]);

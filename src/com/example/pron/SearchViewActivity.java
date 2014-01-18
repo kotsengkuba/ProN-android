@@ -82,7 +82,9 @@ public class SearchViewActivity extends Activity {
         		saveLocationsToFile();
             	Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 				intent.putExtra("key", product_results.get(position).toString());
-		        startActivity(intent);      	
+		        //startActivity(intent);
+				setResult(RESULT_OK, intent); 
+				finish();
             }
         });
         
