@@ -9,12 +9,9 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
-import android.support.v4.view.VelocityTrackerCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.WindowManager;
@@ -147,98 +144,4 @@ public class Wheel extends View{
 		}
 		
     }
-    
-    /*@Override
-    public boolean onTouchEvent(MotionEvent event) {
-        int index = event.getActionIndex();
-        int action = event.getActionMasked();
-        int pointerId = event.getPointerId(index);
-
-        switch(action) {
-            case MotionEvent.ACTION_DOWN:
-            	Log.d(DEBUG_TAG,"onDown: " + event.getX() + event.getY());
-            	lasty = event.getY();
-            	if(event.getX() > width*0.8)
-            		onWheelArea = false;
-            	else
-            		onWheelArea = true;
-            	
-                if(mVelocityTracker == null) {
-                    // Retrieve a new VelocityTracker object to watch the velocity of a motion.
-                    mVelocityTracker = VelocityTracker.obtain();
-                }
-                else {
-                    // Reset the velocity tracker back to its initial state.
-                    mVelocityTracker.clear();
-                }
-                // Add a user's movement to the tracker.
-                mVelocityTracker.addMovement(event);
-                break;
-            case MotionEvent.ACTION_MOVE:
-            	delta = event.getY() - lasty;
-            	lasty = event.getY();
-            	snap = false;
-            	if(onWheelArea)
-            		invalidate();
-            	
-                mVelocityTracker.addMovement(event);
-                // When you want to determine the velocity, call 
-                // computeCurrentVelocity(). Then call getXVelocity() 
-                // and getYVelocity() to retrieve the velocity for each pointer ID. 
-                mVelocityTracker.computeCurrentVelocity(1000);
-                // Log velocity of pixels per second
-                // Best practice to use VelocityTrackerCompat where possible.
-                Log.d(DEBUG_TAG, "X velocity: " + 
-                        VelocityTrackerCompat.getXVelocity(mVelocityTracker, 
-                        pointerId));
-                Log.d(DEBUG_TAG, "Y velocity: " + 
-                        VelocityTrackerCompat.getYVelocity(mVelocityTracker,
-                        pointerId));
-                break;
-            case MotionEvent.ACTION_UP:
-            	snap = true;
-            	invalidate();
-            case MotionEvent.ACTION_CANCEL:
-                // Return a VelocityTracker object back to be re-used by others.
-                mVelocityTracker.recycle();
-                break;
-        }
-        return true;
-    }
-    
-    @Override
-    public boolean onDown(MotionEvent event) { 
-        Log.d(DEBUG_TAG,"onDown: " + event.toString()); 
-        return true;
-    }
-
-    @Override
-    public boolean onFling(MotionEvent event1, MotionEvent event2, 
-            float velocityX, float velocityY) {
-        Log.d(DEBUG_TAG, "onFling: " + event1.toString()+event2.toString());
-        return true;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent event) {
-        Log.d(DEBUG_TAG, "onLongPress: " + event.toString()); 
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
-            float distanceY) {
-        Log.d(DEBUG_TAG, "onScroll: " + e1.toString()+e2.toString());
-        return true;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent event) {
-        Log.d(DEBUG_TAG, "onShowPress: " + event.toString());
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent event) {
-        Log.d(DEBUG_TAG, "onSingleTapUp: " + event.toString());
-        return true;
-    }*/
 }
