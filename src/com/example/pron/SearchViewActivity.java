@@ -37,10 +37,10 @@ public class SearchViewActivity extends Activity {
 	List tempList = new ArrayList();
 	LinearLayout ll;
 	
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_view);
+	   @Override
+	    protected void onCreate(Bundle savedInstanceState) {
+	        super.onCreate(savedInstanceState);
+	        setContentView(R.layout.activity_search_view);
         
         citiesList.add("Quezon City");
         citiesList.add("Manila");
