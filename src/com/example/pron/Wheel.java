@@ -54,32 +54,15 @@ public class Wheel extends View{
 		ey = cy;
 		rad = 0;
     } 
+    
+    public void setIcons(int[] arr){
+    	icon_array = arr;
+    }
 
     protected void onDraw(Canvas canvas) { 
 		Log.d("paint","delta: "+delta);
 		Log.d("paint","diameter: "+(2*r));
-		rad = rad + (float) Math.PI*(delta/(2*r));
-		if(snap){
-			float deg = (rad*180/(float)Math.PI)%360;
-			if(deg<0)
-				deg = deg + 360;
-			if((deg>0 && deg<45/2)|| deg>360-(45/2))
-				rad = 0;
-			else if(deg>45/2 && deg<45+(45/2))
-				rad = (float)Math.PI/4;
-			else if(deg>45+(45/2) && deg<90+(45/2))
-				rad = (float)Math.PI/2;
-			else if(deg>90+(45/2) && deg<135+(45/2))
-				rad = 3*(float)Math.PI/4;
-			else if(deg>135+(45/2) && deg<180+(45/2))
-				rad = (float)Math.PI;
-			else if(deg>180+(45/2) && deg<225+(45/2))
-				rad = 5*(float)Math.PI/4;
-			else if(deg>225+(45/2) && deg<270+(45/2))
-				rad = 6*(float)Math.PI/4;
-			else if(deg>270+(45/2) && deg<315+(45/2))
-				rad = 7*(float)Math.PI/4;
-		}		
+				
 		
 		ex = cx + (float) (r*Math.cos(rad));
 		ey = cy + (float) (r*Math.sin(rad));

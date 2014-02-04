@@ -1,5 +1,7 @@
 package com.example.pron;
 
+import java.util.StringTokenizer;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +35,7 @@ public class HtmlParser {
 		
 		try{
 			Elements tables = doc.select("table");
-			Log.d("jsoup", "parsing html table: " + tables.size());
+			//Log.d("jsoup", "Four day: Parsing html table: " + tables.size());
 			for(Element table : tables){
 				Elements rows = table.select("tr");
 				
@@ -45,8 +47,25 @@ public class HtmlParser {
 					if(!data.isEmpty()){
 						JSONObject details = new JSONObject();
 						
-						for(Element dataItem : data){							
-							details.put(labels[data.indexOf(dataItem)], dataItem.text());
+						for(Element dataItem : data){
+							Elements img = dataItem.select("img");
+							String img_src = null, label = null;
+							String[] tokens = null;
+							if(img.size() == 0){
+								label = labels[data.indexOf(dataItem)];
+								if(label.equals("Time")){
+									details.put(label, dataItem.text().split("-")[0]);
+								}
+								else{
+									details.put(label, dataItem.text());
+								}
+							}
+							else{
+								img_src = img.get(0).attr("src");
+								tokens = img_src.split("/");
+								//Log.d("jsoup", "img: "+tokens[tokens.length-1]);
+								details.put(labels[data.indexOf(dataItem)], tokens[tokens.length-1]);
+							}
 						}
 						row_json.put(details);
 					}
@@ -60,9 +79,6 @@ public class HtmlParser {
 			e.printStackTrace();
 		}
 		
-		//Log.d("jsoup", s);
-		//return s;
-		
 		return dates;
 	}
 	
@@ -73,9 +89,6 @@ public class HtmlParser {
 		try{
 			Element table = doc.select("table").first();
 			Elements rows = table.select("tr");
-			
-			JSONObject date_item = new JSONObject();	
-			JSONArray row_json = new JSONArray();
 			
 			for(Element row : rows){
 				Elements data = row.select("td");

@@ -40,7 +40,7 @@ public class FourDayXMLParser extends DefaultHandler{
     		html = "";
     	}
     	else if(qName.equals("Document")){
-    		Log.d("jsoup", "Document start tag");
+    		Log.d("jsoup", "Document start...");
     	}
     }
 
@@ -79,7 +79,7 @@ public class FourDayXMLParser extends DefaultHandler{
     		    	
     	if(is_name && !s.equalsIgnoreCase("4-Day Forecast")){
     		counter ++;
-    		Log.i("kml",s);
+    		//Log.i("kml",s);
     		
     		try{
     			//json_obj = new JSONObject();

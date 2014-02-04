@@ -49,6 +49,7 @@ public class Filer {
         } catch (Exception e) {
                e.printStackTrace();
         }
+        Log.d("jsoup", "FILE TO STRING: "+filename+" ("+stringBuffer.length() +")");
     	return stringBuffer.toString();
     }
 }
