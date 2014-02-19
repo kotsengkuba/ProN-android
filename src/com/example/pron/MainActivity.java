@@ -152,6 +152,7 @@ public class MainActivity extends Activity implements LocationListener{
 
     public void searchCity(View view) {
         Intent intent = new Intent(this, SearchViewActivity.class);
+        intent.putExtra("weather_icon_hash", fragment.weather_icon_hash.toString());
         startActivityForResult(intent, 0);
     }
     

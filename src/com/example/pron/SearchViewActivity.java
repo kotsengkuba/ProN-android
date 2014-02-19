@@ -1,7 +1,9 @@
 package com.example.pron;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -54,6 +56,9 @@ public class SearchViewActivity extends Activity {
 
         lv = (ListView) findViewById(R.id.list_view);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
+        Serializable weather_icon_hash = getIntent().getSerializableExtra("weather_icon_hash");
+        
+        Log.d("OUT", weather_icon_hash.toString());
         
         // load all cities list
     	JSONObject jsonobject;

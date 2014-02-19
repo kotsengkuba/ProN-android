@@ -7,9 +7,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -41,6 +44,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainWeatherFragment extends Fragment implements GestureDetector.OnGestureListener{
 
@@ -207,11 +211,14 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			            		else
 			            			i-=(float) 2*Math.PI;
 			            	}
+			            	Log.d("snap", "i="+i);
 			            	timeIndex = (int) (Math.round(4*i/Math.PI)%8);
+			            	timeIndex = (timeIndex+wheelView.offset) %8;
+			            	timeIndex = timeIndex%8;
 			            	setTimeText(time_array[timeIndex]);
 			            	setTempText(temp_array[timeIndex]);
 			            	
-			            	Log.d("snap", "rad="+wheelView.rad+" timeIndex="+timeIndex);
+			            	Log.d("snap", "rad="+wheelView.rad+" timeIndex="+timeIndex+"offset="+wheelView.offset);
 		            	}
 		            case MotionEvent.ACTION_CANCEL:
 		                // Return a VelocityTracker object back to be re-used by others.
@@ -229,6 +236,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	  
 		public void reset(){
 			currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
+			setToCurrentTime();
 			setDataFromLocation();
 			updateData();
 		}
@@ -260,6 +268,13 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	weather_icon_hash.put("28.png", R.drawable.cloudy);
 	    }
 	    
+	    public void setToCurrentTime(){
+	    	Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"), Locale.US);
+			int hour = Integer.parseInt((new SimpleDateFormat("HH")).format(new Date()));
+			timeIndex = (int) Math.floor(hour/3);
+			wheelView.setOffset(timeIndex);
+			Log.d("OUT", "setToDurrentTime() TimeIndex: "+timeIndex);
+	    }
 	    		
 		public void setDataFromLocation(){
 			// read and search files for location data
@@ -328,15 +343,16 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				Log.d("jsoup", "Current Date: "+Calendar.getInstance().get(Calendar.DATE));
 				Log.d("jsoup", "Current Month: "+Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
 				Log.d("jsoup", "Current Year: "+Calendar.getInstance().get(Calendar.YEAR));
-				if(month.equalsIgnoreCase(Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US))
+				if(!month.equalsIgnoreCase(Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US))
 						&& day == Calendar.getInstance().get(Calendar.DATE)
 						&& year == Calendar.getInstance().get(Calendar.YEAR)){
 					Log.d("OUT", "weather data: updated");
 				}
 				else{
-					Log.d("OUT", "weather data: downloading... ");
-					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
-					//new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
+					//Log.d("OUT", "weather data: downloading... ");
+					//new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+					Log.d("OUT", "rain data: downloading... ");
+					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
 					
 				}
 			} catch (Exception e){
@@ -346,7 +362,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		
 		public void reset_textviews(){
 			setDayText();
-			setTimeText(time_array[0]);
+			setTimeText(time_array[timeIndex]);
 			setTempText(temp_array[0]);
 			setRainText(rain_array);
 		}
@@ -540,7 +556,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    			else if(params[1].equals("rainchance")){
 	    				rainchance_handler = new RainChanceXMLParser();
 	    				Log.i("kml","Starting (rainchance) parse... "+params[0]);
-		                saxParser.parse(params[0], rainchance_handler);
+		                saxParser.parse(outputFile, rainchance_handler);
 		                s = rainchance_handler.get_json_string();
 		                Log.i("kml","s = "+s);
 		                new Filer().saveFile(s,"rainchancelive.json");
