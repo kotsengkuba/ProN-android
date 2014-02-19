@@ -53,4 +53,8 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 	    }
 		return s;
 	}
+	
+	public String getWeatherIcon(String img){
+		return "";
+	}
 }

@@ -76,6 +76,10 @@ public class Wheel extends View{
     public void setOffset(int o){
     	offset = o;
     }
+    
+    public void reset(){
+    	rad = 0;
+    }
 
     protected void onDraw(Canvas canvas) { 
 		Log.d("paint","delta: "+delta);

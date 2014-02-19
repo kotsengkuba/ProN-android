@@ -59,7 +59,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	String [] time_array = new String[8];
 	String [] temp_array = new String[8];
 	String [] rain_array = new String[3];
-	HashMap <String, Integer> weather_icon_hash = new HashMap<String, Integer>();
 	
 	// default values
 	String currentCity = "Manila";
@@ -104,8 +103,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		dayTextView.setTypeface(font);
 		rainLabelTextView.setTypeface(font);
 		
-		//Initialize hashmap of icons
-		initIconHash();
 		reset();
 		
 		initGestureDetector();	
@@ -260,22 +257,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		}
 	    
 	    public void viewMap() {
-	        //Intent intent = new Intent(this, MapActivity.class);
-	        //startActivity(intent);
 	    	final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML"));
 	    	startActivity(myIntent);
-	    }
-
-	    public void initIconHash(){
-	    	weather_icon_hash.put("12.png", R.drawable.cloudy);
-	    	weather_icon_hash.put("13.png", R.drawable.rainy);
-	    	weather_icon_hash.put("30.png", R.drawable.cloudy);
-	    	weather_icon_hash.put("31.png", R.drawable.clear);
-	    	weather_icon_hash.put("32.png", R.drawable.clear);
-	    	weather_icon_hash.put("33.png", R.drawable.cloudy);
-	    	weather_icon_hash.put("34.png", R.drawable.cloudy);
-	    	weather_icon_hash.put("40.png", R.drawable.rainy);
-	    	weather_icon_hash.put("28.png", R.drawable.cloudy);
 	    }
 	    
 	    public void setToCurrentTime(){
@@ -283,12 +266,13 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			int hour = Integer.parseInt((new SimpleDateFormat("HH")).format(new Date()));
 			timeIndex = (int) Math.floor(hour/3);
 			wheelView.setOffset(timeIndex);
+			wheelView.reset();
 			Log.d("OUT", "setToDurrentTime() TimeIndex: "+timeIndex);
+			wheelView.invalidate();
 	    }
 	    		
 		public void setDataFromLocation(){
 			// read and search files for location data
-			//cityData = readJSON(0, 0, new Filer().fileToString("fourdaylive.json"));
 			cityData = weatherReader.getPlaceObject(currentCity);
 			rainData = rainReader.getPlaceObject(currentCity);
 			if(rainData == null)
@@ -354,14 +338,14 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				Log.d("jsoup", "Current Date: "+Calendar.getInstance().get(Calendar.DATE));
 				Log.d("jsoup", "Current Month: "+Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
 				Log.d("jsoup", "Current Year: "+Calendar.getInstance().get(Calendar.YEAR));
-				if(!month.equalsIgnoreCase(Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US))
+				if(month.equalsIgnoreCase(Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US))
 						&& day == Calendar.getInstance().get(Calendar.DATE)
 						&& year == Calendar.getInstance().get(Calendar.YEAR)){
 					Log.d("OUT", "weather data: updated");
 				}
 				else{
-					//Log.d("OUT", "weather data: downloading... ");
-					//new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+					Log.d("OUT", "weather data: downloading... ");
+					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 					Log.d("OUT", "rain data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
 					
@@ -436,7 +420,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					if(img_src == null)
 						arr[j] = R.drawable.null_gray;
 					else
-						arr[j] = weather_icon_hash.get(img_src);
+						arr[j] = weatherReader.getWeatherIcon(img_src);
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -553,43 +537,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	  //Toast.makeText(null, "New data downloaded.", dayIndex).show();
 	        }
 	    }
-	    
-	    
-	    /* set json object
-	    public JSONObject readJSON(int x, int index, String s){
-	    	JSONObject jsonobject;
-	    	try{
-	    		jsonobject = new JSONObject(s);
-	    		
-	    		// 0 for fourday file
-	    		// 1 for rain file
-	    		
-	    		if(x == 0){
-		    		if(index == 0){
-		    			JSONArray jsonarray = jsonobject.getJSONArray("places");
-		        		for(int i = 0; i < jsonarray.length(); i++){
-		        			JSONObject place = jsonarray.getJSONObject(i);
-		        			if(place.getString("name").equals(currentCity)){
-		        				return place;
-							}
-		        		}
-		        	}
-	    		}
-	    		else if(x == 1){
-	    			JSONArray jsonarray = jsonobject.getJSONArray("places");
-	        		for(int i = 0; i < jsonarray.length(); i++){
-	        			JSONObject place = jsonarray.getJSONObject(i);
-	        			if(place.getString("name").indexOf(currentCity) == 0){
-	        				return place;
-						}
-	        		}
-	    			//Log.d("jsoup", jsonarray.getJSONObject(0).toString());
-	    			//return jsonarray.getJSONObject(0);
-	    		}
-	    	} catch(Exception e){}
-	    	
-	    	return null;
-	    } */
 
 	    /* Gestures */
 	    

@@ -74,7 +74,7 @@ public class RainChanceXMLParser extends DefaultHandler{
     	String s = new String(ch, start, length);
     	if(is_name && !s.equalsIgnoreCase("rain-forecast.KML")){
     		counter ++;
-    		Log.i("kml",s);
+    		//Log.i("kml",s);
     		
     		try{
     			json_obj.put("name", s);

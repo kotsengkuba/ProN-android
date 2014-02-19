@@ -152,7 +152,6 @@ public class MainActivity extends Activity implements LocationListener{
 
     public void searchCity(View view) {
         Intent intent = new Intent(this, SearchViewActivity.class);
-        intent.putExtra("weather_icon_hash", fragment.weather_icon_hash.toString());
         startActivityForResult(intent, 0);
     }
     
@@ -165,7 +164,7 @@ public class MainActivity extends Activity implements LocationListener{
     			currentCity = data.getStringExtra("key");
     			setLocationText();
     			fragment.reset();
-    			Log.d("jsoup", "intent");       		
+    			Log.d("jsoup", "intent"); 		
             }
             break;
         default:

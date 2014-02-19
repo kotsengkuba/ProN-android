@@ -1,10 +1,15 @@
 package com.example.pron;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,6 +53,8 @@ public class SearchViewActivity extends Activity {
 	
 	List<String> saved_places = new ArrayList<String>();;
 	List<String> all_places = new ArrayList<String>();
+	
+	WeatherJSONReader weatherReader; 
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,21 +64,9 @@ public class SearchViewActivity extends Activity {
         lv = (ListView) findViewById(R.id.list_view);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
 
-        Serializable weather_icon_hash = getIntent().getSerializableExtra("weather_icon_hash");
-        
-        Log.d("OUT", weather_icon_hash.toString());
+        weatherReader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
+		Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
 
-        
-        // load all cities list
-    	JSONObject jsonobject;
-    	try{
-    		jsonobject = new JSONObject(new Filer().fileToString("fourdaylive.json"));
-			JSONArray jsonarray = jsonobject.getJSONArray("places");
-			for(int i = 0; i < jsonarray.length(); i++){
-    			all_places.add(jsonarray.getJSONObject(i).getString("name"));
-    		}
-    	} catch(Exception e){}
-    	java.util.Collections.sort(all_places);
     	
         saved_places = new ArrayList<String>(Arrays.asList(new Filer().fileToString("savedLocations.csv").split("[,]")));
         
@@ -105,6 +100,13 @@ public class SearchViewActivity extends Activity {
         	   String searchString=inputSearch.getText().toString();
         	   int textLength=searchString.length();
         	 
+        	   // load all places list
+	           	try{
+	           		all_places = weatherReader.getAllPlaces();
+	           		java.util.Collections.sort(all_places);
+	           	} catch(Exception e){}
+        	   
+        	   
         	   //clear the initial data set
         	   product_results.clear();
         	   imageId_results.clear();
@@ -114,7 +116,7 @@ public class SearchViewActivity extends Activity {
 	        		   if(textLength<=saved_places.get(i).length()){
 	     	        	    if(searchString.equalsIgnoreCase(saved_places.get(i).substring(0,textLength))){
 	     	        	    	product_results.add(saved_places.get(i));
-	     	        	    	imageId_results.add(imageId[0]);
+	     	        	    	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
 	     	        	    }
 	     	        	}
         	   		}
@@ -128,7 +130,7 @@ public class SearchViewActivity extends Activity {
 		        	    	boolean saved = false;
 		        	    	for(int j=0;j<saved_places.size();j++){
 		 	        		   if(all_places.get(i).equalsIgnoreCase(saved_places.get(j))){
-		 	        			  imageId_results.add(imageId[0]);
+		 	        			  imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
 		 	        			  saved = true;
 		 	        			  break;
 		 	     	        	}
@@ -208,7 +210,8 @@ public class SearchViewActivity extends Activity {
  	   	imageId_results.clear();
 		for(int i = 0; i<saved_places.size(); i++){
         	product_results.add(saved_places.get(i));
-        	imageId_results.add(imageId[0]);
+        	//imageId_results.add(imageId[0]);
+        	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
         }
 	}
 	
@@ -220,5 +223,15 @@ public class SearchViewActivity extends Activity {
 				s += ",";
         }
 		new Filer().saveFile(s, "savedLocations.csv");
+	}
+	
+	public int getCurrentDayIndex(){
+		return 0;
+	}
+	
+	public int getCurrentTimeIndex(){
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"), Locale.US);
+		int hour = Integer.parseInt((new SimpleDateFormat("HH")).format(new Date()));
+		return (int) Math.floor(hour/3);
 	}
 }
