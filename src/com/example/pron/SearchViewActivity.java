@@ -46,12 +46,6 @@ public class SearchViewActivity extends Activity {
     List<String> product_results = new ArrayList<String>();
 	List<Integer> imageId_results = new ArrayList<Integer>();
 	
-<<<<<<< HEAD
-	   @Override
-	    protected void onCreate(Bundle savedInstanceState) {
-	        super.onCreate(savedInstanceState);
-	        setContentView(R.layout.activity_search_view);
-=======
 	List<String> saved_places = new ArrayList<String>();;
 	List<String> all_places = new ArrayList<String>();
  
@@ -62,13 +56,11 @@ public class SearchViewActivity extends Activity {
 
         lv = (ListView) findViewById(R.id.list_view);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
-<<<<<<< HEAD
+
         Serializable weather_icon_hash = getIntent().getSerializableExtra("weather_icon_hash");
         
         Log.d("OUT", weather_icon_hash.toString());
-=======
->>>>>>> e8ce2aac3e2db238773a8ed939349469d3d34c75
->>>>>>> 4e3f8fb9f71c76f984849aeff3fce1ddf2f93289
+
         
         // load all cities list
     	JSONObject jsonobject;

@@ -70,6 +70,9 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	JSONObject cityData = new JSONObject();
 	JSONObject rainData = new JSONObject();
 	
+	WeatherJSONReader weatherReader;
+	RainJSONReader rainReader;
+	
 	String fourdaydata;
 	
 	GestureDetectorCompat dayGDetector;
@@ -236,15 +239,22 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	  
 		public void reset(){
 			currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
+			
+			weatherReader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
+			Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
+			
+			rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
+			Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
+			
 			setToCurrentTime();
-			setDataFromLocation();
+			setDataFromLocation();			
 			updateData();
 		}
 		
 		public void loadDetailsFrag(){
 			DialogFragment newFragment = new WeatherDetailDialogFragment();
 			Bundle b = new Bundle();
-			b.putString("s", getDetailsString());
+			b.putString("s", weatherReader.getAllDetailsString(currentCity, dayIndex, timeIndex));
 			newFragment.setArguments(b);
 		    newFragment.show(this.getActivity().getFragmentManager(), "String");		    
 		}
@@ -278,8 +288,9 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    		
 		public void setDataFromLocation(){
 			// read and search files for location data
-			cityData = readJSON(0, 0, new Filer().fileToString("fourdaylive.json"));
-			rainData = readJSON(1, 0, new Filer().fileToString("rainchancelive.json"));
+			//cityData = readJSON(0, 0, new Filer().fileToString("fourdaylive.json"));
+			cityData = weatherReader.getPlaceObject(currentCity);
+			rainData = rainReader.getPlaceObject(currentCity);
 			if(rainData == null)
 				Log.d("jsoup", "Rain data from file: NULL");
 			setDataStrings(0);
@@ -403,72 +414,36 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		/* set string arrays depende sa day */
 		public void setDataStrings(int day){
 	    	try{
-		    	JSONArray dates = cityData.getJSONArray("dates");
-		    	JSONObject first = dates.getJSONObject(day);
-				JSONArray data = first.getJSONArray("data");
-				for(int j = 0; j < data.length(); j++){
-					JSONObject o = data.getJSONObject(j);
-					//time_array[j] = o.getString("time");
-					//temp_array[j] = o.getString("temp")+"°";
-					//rain_array[j] = o.getString("rain")+"%";
-					
-					time_array[j] = o.getString("Time");
-					temp_array[j] = o.getString("Temperature")+"°";
-				}
-				
-				if(data.length()<8){
-					for(int j = data.length(); j < 8; j++){
+				for(int j = 0; j < 8; j++){
+					time_array[j] = weatherReader.getDetailString(currentCity, "Time", day, j);
+					String s = weatherReader.getDetailString(currentCity, "Temperature", day, j)+"°";
+					if(s.equals(null))
 						temp_array[j] = "--";
-					}
+					else
+						temp_array[j] = s;					
 				}
-				
-				data = rainData.getJSONArray("data");
-				for(int j = 0; j < data.length(); j++){
-					JSONObject o = data.getJSONObject(j);
-					rain_array[j] = o.getString("Rain");
+				for(int j = 0; j < rainReader.getLength(); j++){
+					rain_array[j] = rainReader.getRainData(currentCity, j);
 				}
 	    	}catch(Exception e){}
 	    }
 		
 		public void setWeatherIcons(int day){
 			int [] arr = new int[8];
-			JSONArray dates;
 			try {
-				dates = cityData.getJSONArray("dates");
-				JSONObject first = dates.getJSONObject(day);
-				JSONArray data = first.getJSONArray("data");
-				for(int j = 0; j < data.length(); j++){
-					JSONObject o = data.getJSONObject(j);
-					String img_src = o.getString("Weather Outlook");
-					arr[j] = weather_icon_hash.get(img_src);
-				}
-				if(data.length()<8){
-					for(int j = data.length(); j < 8; j++){
+				for(int j = 0; j < 8; j++){
+					String img_src = weatherReader.getDetailString(currentCity, "Weather Outlook", day, j);
+					if(img_src == null)
 						arr[j] = R.drawable.null_gray;
-					}
+					else
+						arr[j] = weather_icon_hash.get(img_src);
 				}
-			} catch (JSONException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			wheelView.setIcons(arr);
 			wheelView.invalidate();
-		}
-		
-		public String getDetailsString(){
-			String s = "";
-			JSONArray dates;
-			try {
-				dates = cityData.getJSONArray("dates");
-				JSONObject first = dates.getJSONObject(dayIndex);
-				JSONArray data = first.getJSONArray("data");
-				JSONObject o = data.getJSONObject(timeIndex);
-				s += o.toString();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return s;
 		}
 		
 		/* Check network connection */
@@ -580,7 +555,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    }
 	    
 	    
-	    /* set json object */
+	    /* set json object
 	    public JSONObject readJSON(int x, int index, String s){
 	    	JSONObject jsonobject;
 	    	try{
@@ -614,7 +589,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	} catch(Exception e){}
 	    	
 	    	return null;
-	    }
+	    } */
 
 	    /* Gestures */
 	    
