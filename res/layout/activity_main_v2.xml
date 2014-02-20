@@ -15,6 +15,26 @@
         android:text="Quezon City"
         android:textColor="#3A3A3A"
         android:textSize="@dimen/bigtext" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/mapbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="openMap"
+            android:text="Map" />
+
+        <Button
+            android:id="@+id/typhoonbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="openTyphoon"
+            android:text="Typhoon" />
+
+    </LinearLayout>
     
 	<fragment
 	    android:id="@+id/weather_detail_fragment"

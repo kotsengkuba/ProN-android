@@ -155,6 +155,16 @@ public class MainActivity extends Activity implements LocationListener{
         startActivityForResult(intent, 0);
     }
     
+    public void openMap(View view){
+    	Intent intent = new Intent(this, MapActivity.class);
+        //startActivityForResult(intent, 0);
+    }
+    
+    public void openTyphoon(View view){
+    	Intent intent = new Intent(this, TyphoonActivity.class);
+        startActivity(intent);
+    }
+    
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("jsoup", "REQUEST CODE:" + requestCode);
         switch (requestCode) {
