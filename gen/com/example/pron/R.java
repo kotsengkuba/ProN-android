@@ -246,8 +246,9 @@ containing a value of this type.
         public static final int activity_search_view=0x7f030002;
         public static final int activity_typhoon=0x7f030003;
         public static final int asd=0x7f030004;
-        public static final int fragment_weather_detail=0x7f030005;
-        public static final int list_item=0x7f030006;
+        public static final int fragment_map=0x7f030005;
+        public static final int fragment_weather_detail=0x7f030006;
+        public static final int list_item=0x7f030007;
     }
     public static final class menu {
         public static final int choose_location=0x7f0a0000;

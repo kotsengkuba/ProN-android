@@ -157,7 +157,9 @@ public class MainActivity extends Activity implements LocationListener{
     
     public void openMap(View view){
     	Intent intent = new Intent(this, MapActivity.class);
-        //startActivityForResult(intent, 0);
+    	intent.putExtra("Latitude", locationManager.getLastKnownLocation(provider).getLatitude());
+    	intent.putExtra("Longitude", locationManager.getLastKnownLocation(provider).getLongitude());
+        startActivity(intent);
     }
     
     public void openTyphoon(View view){
