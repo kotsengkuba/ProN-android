@@ -10,7 +10,6 @@ import android.util.Log;
 
 public class FourDayXMLParser extends DefaultHandler{
 	
-	String xml = "";
 	String html = "";
 	JSONObject json_final = new JSONObject();
 	JSONArray json_array = new JSONArray();
@@ -19,22 +18,17 @@ public class FourDayXMLParser extends DefaultHandler{
 	int counter = 0;
 	public void startDocument ()
     {
-		//System.out.println("Start document");
 		is_name = false;
 		is_body = false;			
     }
 
     public void endDocument ()
     {
-    	//System.out.println("End document");
+    	Log.d("jsoup", "Document end...");
     }
 
-
     public void startElement (String uri, String name, String qName, Attributes atts)
-    {
-    	xml= xml + "Start element: " + qName + "\n";
-    	//Log.i("kml","Start: "+qName);
-    	
+    {	
     	if(qName.equals("name")){
     		is_name = true;
     		
@@ -44,16 +38,13 @@ public class FourDayXMLParser extends DefaultHandler{
     		html = "";
     	}
     	else if(qName.equals("Document")){
-    		Log.d("jsoup", "Document start tag");
+    		Log.d("jsoup", "Document start...");
     	}
     }
 
 
     public void endElement (String uri, String name, String qName)
-    {
-    	xml= xml + "End element: " + qName + "\n";
-    	//Log.i("kml","End: "+qName);
-    	
+    {	
     	if(qName.equals("name")){
     		is_name = false;
     	}
@@ -69,7 +60,6 @@ public class FourDayXMLParser extends DefaultHandler{
     		} catch(JSONException e){}
     	}
     	else if(qName.equals("Document")){
-    		Log.i("kml","End: "+qName);
 			try{
 				json_final.put("places", json_array);
 			} catch(JSONException e){}
@@ -80,11 +70,10 @@ public class FourDayXMLParser extends DefaultHandler{
     public void characters (char ch[], int start, int length)
     {
     	String s = new String(ch, start, length);
-    	xml= xml + "Characters: " + s + "\n";
     		    	
     	if(is_name && !s.equalsIgnoreCase("4-Day Forecast")){
     		counter ++;
-    		Log.i("kml",s);
+    		//Log.i("kml",s);
     		
     		try{
     			//json_obj = new JSONObject();
@@ -97,15 +86,9 @@ public class FourDayXMLParser extends DefaultHandler{
     	}
     	
     	if(is_body){
-    		xml = xml + s;
     		html += s;
-    		//saveFile(p.toJSON(s, labels), "QC_data.txt");
     	}
 	}
-    
-    public String get_string(){
-    	return xml;
-    }
     
     public String get_json_string(){
     	return json_final.toString();

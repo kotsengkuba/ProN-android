@@ -1,17 +1,31 @@
 package com.example.pron;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 
@@ -20,13 +34,13 @@ public class SearchViewActivity extends Activity {
     private ListView lv;
      
     // Listview Adapter
-    ArrayAdapter<String> adapter;
+    public CustomAdapter adapter;
      
     // Search EditText
     EditText inputSearch;
     
     // Listview Data hardcode
-    String products[] = {"Manila", "Quezon City", "Cebu City"};
+    
     Integer[] imageId = {
             R.drawable.rainy,
             R.drawable.cloudy,
@@ -36,6 +50,11 @@ public class SearchViewActivity extends Activity {
     List<Integer> search_results;
     List<String> product_results = new ArrayList<String>();
 	List<Integer> imageId_results = new ArrayList<Integer>();
+	
+	List<String> saved_places = new ArrayList<String>();;
+	List<String> all_places = new ArrayList<String>();
+	
+	WeatherJSONReader weatherReader; 
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,23 +63,30 @@ public class SearchViewActivity extends Activity {
 
         lv = (ListView) findViewById(R.id.list_view);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
+
+        weatherReader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
+		Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
+
+    	
+        saved_places = new ArrayList<String>(Arrays.asList(new Filer().fileToString("savedLocations.csv").split("[,]")));
         
-        for(int i = 0; i<products.length; i++){
-        	product_results.add(products[i]);
-        	imageId_results.add(imageId[i]);
-        }
+        reset();
         
-        final CustomAdapter adapter = new CustomAdapter(SearchViewActivity.this, product_results, imageId_results);
+        adapter = new CustomAdapter(SearchViewActivity.this, product_results, imageId_results);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         	 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
+           	
+            	// open activity for that location
+        		saveLocationsToFile();
             	Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 				intent.putExtra("key", product_results.get(position).toString());
-		        startActivity(intent);
-
+		        //startActivity(intent);
+				setResult(RESULT_OK, intent); 
+				finish();
             }
         });
         
@@ -70,24 +96,53 @@ public class SearchViewActivity extends Activity {
             public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
                 // When user changed the Text
             	//get the text in the EditText
+            	
         	   String searchString=inputSearch.getText().toString();
         	   int textLength=searchString.length();
         	 
+        	   // load all places list
+	           	try{
+	           		all_places = weatherReader.getAllPlaces();
+	           		java.util.Collections.sort(all_places);
+	           	} catch(Exception e){}
+        	   
+        	   
         	   //clear the initial data set
         	   product_results.clear();
         	   imageId_results.clear();
-        	           	   
-        	   for(int i=0;i<products.length;i++)
-        	   {
-	        	  if(textLength<=products[i].length()){
-	        	  //compare the String in EditText with Names in the list
-	        	    if(searchString.equalsIgnoreCase(products[i].substring(0,textLength))){
-	        	    	product_results.add(products[i]);
-	        	    	imageId_results.add(imageId[i]);
-	        	    }
-	        	  }
+        	   
+        	   if(textLength == 0){
+        		   for(int i=0;i<saved_places.size();i++)
+	        		   if(textLength<=saved_places.get(i).length()){
+	     	        	    if(searchString.equalsIgnoreCase(saved_places.get(i).substring(0,textLength))){
+	     	        	    	product_results.add(saved_places.get(i));
+	     	        	    	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+	     	        	    }
+	     	        	}
+        	   		}
+        	   else{
+	        	   for(int i=0;i<all_places.size();i++)
+	        	   {
+		        	  if(textLength<=all_places.get(i).length()){
+		        	  //compare the String in EditText with Names in the list
+		        	    if(searchString.equalsIgnoreCase(all_places.get(i).substring(0,textLength))){
+		        	    	product_results.add(all_places.get(i));
+		        	    	boolean saved = false;
+		        	    	for(int j=0;j<saved_places.size();j++){
+		 	        		   if(all_places.get(i).equalsIgnoreCase(saved_places.get(j))){
+		 	        			  imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+		 	        			  saved = true;
+		 	        			  break;
+		 	     	        	}
+		         	   		}
+		        	    	if(!saved)
+			        	    	imageId_results.add(null);	
+		        	    }
+		        	  }
+	        	   }
         	   }
-        	   adapter.notifyDataSetChanged();
+        	   adapter.notifyDataSetChanged();    	
+               
             }
              
             @Override
@@ -101,6 +156,82 @@ public class SearchViewActivity extends Activity {
             public void afterTextChanged(Editable arg0) {
                 // TODO Auto-generated method stub                          
             }
-        });         
+        });   
+        
+        // swipe listener
+        SwipeDismissListViewTouchListener touchListener =
+                new SwipeDismissListViewTouchListener(
+                        lv,
+                        new SwipeDismissListViewTouchListener.DismissCallbacks() {
+                            @Override
+                            public boolean canDismiss(int position) {
+                            	if(saved_places.contains(lv.getItemAtPosition(position))){
+                            		return true;
+                            	}
+                            	else
+                            		return false;
+                                
+                            }
+
+                            @Override
+                            public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    //adapter.remove(adapter.getItem(position));
+                                	removeLocation(lv.getItemAtPosition(position).toString());
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+        lv.setOnTouchListener(touchListener);
+        // Setting this scroll listener is required to ensure that during ListView scrolling,
+        // we don't look for swipes.
+        lv.setOnScrollListener(touchListener.makeScrollListener());
     }
+    
+    protected void addLocation(String loc) {
+    	if(!saved_places.contains(loc))
+			saved_places.add(loc);
+		reset();
+		adapter.notifyDataSetChanged();
+		inputSearch.setText("");
+	}
+    
+    protected void removeLocation(String loc) {
+    	if(saved_places.contains(loc))
+			saved_places.remove(loc);
+		reset();
+		adapter.notifyDataSetChanged();
+		inputSearch.setText("");
+	}
+
+	protected void reset() {
+		// TODO Auto-generated method stub
+		product_results.clear();
+ 	   	imageId_results.clear();
+		for(int i = 0; i<saved_places.size(); i++){
+        	product_results.add(saved_places.get(i));
+        	//imageId_results.add(imageId[0]);
+        	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+        }
+	}
+	
+	protected void saveLocationsToFile(){
+		String s = "";
+		for(int i = 0; i<saved_places.size(); i++){
+			s += saved_places.get(i).toString();
+			if(i<saved_places.size()-1)
+				s += ",";
+        }
+		new Filer().saveFile(s, "savedLocations.csv");
+	}
+	
+	public int getCurrentDayIndex(){
+		return 0;
+	}
+	
+	public int getCurrentTimeIndex(){
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"), Locale.US);
+		int hour = Integer.parseInt((new SimpleDateFormat("HH")).format(new Date()));
+		return (int) Math.floor(hour/3);
+	}
 }
