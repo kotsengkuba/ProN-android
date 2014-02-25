@@ -338,18 +338,20 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				Log.d("jsoup", "Current Date: "+Calendar.getInstance().get(Calendar.DATE));
 				Log.d("jsoup", "Current Month: "+Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
 				Log.d("jsoup", "Current Year: "+Calendar.getInstance().get(Calendar.YEAR));
-				if(month.equalsIgnoreCase(Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US))
-						&& day == Calendar.getInstance().get(Calendar.DATE)
-						&& year == Calendar.getInstance().get(Calendar.YEAR)){
-					Log.d("OUT", "weather data: updated");
-				}
-				else{
-					Log.d("OUT", "weather data: downloading... ");
+				
+				File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
+		        //Log.d("OUT", "FILE date modified: "+file.lastModified());
+		        if(file.lastModified()-System.currentTimeMillis()>3600000){
+		        	Log.d("OUT", "weather data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 					Log.d("OUT", "rain data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
-					
-				}
+
+		        }
+		        else{
+		        	Log.d("OUT", "weather data is updated.");
+		        }
+
 			} catch (Exception e){
 				Log.d("OUT", "weather data: exception "+e);
 			}
@@ -371,6 +373,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		}
 		
 		public void setRainText(String [] s){
+			Log.d("OUT", "rain data: "+s[0]);
 			rainTextView1.setText(s[0]);
 			rainTextView2.setText(s[1]);
 			rainTextView3.setText(s[2]);
@@ -406,7 +409,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					else
 						temp_array[j] = s;					
 				}
-				for(int j = 0; j < rainReader.getLength(); j++){
+				for(int j = 0; j < 4; j++){
 					rain_array[j] = rainReader.getRainData(currentCity, j);
 				}
 	    	}catch(Exception e){}

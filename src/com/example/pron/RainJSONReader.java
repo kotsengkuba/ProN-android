@@ -39,19 +39,23 @@ public class RainJSONReader {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		return null;
 	}
 	
 	public String getRainData(String placename, int index){
-			try {
-				JSONObject o = getPlaceObject(placename).getJSONArray("data").getJSONObject(index);
-				return o.getString("Rain");
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
-		return null;
+		JSONObject o = new JSONObject();
+		String s = "";
+		try {
+			if(getPlaceObject(placename)!=null)
+				o = getPlaceObject(placename).getJSONArray("data").getJSONObject(index);
+			return o.getString("Rain");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.d("OUT", "getRainData: NOTFOUND");
+		return s;
 	}
 }

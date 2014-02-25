@@ -17,6 +17,7 @@ public class Filer {
         File myDir = new File(root + "/pron/saved_files");    
         myDir.mkdirs();
         File file = new File (myDir, filename);
+        //Log.d("OUT", "FILE date modified: "+file.lastModified());
         if (file.exists ()) file.delete (); 
         try {
                FileOutputStream out = new FileOutputStream(file);

@@ -89,10 +89,15 @@ public class MainActivity extends Activity implements LocationListener{
 		
 	}
 	
-	public void setLocationText(){		
-		if(currentCity.length()>12 && currentCity.length()<20){
+	public void setLocationText(){
+		int l = currentCity.length();
+		if(l <= 11)
+			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.bigtext));
+		else if(currentCity.length()>11 && currentCity.length()<=15)
 			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medbigtext));
-		}
+		else if(currentCity.length()>15)
+			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medtext));
+		
 		locationTextView.setText(currentCity);
 	}
 	
