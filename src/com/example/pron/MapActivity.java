@@ -2,8 +2,12 @@ package com.example.pron;
 
 import java.util.ArrayList;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,7 +16,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapActivity extends Activity{
@@ -21,7 +24,7 @@ public class MapActivity extends Activity{
 	int latitude, longitude;
 	GoogleMap mMap;
 	LatLng currLocation;
-	double [] PARcoor = {120,25,135,25,135,5,115,5,115,15,120,21,120,25};
+	ArrayList<Double> PARcoor = new ArrayList<Double>();
 	PolylineOptions PAROptions;
 	
 	@Override
@@ -32,24 +35,17 @@ public class MapActivity extends Activity{
         Intent intent = getIntent();
         currLocation = new LatLng(intent.getDoubleExtra("Latitude", 14.5833), intent.getDoubleExtra("Longitude", 121));
         
-        
-        
-//        fragment = (MapViewFragment) getFragmentManager().findFragmentById(R.id.map);
-//				if (fragment==null || ! fragment.isInLayout()) {
-//				  // start new Activity
-//				  }
-//				else {
-//				  //fragment.update(...);
-//				} 
-        setPAR();
+        new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML", "fourday");
         setupMap();
 	}
 	
 	public void setPAR(){
 		PAROptions = new PolylineOptions();
-		for(int i = 0; i<PARcoor.length/2; i++){
-			PAROptions.add(new LatLng(PARcoor[i*2+1], PARcoor[i*2]));
+		for(int i = 0; i<PARcoor.size()/2; i++){
+			PAROptions.add(new LatLng(PARcoor.get(i*2+1), PARcoor.get(i*2)));
 		}
+		// Get back the mutable Polyline
+        mMap.addPolyline(PAROptions);
 	}
 	
 	public void setupMap(){
@@ -66,16 +62,37 @@ public class MapActivity extends Activity{
                 .snippet("You are here.")
                 .position(currLocation));
         
-     // Instantiates a new Polyline object and adds points to define a rectangle
-        PolylineOptions rectOptions = new PolylineOptions()
-                .add(new LatLng(currLocation.latitude, currLocation.longitude))
-                .add(new LatLng(37.45, -122.0))  // North of the previous point, but at the same longitude
-                .add(new LatLng(37.45, -122.2))  // Same latitude, and 30km to the west
-                .add(new LatLng(37.35, -122.2))  // Same longitude, and 16km to the south
-                .add(new LatLng(37.35, -122.0)); // Closes the polyline.
-
-        // Get back the mutable Polyline
-        Polyline polyline = mMap.addPolyline(PAROptions);
 
 	}
+	private class XMLparser extends AsyncTask<String,Void,String>{
+    	SAXParserFactory factory;
+    	SAXParser saxParser;
+    	StormTrackXMLParser stormtrack_handler;
+    	
+    	@Override
+    	protected void onPreExecute (){
+    	}
+    	@Override
+		protected String doInBackground(String... params) {
+			String s = "";
+    		
+    	    try {
+    	        factory = SAXParserFactory.newInstance();
+    			saxParser = factory.newSAXParser();
+	            stormtrack_handler = new StormTrackXMLParser();
+	            saxParser.parse(params[0], stormtrack_handler);
+                Log.d("OUT", "PARcoor "+stormtrack_handler.getPARcoor());
+                PARcoor = stormtrack_handler.getPARcoor();
+    	    } catch(Exception e){
+    	    	e.printStackTrace();
+    	    }
+			return s;
+		}
+    	
+    	@Override
+        protected void onPostExecute(String s) {
+    		setPAR();
+        }
+    }
+	
 }

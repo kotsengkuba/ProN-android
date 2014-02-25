@@ -52,7 +52,7 @@ public class Wheel extends View{
 		height = size.y;
 		bitmap_array = new Bitmap [8]; 		
 		cx = 0;
-		cy = height/2;
+		cy = height/2 - 250;
 		r = width/2;
 		ex = cx+r;
 		ey = cy;

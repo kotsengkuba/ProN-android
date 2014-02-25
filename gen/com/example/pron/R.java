@@ -145,6 +145,7 @@ containing a value of this type.
         public static final int common_signin_btn_text_light=0x7f05000b;
     }
     public static final class dimen {
+        public static final int activity_big_margin=0x7f080002;
         /**  Default screen margins, per the Android Design guidelines. 
 
          Customize dimensions originally defined in res/values/dimens.xml (such as
@@ -153,12 +154,13 @@ containing a value of this type.
          */
         public static final int activity_horizontal_margin=0x7f080000;
         public static final int activity_vertical_margin=0x7f080001;
-        public static final int bigtext=0x7f080004;
-        public static final int medtext=0x7f080005;
-        public static final int smalltext=0x7f080006;
-        public static final int xltext=0x7f080003;
-        public static final int xstext=0x7f080007;
-        public static final int xxltext=0x7f080002;
+        public static final int bigtext=0x7f080005;
+        public static final int medbigtext=0x7f080006;
+        public static final int medtext=0x7f080007;
+        public static final int smalltext=0x7f080008;
+        public static final int xltext=0x7f080004;
+        public static final int xstext=0x7f080009;
+        public static final int xxltext=0x7f080003;
     }
     public static final class drawable {
         public static final int back_button=0x7f020000;
@@ -212,7 +214,7 @@ containing a value of this type.
         public static final int GridLayout1=0x7f060012;
         public static final int LinearLayout1=0x7f060018;
         public static final int action_settings=0x7f06001d;
-        public static final int cityTextView=0x7f060005;
+        public static final int cityTextView=0x7f060007;
         public static final int dayTextView=0x7f060015;
         public static final int hybrid=0x7f060004;
         public static final int imageView1=0x7f06000e;
@@ -224,7 +226,7 @@ containing a value of this type.
         public static final int linearLayout2=0x7f060013;
         public static final int list_view=0x7f06000b;
         public static final int map=0x7f060009;
-        public static final int mapbutton=0x7f060006;
+        public static final int mapbutton=0x7f060005;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
         public static final int rainLabelTextView=0x7f06001c;
@@ -236,7 +238,7 @@ containing a value of this type.
         public static final int terrain=0x7f060003;
         public static final int textView1=0x7f06000d;
         public static final int timeTextView=0x7f060014;
-        public static final int typhoonbutton=0x7f060007;
+        public static final int typhoonbutton=0x7f060006;
         public static final int weather_detail_fragment=0x7f060008;
         public static final int wheelView=0x7f060016;
     }

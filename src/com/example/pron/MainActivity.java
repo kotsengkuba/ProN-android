@@ -15,6 +15,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
@@ -88,7 +89,10 @@ public class MainActivity extends Activity implements LocationListener{
 		
 	}
 	
-	public void setLocationText(){
+	public void setLocationText(){		
+		if(currentCity.length()>12 && currentCity.length()<20){
+			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medbigtext));
+		}
 		locationTextView.setText(currentCity);
 	}
 	

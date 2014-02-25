@@ -27,6 +27,7 @@ public class CityItemView extends LinearLayout{
 		tv.setPadding(10, 30, 10, 10);
 		temptv.setTextSize(30);	
 		temptv.setPadding(10, 30, 10, 10);
+		//this.setPadding(10, 10, 10, 10);
 		
     }
 	
@@ -42,6 +43,7 @@ public class CityItemView extends LinearLayout{
 		this.addView(temptv);		
 		
 		add_iv.setImageDrawable(getResources().getDrawable(R.drawable.plus_icon));
+		add_iv.setPadding(10, 10, 10, 10);
 		add_iv.setTag("add_me");
 		//add_iv.setClickable(true);
 		/*add_iv.setOnClickListener(new View.OnClickListener(){

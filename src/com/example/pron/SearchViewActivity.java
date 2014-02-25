@@ -130,7 +130,8 @@ public class SearchViewActivity extends Activity {
 		        	    	boolean saved = false;
 		        	    	for(int j=0;j<saved_places.size();j++){
 		 	        		   if(all_places.get(i).equalsIgnoreCase(saved_places.get(j))){
-		 	        			  imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+		 	        			  imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(j), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+		 	        			  //imageId_results.add(null);
 		 	        			  saved = true;
 		 	        			  break;
 		 	     	        	}
