@@ -113,4 +113,22 @@ public class WeatherJSONReader {
 		return all_places;
 	}
 	
+	public List<String> getDates(String placename){
+		List<String> l = new ArrayList<String>();
+		JSONObject place = getPlaceObject(placename);
+		if(place!=null){
+			try {
+				JSONArray arr = place.getJSONArray("dates");
+				for(int i = 0; i<arr.length(); i++){
+					l.add(arr.getJSONObject(i).getString("date"));
+				}
+				return l;
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		return null;
+	}	
 }

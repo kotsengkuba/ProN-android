@@ -15,16 +15,16 @@ public class StormTrackXMLParser extends DefaultHandler{
 	JSONObject json_final = new JSONObject();
 	JSONArray json_array = new JSONArray();
 	JSONObject json_obj = new JSONObject();
-	boolean is_name, is_body, is_PAR, is_linestring, is_coordinates;
+	boolean is_name, is_body, is_PAR, is_linestring, is_coordinates, is_actualtrack;
 	ArrayList PARcoor = new ArrayList();
 	int counter = 0;
-	
+	boolean storm = false;
 	
 	
 	public void startDocument ()
     {
 		is_name = false;
-		is_body = false;	
+		is_body = false;
 		
 		Log.i("OUT","stormtrack kml start");
     }
@@ -47,6 +47,9 @@ public class StormTrackXMLParser extends DefaultHandler{
     	else if(qName.equals("coordinates")){
     		is_coordinates = true;
     	}
+    	else if(qName.equals("Actual Track")){
+    		is_actualtrack = true;
+    	}
     }
 
 
@@ -65,6 +68,9 @@ public class StormTrackXMLParser extends DefaultHandler{
     	else if(qName.equals("Folder") && is_PAR){
     		is_PAR = false;
     	}
+    	else if(qName.equals("Actual Track")){
+    		is_actualtrack = false;
+    	}
     }
 
 
@@ -79,16 +85,24 @@ public class StormTrackXMLParser extends DefaultHandler{
     		for(int i = 0; i<toks.length;i++){
     			if(toks[i].contains("0 "))
     				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
-    			Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
+    			//Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
     			if(!toks[i].equals("0"))
     				PARcoor.add(Double.parseDouble(toks[i]));
     		}
+    	}
+    	if(is_actualtrack && is_coordinates){
+    		if(s.length()>0)
+    			storm = true;
     	}
 
 	}
     
     public ArrayList getPARcoor(){
     	return PARcoor;
+    }
+    
+    public boolean stormExists(){
+    	return storm;
     }
 	
 	//private class HTMLParser{}

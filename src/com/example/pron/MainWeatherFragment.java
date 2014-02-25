@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -43,6 +44,8 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +68,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	String day = "Today";
 	int dayIndex = 0;
 	int timeIndex = 0;
+
+	List<String> dates;
 	
 	JSONObject cityData = new JSONObject();
 	JSONObject rainData = new JSONObject();
@@ -75,12 +80,14 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	String fourdaydata;
 	
 	GestureDetectorCompat dayGDetector;
+	
+	View view;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	      Bundle savedInstanceState) {
 		
-		View view = inflater.inflate(R.layout.fragment_weather_detail,
+		view = inflater.inflate(R.layout.fragment_weather_detail,
 		        container, false);
 		
 		tempTextView = (TextView) view.findViewById(R.id.tempTextView);	
@@ -262,7 +269,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    }
 	    
 	    public void setToCurrentTime(){
-	    	Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"), Locale.US);
+	    	//Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"), Locale.US);
 			int hour = Integer.parseInt((new SimpleDateFormat("HH")).format(new Date()));
 			timeIndex = (int) Math.floor(hour/3);
 			wheelView.setOffset(timeIndex);
@@ -274,6 +281,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void setDataFromLocation(){
 			// read and search files for location data
 			cityData = weatherReader.getPlaceObject(currentCity);
+			dates = weatherReader.getDates(currentCity);
+			Log.d("OUT","dates: "+dates);
+			Log.d("OUT", "Current Date: "+getCurrentDate("MMMM dd, yyyy"));
+			
 			rainData = rainReader.getPlaceObject(currentCity);
 			if(rainData == null)
 				Log.d("jsoup", "Rain data from file: NULL");
@@ -341,12 +352,17 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				
 				File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
 		        //Log.d("OUT", "FILE date modified: "+file.lastModified());
-		        if(file.lastModified()-System.currentTimeMillis()>3600000){
+				
+				Log.d("OUT", "rain data: downloading... ");
+				new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML", "storm");
+
+				
+		        if(file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy"))){
 		        	Log.d("OUT", "weather data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 					Log.d("OUT", "rain data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
-
+					Toast.makeText(getActivity(), "Updating...", Toast.LENGTH_SHORT).show();
 		        }
 		        else{
 		        	Log.d("OUT", "weather data is updated.");
@@ -360,7 +376,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void reset_textviews(){
 			setDayText();
 			setTimeText(time_array[timeIndex]);
-			setTempText(temp_array[0]);
+			setTempText(temp_array[timeIndex]);
 			setRainText(rain_array);
 		}
 		
@@ -381,21 +397,32 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		
 		public void setDayText(){
 			JSONArray j;
-			if(dayIndex == 0)
+			
+			if(dates.get(dayIndex).equals(getCurrentDate("MMMM dd, yyyy"))){
 				dayTextView.setText("Today");
-			else if(dayIndex == 1)
-				dayTextView.setText("Tomorrow");
-			else{
-				try {
-					j = cityData.getJSONArray("dates");
-					String date = j.getJSONObject(dayIndex).getString("date");
-					date = date.split(",")[0];
-					dayTextView.setText(date);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
+			else if(dayIndex>0 && dates.get(dayIndex-1).equals(getCurrentDate("MMMM dd, yyyy"))){
+				dayTextView.setText("Tomorrow");
+			}
+			else{
+				dayTextView.setText(dates.get(dayIndex).split(",")[0]);
+			}
+			
+//			if(dayIndex == 0)
+//				dayTextView.setText("Today");
+//			else if(dayIndex == 1)
+//				dayTextView.setText("Tomorrow");
+//			else{
+//				try {
+//					j = cityData.getJSONArray("dates");
+//					String date = j.getJSONObject(dayIndex).getString("date");
+//					date = date.split(",")[0];
+//					dayTextView.setText(date);
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
 		}
 		
 		/* set string arrays depende sa day */
@@ -433,6 +460,13 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			wheelView.invalidate();
 		}
 		
+		public void addTyphoonButton(){
+			Button b = new Button(view.getContext());
+			b.setText("asd");
+			LinearLayout l = (LinearLayout)view.findViewById(R.id.linearLayout2);
+			//l.addView(b, 2);
+		}
+		
 		/* Check network connection */
 		public boolean isNetworkAvailable() {
 		    ConnectivityManager cm = (ConnectivityManager) 
@@ -464,12 +498,20 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		    }
 		    return false;
 		}
+		
+		public String getCurrentDate(String format){
+			Calendar c = Calendar.getInstance();
+			SimpleDateFormat df = new SimpleDateFormat(format);
+			String formattedDate = df.format(c.getTime());
+			return formattedDate;
+		}
 	    
 	    private class XMLparser extends AsyncTask<String,Void,String>{
 	    	SAXParserFactory factory;
 	    	SAXParser saxParser;
 	    	FourDayXMLParser fourday_handler;
 	    	RainChanceXMLParser rainchance_handler;
+	    	StormTrackXMLParser stormtrack_handler;
 	    	
 	    	@Override
 	    	protected void onPreExecute (){
@@ -522,6 +564,14 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		                s = rainchance_handler.get_json_string();
 		                Log.i("kml","s = "+s);
 		                new Filer().saveFile(s,"rainchancelive.json");
+	    			}
+	    			else if(params[1].equals("storm")){
+	    				stormtrack_handler = new StormTrackXMLParser();
+	    	            saxParser.parse(params[0], stormtrack_handler);
+	                    //Log.d("OUT", "storm exists: "+stormtrack_handler.stormExists());
+	    	            if(stormtrack_handler.stormExists()){
+	    	            	addTyphoonButton();
+	    	            }
 	    			}
 
 	    	    } catch(Exception e){
