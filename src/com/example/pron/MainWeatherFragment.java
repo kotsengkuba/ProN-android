@@ -82,6 +82,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	GestureDetectorCompat dayGDetector;
 	
 	View view;
+	float downY = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,6 +127,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		            case MotionEvent.ACTION_DOWN:
 		            	Log.d(DEBUG_TAG,"onDown: " + event.getX() + event.getY());
 		            	wheelView.lasty = event.getY();
+		            	Log.d("OUT", "set downY = "+event.getY());
+		            	downY = event.getY();
 		            	if(event.getX() > wheelView.width*0.8)
 		            		wheelView.onWheelArea = false;
 		            	else
@@ -182,14 +185,15 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		            case MotionEvent.ACTION_UP:
 		            	
 		            	Log.d("OUT", "center: "+center);
+		            	float deg;
 		            	if(center){
 		            		center = false;
 		            		loadDetailsFrag();
 		            	}
 		            	else{
 			            	wheelView.snap = true;
-			        		if(wheelView.snap){
-			        			float deg = (wheelView.rad*180/(float)Math.PI)%360;
+			            	deg = (wheelView.rad*180/(float)Math.PI)%360;
+			        		if(wheelView.snap){	
 			        			if(deg<0)
 			        				deg = deg + 360;
 			        			if((deg>0 && deg<45/2)|| deg>360-(45/2))
@@ -219,9 +223,25 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			            			i-=(float) 2*Math.PI;
 			            	}
 			            	Log.d("snap", "i="+i);
+			            	int temp = timeIndex;
 			            	timeIndex = (int) (Math.round(4*i/Math.PI)%8);
 			            	timeIndex = (timeIndex+wheelView.offset) %8;
 			            	timeIndex = timeIndex%8;
+			            	
+			            	// change day from wheel
+			            	float deltaY = downY-event.getY();
+			            	Log.d("OUT", "downY: "+ downY);
+			            	Log.d("OUT", "upY: "+ event.getY());
+			            	Log.d("OUT", "downIndex: "+ temp);
+			            	Log.d("OUT", "upIndex: "+ timeIndex);
+			            	if(timeIndex-temp<0 && deltaY>0){
+			            		plusDay();
+			            	}
+			            	else if(temp-timeIndex<-3 && deltaY<0)
+			            	{
+			            		minusDay();
+			            	}
+			            	
 			            	setTimeText(time_array[timeIndex]);
 			            	setTempText(temp_array[timeIndex]);
 			            	
@@ -285,11 +305,18 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			Log.d("OUT","dates: "+dates);
 			Log.d("OUT", "Current Date: "+getCurrentDate("MMMM dd, yyyy"));
 			
+			dayIndex = 0;
+			for(int i=0; i<dates.size(); i++){
+				if(getCurrentDate("MMMM dd, yyyy").equals(dates.get(i))){
+					dayIndex = i;
+				}
+			}
+			
 			rainData = rainReader.getPlaceObject(currentCity);
 			if(rainData == null)
 				Log.d("jsoup", "Rain data from file: NULL");
-			setDataStrings(0);
-			setWeatherIcons(0);
+			setDataStrings(dayIndex);
+			setWeatherIcons(dayIndex);
 			reset_textviews();
 		}
 		
@@ -305,18 +332,20 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 
 				@Override
 				public void onRightToLeft() {
-					dayIndex = (dayIndex+1)%4;
-					setDataStrings(dayIndex);
-					setWeatherIcons(dayIndex);
-					reset_textviews();
+					plusDay();
+//					dayIndex = (dayIndex+1)%4;
+//					setDataStrings(dayIndex);
+//					setWeatherIcons(dayIndex);
+//					reset_textviews();
 				}
 
 				@Override
 				public void onLeftToRight() {
-					dayIndex = (dayIndex+3)%4;
-					setDataStrings(dayIndex);
-					setWeatherIcons(dayIndex);
-					reset_textviews();
+					minusDay();
+//					dayIndex = (dayIndex+3)%4;
+//					setDataStrings(dayIndex);
+//					setWeatherIcons(dayIndex);
+//					reset_textviews();
 				}
 
 				@Override
@@ -396,7 +425,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		}
 		
 		public void setDayText(){
-			JSONArray j;
 			
 			if(dates.get(dayIndex).equals(getCurrentDate("MMMM dd, yyyy"))){
 				dayTextView.setText("Today");
@@ -458,6 +486,23 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			}
 			wheelView.setIcons(arr);
 			wheelView.invalidate();
+		}
+		
+		public void plusDay(){
+			dayIndex = (dayIndex+1)%dates.size();
+			setDataStrings(dayIndex);
+			setWeatherIcons(dayIndex);
+			reset_textviews();
+		}
+		
+		public void minusDay(){
+			if(dayIndex == 0)
+				dayIndex = dates.size()-1;
+			else
+				dayIndex--;
+			setDataStrings(dayIndex);
+			setWeatherIcons(dayIndex);
+			reset_textviews();
 		}
 		
 		public void addTyphoonButton(){
