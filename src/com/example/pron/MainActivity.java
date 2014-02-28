@@ -2,6 +2,8 @@ package com.example.pron;
 
 import java.util.List;
 
+import twitter4j.Twitter;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,8 @@ public class MainActivity extends Activity implements LocationListener{
 	private String provider;
 	Geocoder geocoder;
 	MainWeatherFragment fragment;
+	
+	Twitter t;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,7 @@ public class MainActivity extends Activity implements LocationListener{
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		locationTextView.setTypeface(font);
+		Log.d("OUT", "Twitter: "+t);
 		
 		initLocation();
 		
@@ -166,9 +171,18 @@ public class MainActivity extends Activity implements LocationListener{
     
     public void openMap(View view){
     	Intent intent = new Intent(this, MapActivity.class);
-    	intent.putExtra("Latitude", locationManager.getLastKnownLocation(provider).getLatitude());
-    	intent.putExtra("Longitude", locationManager.getLastKnownLocation(provider).getLongitude());
-        startActivity(intent);
+//    	double lat = locationManager.getLastKnownLocation(provider).getLatitude();
+//    	double lon = locationManager.getLastKnownLocation(provider).getLongitude();
+    	if(locationManager.getLastKnownLocation(provider) != null){
+    		intent.putExtra("Latitude", locationManager.getLastKnownLocation(provider).getLatitude());
+        	intent.putExtra("Longitude", locationManager.getLastKnownLocation(provider).getLongitude());
+    	}
+    	else{
+    		intent.putExtra("Latitude", 0);
+        	intent.putExtra("Longitude", 0);
+    	}
+    	
+    	 startActivity(intent);
     }
     
     public void openTyphoon(View view){

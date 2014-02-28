@@ -77,9 +77,11 @@ int drawable icon5 0x7f020027
 int drawable icon_typhoon 0x7f020028
 int drawable image_bg 0x7f020029
 int drawable list_selector 0x7f02002a
-int drawable null_gray 0x7f02002b
-int drawable plus_icon 0x7f02002c
-int drawable rainy 0x7f02002d
+int drawable logo1 0x7f02002b
+int drawable logo2 0x7f02002c
+int drawable null_gray 0x7f02002d
+int drawable plus_icon 0x7f02002e
+int drawable rainy 0x7f02002f
 int id GridLayout1 0x7f060012
 int id LinearLayout1 0x7f060018
 int id action_settings 0x7f06001d
