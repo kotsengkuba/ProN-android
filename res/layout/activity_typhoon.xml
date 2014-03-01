@@ -19,7 +19,85 @@
             android:text="TYPHOON DETAILS"
             android:textColor="#3A3A3A"
             android:textSize="36sp" />
-
+<!--
+       <TextView
+            android:id="@+id/amt_rainfall"
+            android:layout_width="190dp"
+            android:layout_height="175dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/header_typhoon"
+            android:layout_marginTop="120dp"
+            android:text="150mm"
+            android:textColor="#3A3A3A"
+            android:textSize="45sp" />
+       
+       <TextView
+            android:id="@+id/label_totalrainfall"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/header_typhoon"
+            android:layout_marginTop="165dp"
+            android:text="TOTAL RAINFALL"
+            android:textColor="#3A3A3A"
+            android:textSize="23sp" />
+       
+       <TextView
+            android:id="@+id/amt_rate"
+            android:layout_width="200dp"
+            android:layout_height="175dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/header_typhoon"
+            android:layout_marginTop="220dp"
+            android:text="35mm/hr"
+            android:textColor="#3A3A3A"
+            android:textSize="45sp" />
+       
+       <TextView
+            android:id="@+id/label_rate"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_marginLeft="160dp"
+            android:layout_marginTop="265dp"
+            android:text="RATE"
+            android:textColor="#3A3A3A"
+            android:textSize="23sp" />
+       
+		<TextView
+            android:id="@+id/amt_wind"
+            android:layout_width="190dp"
+            android:layout_height="175dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/amt_rainfall"
+            android:layout_marginTop="325dp"
+            android:text="150kph"
+            android:textColor="#3A3A3A"
+            android:textSize="45sp" />
+		
+		<TextView
+            android:id="@+id/label_winddirection"
+            android:layout_width="190dp"
+            android:layout_height="175dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/header_typhoon"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="365dp"
+            android:text="NNW"
+            android:textColor="#3A3A3A"
+            android:textSize="45sp" />
+       
+       <TextView
+            android:id="@+id/label_wind"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_marginLeft="160dp"
+            android:layout_marginTop="410dp"
+            android:text="WIND"
+            android:textColor="#3A3A3A"
+            android:textSize="23sp" />
+-->
         <ImageView
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
@@ -45,7 +123,7 @@
             android:layout_height="62dp"
             android:layout_alignLeft="@+id/icon_map"
             android:layout_below="@+id/icon_map"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="30dp"
             android:clickable="true"
             android:src="@drawable/icon2" />
 
@@ -55,7 +133,7 @@
             android:layout_height="62dp"
             android:layout_alignLeft="@+id/icon_signal"
             android:layout_below="@+id/icon_signal"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="30dp"
             android:clickable="true"
             android:src="@drawable/icon3" />
 
@@ -64,7 +142,7 @@
             android:layout_width="62dp"
             android:layout_height="62dp"
             android:layout_alignLeft="@+id/icon_rainfall"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="30dp"
    			android:layout_below="@+id/icon_rainfall"
             android:clickable="true"
             android:src="@drawable/icon4" />
@@ -75,10 +153,11 @@
             android:layout_height="100dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="30dp"
             android:clickable="false"
             android:src="@drawable/icon_typhoon" />
 
     </RelativeLayout>
+	
 
 </LinearLayout>

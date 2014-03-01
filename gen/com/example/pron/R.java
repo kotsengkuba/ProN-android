@@ -56,8 +56,8 @@ public final class R {
         public static final int dayTextView=0x7f090012;
         public static final int header_typhoon=0x7f090007;
         public static final int icon_map=0x7f09000a;
-        public static final int icon_rainfall=0x7f09000d;
-        public static final int icon_share=0x7f09000c;
+        public static final int icon_rainfall=0x7f09000c;
+        public static final int icon_share=0x7f09000d;
         public static final int icon_signal=0x7f09000b;
         public static final int icon_typhoon=0x7f090008;
         public static final int imageView1=0x7f090009;
