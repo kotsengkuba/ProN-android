@@ -49,32 +49,33 @@ public final class R {
         public static final int rainy=0x7f020013;
     }
     public static final class id {
-        public static final int GridLayout1=0x7f09000d;
-        public static final int LinearLayout1=0x7f090014;
-        public static final int action_settings=0x7f090019;
+        public static final int GridLayout1=0x7f09000e;
+        public static final int LinearLayout1=0x7f090015;
+        public static final int action_settings=0x7f09001a;
         public static final int cityTextView=0x7f090000;
-        public static final int dayTextView=0x7f090011;
+        public static final int dayTextView=0x7f090012;
         public static final int header_typhoon=0x7f090007;
-        public static final int icon_map=0x7f090009;
-        public static final int icon_rainfall=0x7f09000c;
-        public static final int icon_share=0x7f09000b;
-        public static final int icon_signal=0x7f09000a;
+        public static final int icon_map=0x7f09000a;
+        public static final int icon_rainfall=0x7f09000d;
+        public static final int icon_share=0x7f09000c;
+        public static final int icon_signal=0x7f09000b;
         public static final int icon_typhoon=0x7f090008;
+        public static final int imageView1=0x7f090009;
         public static final int inputSearch=0x7f090005;
-        public static final int linearLayout2=0x7f09000f;
+        public static final int linearLayout2=0x7f090010;
         public static final int list_view=0x7f090006;
         public static final int map=0x7f090004;
         public static final int mapbutton=0x7f090001;
-        public static final int rainLabelTextView=0x7f090018;
-        public static final int rainTextView1=0x7f090015;
-        public static final int rainTextView2=0x7f090016;
-        public static final int rainTextView3=0x7f090017;
-        public static final int tempTextView=0x7f090013;
-        public static final int textView1=0x7f09000e;
-        public static final int timeTextView=0x7f090010;
+        public static final int rainLabelTextView=0x7f090019;
+        public static final int rainTextView1=0x7f090016;
+        public static final int rainTextView2=0x7f090017;
+        public static final int rainTextView3=0x7f090018;
+        public static final int tempTextView=0x7f090014;
+        public static final int textView1=0x7f09000f;
+        public static final int timeTextView=0x7f090011;
         public static final int typhoonbutton=0x7f090002;
         public static final int weather_detail_fragment=0x7f090003;
-        public static final int wheelView=0x7f090012;
+        public static final int wheelView=0x7f090013;
     }
     public static final class layout {
         public static final int activity_main_v2=0x7f030000;

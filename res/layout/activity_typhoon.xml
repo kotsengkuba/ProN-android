@@ -21,6 +21,15 @@
             android:textSize="36sp" />
 
         <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/icon_map"
+            android:layout_below="@+id/icon_map"
+            android:layout_marginLeft="26dp"
+            android:src="@drawable/icons" />
+        
+        <ImageView
             android:id="@+id/icon_map"
             android:layout_width="62dp"
             android:layout_height="62dp"
@@ -41,16 +50,6 @@
             android:src="@drawable/icon2" />
 
         <ImageView
-            android:id="@+id/icon_share"
-            android:layout_width="62dp"
-            android:layout_height="62dp"
-            android:layout_alignLeft="@+id/icon_rainfall"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="26dp"
-            android:clickable="true"
-            android:src="@drawable/icon4" />
-
-        <ImageView
             android:id="@+id/icon_rainfall"
             android:layout_width="62dp"
             android:layout_height="62dp"
@@ -60,6 +59,16 @@
             android:clickable="true"
             android:src="@drawable/icon3" />
 
+        <ImageView
+            android:id="@+id/icon_share"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:layout_alignLeft="@+id/icon_rainfall"
+            android:layout_marginTop="26dp"
+   			android:layout_below="@+id/icon_rainfall"
+            android:clickable="true"
+            android:src="@drawable/icon4" />
+        
         <ImageView
             android:id="@+id/icon_typhoon"
             android:layout_width="100dp"
