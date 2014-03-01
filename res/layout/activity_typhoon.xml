@@ -9,56 +9,66 @@
         android:layout_height="match_parent"
         android:layout_weight="0.13" >
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignTop="@+id/textView1"
-            android:clickable="true"
-            android:src="@drawable/icon_typhoon" />
-
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/header_typhoon"
             android:layout_width="190dp"
             android:layout_height="175dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="39dp"
-            android:layout_toRightOf="@+id/imageView1"
+            android:layout_alignTop="@+id/icon_typhoon"
+            android:layout_marginTop="12dp"
+            android:layout_toRightOf="@+id/icon_typhoon"
             android:text="TYPHOON DETAILS"
             android:textColor="#3A3A3A"
             android:textSize="36sp" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/icon_map"
             android:layout_width="65dp"
             android:layout_height="65dp"
-            android:layout_alignLeft="@+id/imageView4"
-            android:layout_below="@+id/imageView1"
-            android:layout_marginTop="54dp"
+            android:layout_alignBottom="@+id/header_typhoon"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="12dp"
+            android:clickable="true"
+            android:src="@drawable/icon1" />
+
+        <ImageView
+            android:id="@+id/icon_signal"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_alignLeft="@+id/icon_map"
+            android:layout_below="@+id/icon_map"
+            android:layout_marginTop="26dp"
             android:clickable="true"
             android:src="@drawable/icon2" />
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/icon_share"
             android:layout_width="65dp"
             android:layout_height="65dp"
-            android:layout_alignLeft="@+id/imageView5"
-            android:layout_below="@+id/imageView2"
-            android:layout_marginTop="43dp"
+            android:layout_alignLeft="@+id/icon_rainfall"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="26dp"
+            android:clickable="true"
+            android:src="@drawable/icon4" />
+
+        <ImageView
+            android:id="@+id/icon_rainfall"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_alignLeft="@+id/icon_signal"
+            android:layout_below="@+id/icon_signal"
+            android:layout_marginTop="26dp"
             android:clickable="true"
             android:src="@drawable/icon3" />
 
         <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
+            android:id="@+id/icon_typhoon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/imageView4"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="43dp"
-            android:clickable="true"
-            android:src="@drawable/icon4" />
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="26dp"
+            android:clickable="false"
+            android:src="@drawable/icon_typhoon" />
 
     </RelativeLayout>
 
