@@ -2,6 +2,9 @@ package com.example.pron;
 
 import android.app.Activity;
 import java.util.List;
+
+import com.google.android.gms.maps.GoogleMap;
+
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -9,9 +12,10 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.ImageView;
 
-public class TyphoonActivity extends Activity implements OnClickListener{
+public class TyphoonActivity extends Activity {
 
 	TextView typhoonTextView;
+	GoogleMap gmap;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,18 +26,12 @@ public class TyphoonActivity extends Activity implements OnClickListener{
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		typhoonTextView.setTypeface(font);
 	   
-		ImageView img = (ImageView) findViewById(R.id.icon_map);
-		img.setOnClickListener(new OnClickListener() {
-		    public void onClick(View v) {
-		       // your code here
-		    }
-		});
 	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		
+	
+	public void displayMap(){
+		MapViewFragment mvf = (MapViewFragment) getFragmentManager().findFragmentById(R.id.map);
+		gmap = mvf.getMap();
+		setContentView(R.layout.activity_typhoon);
 	}
 	
 }
