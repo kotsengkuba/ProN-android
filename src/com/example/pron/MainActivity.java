@@ -23,13 +23,13 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements LocationListener{
 	TextView locationTextView;
-	String currentCity = "Manila"; //default
+	String currentCity = "Quezon City"; //default
 	protected LocationManager locationManager;
 	private String provider;
 	Geocoder geocoder;
 	MainWeatherFragment fragment;
 	
-	Twitter t;
+	//Twitter t;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class MainActivity extends Activity implements LocationListener{
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		locationTextView.setTypeface(font);
-		Log.d("OUT", "Twitter: "+t);
+		//Log.d("OUT", "Twitter: "+t);
 		
 		initLocation();
 		

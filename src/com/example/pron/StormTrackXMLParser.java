@@ -36,7 +36,7 @@ public class StormTrackXMLParser extends DefaultHandler{
 
     public void startElement (String uri, String name, String qName, Attributes atts)
     {
-    	Log.i("OUT","start element: "+qName);
+    	//Log.i("OUT","start element: "+qName);
     	if(qName.equals("name")){
     		is_name = true;
     		

@@ -1,31 +1,32 @@
 package com.example.pron;
 
-import java.io.Serializable;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 
@@ -142,6 +143,10 @@ public class SearchViewActivity extends Activity {
 		        	  }
 	        	   }
         	   }
+        	   
+        	   // search online
+        	   new OnlineSearch().execute(searchString);
+        	   
         	   adapter.notifyDataSetChanged();    	
                
             }
@@ -234,5 +239,40 @@ public class SearchViewActivity extends Activity {
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"), Locale.US);
 		int hour = Integer.parseInt((new SimpleDateFormat("HH")).format(new Date()));
 		return (int) Math.floor(hour/3);
+	}
+	
+	private class OnlineSearch extends AsyncTask<String,Void,String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			// TODO Auto-generated method stub
+			String message;
+			JSONObject response;
+			try{
+				URL url = new URL("http://api.openweathermap.org/data/2.5/forecast?q="+params[0]+"=m&mode=json");
+	            URLConnection connection = url.openConnection();
+	            connection.connect();
+	            InputStream input = new BufferedInputStream(url.openStream());
+	            OutputStream output = new ByteArrayOutputStream();
+	            byte data[] = new byte[1024];
+	            int count;
+	            
+	            while ((count = input.read(data)) != -1) {
+	                output.write(data, 0, count);    
+	            }
+	            
+	            response = new JSONObject(output.toString());
+	            Log.d("OUT", "Response: "+response.toString());
+	            if(response.getString("cod").equals("200")){
+	            	String loc = response.getJSONObject("city").getString("name")+", "+response.getJSONObject("city").getString("country");
+	            	Log.d("OUT", "Response: "+loc+" found!");
+//	            	imageId_results.add(null);
+//	            	product_results.add(loc);
+//	            	adapter.notifyDataSetChanged();    	
+	            }
+			}catch(Exception e){}
+			return null;
+		}
+		
 	}
 }

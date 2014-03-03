@@ -58,4 +58,19 @@ public class RainJSONReader {
 		Log.d("OUT", "getRainData: NOTFOUND");
 		return s;
 	}
+	
+	public String getRainTimes(String placename, int index){
+		JSONObject o = new JSONObject();
+		String s = "";
+		try {
+			if(getPlaceObject(placename)!=null)
+				o = getPlaceObject(placename).getJSONArray("data").getJSONObject(index);
+			return o.getString("Time");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.d("OUT", "getRainData: NOTFOUND");
+		return s;
+	}
 }

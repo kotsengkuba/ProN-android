@@ -10,6 +10,7 @@
     <dimen name="medbigtext">35dp</dimen>
     <dimen name="medtext">30dp</dimen>
     <dimen name="smalltext">20dp</dimen>
-    <dimen name="xstext">10dp</dimen>
+    <dimen name="xstext">15dp</dimen>
+    <dimen name="xxstext">10dp</dimen>
 
 </resources>
