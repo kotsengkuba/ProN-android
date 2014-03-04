@@ -40,7 +40,7 @@ public class CityItemView extends LinearLayout{
 	public void setUnsavedLocation(){
 		this.addView(add_iv);
 		this.addView(tv);
-		this.addView(temptv);		
+		//this.addView(temptv);		
 		
 		add_iv.setImageDrawable(getResources().getDrawable(R.drawable.plus_icon));
 		add_iv.setPadding(10, 10, 10, 10);
