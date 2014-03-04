@@ -37,24 +37,32 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
-
-    <TextView
-        android:id="@+id/tempTextView"
+    
+	<LinearLayout
+        android:id="@+id/tempLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="20dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#3A3A3A"
-        android:textSize="@dimen/xltext" />
+        android:layout_gravity="right"
+        android:orientation="vertical" 
+        android:layout_centerVertical="true" >
+        
+	    <TextView
+	        android:id="@+id/tempTextView"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginRight="20dp"
+	        android:textAppearance="?android:attr/textAppearanceLarge"
+	        android:textColor="#3A3A3A"
+	        android:textSize="@dimen/xltext" />
+	    </LinearLayout>
     
     <LinearLayout
         android:id="@+id/LinearLayout1"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/tempTextView"
-        android:layout_below="@+id/tempTextView"
+        android:layout_alignLeft="@+id/tempLinearLayout"
+        android:layout_below="@+id/tempLinearLayout"
         android:paddingTop="20dp"
         android:orientation="vertical" >
 

@@ -84,8 +84,8 @@ int drawable null_gray 0x7f02002d
 int drawable plus_icon 0x7f02002e
 int drawable rainy 0x7f02002f
 int id GridLayout1 0x7f060010
-int id LinearLayout1 0x7f060016
-int id action_settings 0x7f060018
+int id LinearLayout1 0x7f060017
+int id action_settings 0x7f060019
 int id cityTextView 0x7f060005
 int id dayTextView 0x7f060013
 int id hybrid 0x7f060004
@@ -100,9 +100,10 @@ int id list_view 0x7f060009
 int id map 0x7f060007
 int id none 0x7f060000
 int id normal 0x7f060001
-int id rainLabelTextView 0x7f060017
+int id rainLabelTextView 0x7f060018
 int id satellite 0x7f060002
-int id tempTextView 0x7f060015
+int id tempLinearLayout 0x7f060015
+int id tempTextView 0x7f060016
 int id terrain 0x7f060003
 int id textView1 0x7f06000b
 int id timeTextView 0x7f060012

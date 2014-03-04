@@ -56,7 +56,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	Wheel wheelView;
 	RainWheel rainWheelView;
 	WebView webview;
-	LinearLayout rainLayout;
+	LinearLayout rainLayout, temperatureLayout;
 	TableLayout rainTableLayout;
 	boolean center = false;
 	
@@ -108,10 +108,9 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		rainTableLayout = new TableLayout(this.getActivity());
 		rainLayout.addView(rainTableLayout);
 		//rainWheelView = (RainWheel) view.findViewById(R.id.rainWheelView);
-		
 		owmTextView = new TextView(this.getActivity());
-		ViewGroup v = (ViewGroup) tempTextView.getParent();
-		v.addView(owmTextView, 0);
+		temperatureLayout = (LinearLayout) view.findViewById(R.id.tempLinearLayout);
+		temperatureLayout.addView(owmTextView);
 		
 		//Get the typeface from assets
 		font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
@@ -397,9 +396,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				
 				Log.d("OUT", "rain data: downloading... ");
 				new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML", "storm");
-				
-				new OWMHTask().execute(currentCity);
-				
+	
 		        if(file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy"))){
 		        	Log.d("OUT", "weather data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
@@ -429,6 +426,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		
 		public void setTempText(String s){
 			tempTextView.setText(s);
+			new OWMHTask().execute(currentCity);
 		}
 		
 		public void setRainText(){
@@ -478,22 +476,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			else{
 				dayTextView.setText(dates.get(dayIndex).split(",")[0]);
 			}
-			
-//			if(dayIndex == 0)
-//				dayTextView.setText("Today");
-//			else if(dayIndex == 1)
-//				dayTextView.setText("Tomorrow");
-//			else{
-//				try {
-//					j = cityData.getJSONArray("dates");
-//					String date = j.getJSONObject(dayIndex).getString("date");
-//					date = date.split(",")[0];
-//					dayTextView.setText(date);
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
 		}
 		
 		/* set string arrays depende sa day */
@@ -690,6 +672,11 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    private class OWMHTask extends AsyncTask<String,Void,String>{
 	    	String temp = "";
 	    	
+	    	@Override
+	    	protected void onPreExecute (){
+	    		owmTextView.setText("Loading...");
+	    	}
+	    	
 			@Override
 			protected String doInBackground(String... params) {
 				OpenWeatherMapHandler owmh = new OpenWeatherMapHandler();
@@ -702,8 +689,11 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			@Override
 	        protected void onPostExecute(String s) {
 	    	  Log.i("OUT","OpenWeatherMAp temp: "+temp);
-	    	  owmTextView.setText("OWM: "+Math.round(Double.parseDouble(temp)*100)/100);
-	        }
+	    	  if(temp.length()>0)
+	    		  owmTextView.setText(Math.round(Double.parseDouble(temp)*100)/100+" from Open Weather Map ");
+	    	  else
+	    		  owmTextView.setText("");
+			}
 		}
 
 	    /* Gestures */
