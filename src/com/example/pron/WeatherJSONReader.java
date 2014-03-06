@@ -79,6 +79,30 @@ public class WeatherJSONReader {
 		return null;
 	}
 	
+	public HashMap<String, String> getDetailsHash(String placename, int dayIndex, int timeIndex){
+		String s = "";
+		JSONArray dates;
+		HashMap<String, String> hm = new HashMap<String , String>();
+		try {
+			dates = getPlaceObject(placename).getJSONArray("dates");
+			JSONObject first = dates.getJSONObject(dayIndex);
+			JSONArray data = first.getJSONArray("data");
+			JSONObject o = data.getJSONObject(timeIndex);
+			JSONArray locnames = o.names();
+			for(int i=0; i<locnames.length(); i++){
+				//o.getString(locnames.getString(i));
+				hm.put(locnames.getString(i), o.getString(locnames.getString(i)));
+			}
+//			s += o.toString();
+//			return s;
+			return hm;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public String getAllDetailsString(String placename, int dayIndex, int timeIndex){
 		String s = "";
 		JSONArray dates;

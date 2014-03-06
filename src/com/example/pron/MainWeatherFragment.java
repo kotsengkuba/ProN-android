@@ -124,6 +124,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		rainLabelTextView.setTypeface(font);
 		
 		reset();
+		updateData();
 		
 		initGestureDetector();	
 		view.setOnTouchListener(new OnTouchListener(){
@@ -284,7 +285,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			
 			setToCurrentTime();
 			setDataFromLocation();			
-			updateData();
+			
 		}
 		
 		public void loadDetailsFrag(){
@@ -664,8 +665,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	  Log.i("kml","End parse...");
 	    	  
 	    	  // reload displayed data
-	    	  setDataFromLocation();
+	    	  //setDataFromLocation();
 	    	  //Toast.makeText(null, "New data downloaded.", dayIndex).show();
+	    	  
+	    	  reset();
 	        }
 	    }
 	    

@@ -1,11 +1,5 @@
 package com.example.pron;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,8 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -27,15 +19,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 public class SearchViewActivity extends Activity {
 	// List view
     private ListView lv;
+    private ListView ol_lv;
      
     // Listview Adapter
     public CustomAdapter adapter;
+    public CustomAdapter ol_adapter;
      
     // Search EditText
     EditText inputSearch;
@@ -52,6 +48,11 @@ public class SearchViewActivity extends Activity {
     List<String> product_results = new ArrayList<String>();
     List<String> temperature_results = new ArrayList<String>();
 	List<Integer> imageId_results = new ArrayList<Integer>();
+	List<String> other_results = new ArrayList<String>();
+	
+	List<String> ol_product_results = new ArrayList<String>();
+    List<String> ol_temperature_results = new ArrayList<String>();
+	List<Integer> ol_imageId_results = new ArrayList<Integer>();
 	
 	List<String> saved_places = new ArrayList<String>();;
 	List<String> all_places = new ArrayList<String>();
@@ -92,6 +93,12 @@ public class SearchViewActivity extends Activity {
             }
         });
         
+        //ol_adapter = new CustomAdapter(SearchViewActivity.this, ol_product_results, ol_imageId_results, ol_temperature_results);
+//        ol_lv = new ListView(this);
+//        ol_lv.addView(new TextView(this));
+//        LinearLayout ll = (LinearLayout)findViewById(R.id.list_view).getParent();
+//        ll.addView(ol_lv);
+        
         inputSearch.addTextChangedListener(new TextWatcher() {
             
             @Override
@@ -115,7 +122,7 @@ public class SearchViewActivity extends Activity {
         	   temperature_results.clear();
         	   
         	   if(textLength == 0){
-        		   for(int i=0;i<saved_places.size();i++)
+        		   for(int i=0;i<saved_places.size();i++){
 	        		   if(textLength<=saved_places.get(i).length()){
 	     	        	    if(searchString.equalsIgnoreCase(saved_places.get(i).substring(0,textLength))){
 	     	        	    	product_results.add(saved_places.get(i));
@@ -124,9 +131,9 @@ public class SearchViewActivity extends Activity {
 	     	        	    }
 	     	        	}
         	   		}
+        	   }
         	   else{
-	        	   for(int i=0;i<all_places.size();i++)
-	        	   {
+	        	   for(int i=0;i<all_places.size();i++){
 		        	  if(textLength<=all_places.get(i).length()){
 		        	  //compare the String in EditText with Names in the list
 		        	    if(searchString.equalsIgnoreCase(all_places.get(i).substring(0,textLength))){
@@ -135,21 +142,25 @@ public class SearchViewActivity extends Activity {
 		        	    	for(int j=0;j<saved_places.size();j++){
 		 	        		   if(all_places.get(i).equalsIgnoreCase(saved_places.get(j))){
 		 	        			  imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(j), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
-		 	        			  temperature_results.add(weatherReader.getDetailString(saved_places.get(i), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
-		 	        			  //imageId_results.add(null);
+		 	        			  temperature_results.add(weatherReader.getDetailString(saved_places.get(j), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
 		 	        			  saved = true;
 		 	        			  break;
 		 	     	        	}
 		         	   		}
-		        	    	if(!saved)
+		        	    	if(!saved){
 			        	    	imageId_results.add(null);	
+		        	    		temperature_results.add("asdf");
+		        	    	}
 		        	    }
 		        	  }
 	        	   }
         	   }
         	   
         	   // search online
-        	   new OnlineSearch().execute(searchString);
+//        	   product_results.add("Searching online...");
+// 	    	   imageId_results.add(null);
+// 	      	   temperature_results.add("");
+//        	   new OnlineSearch().execute(searchString);
         	   
         	   adapter.notifyDataSetChanged();    	
                
@@ -202,7 +213,7 @@ public class SearchViewActivity extends Activity {
     	if(!saved_places.contains(loc))
 			saved_places.add(loc);
 		reset();
-		adapter.notifyDataSetChanged();
+		//adapter.notifyDataSetChanged();
 		inputSearch.setText("");
 	}
     
@@ -210,7 +221,7 @@ public class SearchViewActivity extends Activity {
     	if(saved_places.contains(loc))
 			saved_places.remove(loc);
 		reset();
-		adapter.notifyDataSetChanged();
+		//adapter.notifyDataSetChanged();
 		inputSearch.setText("");
 	}
 
@@ -219,6 +230,7 @@ public class SearchViewActivity extends Activity {
 		product_results.clear();
  	   	imageId_results.clear();
  	   	temperature_results.clear();
+ 	   	other_results.clear();
 		for(int i = 0; i<saved_places.size(); i++){
         	product_results.add(saved_places.get(i));
         	//imageId_results.add(imageId[0]);
@@ -247,37 +259,48 @@ public class SearchViewActivity extends Activity {
 		return (int) Math.floor(hour/3);
 	}
 	
-	private class OnlineSearch extends AsyncTask<String,Void,String>{
-
+	private class OnlineSearch extends AsyncTask<String,Void,String[]>{
 		@Override
-		protected String doInBackground(String... params) {
+    	protected void onPreExecute (){
+			Log.d("OUT", "loading owm search...");
+			  
+    	}
+		
+		@Override
+		protected String[] doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			String message;
-			JSONObject response;
-			try{
-				URL url = new URL("http://api.openweathermap.org/data/2.5/forecast?q="+params[0]+"=m&mode=json");
-	            URLConnection connection = url.openConnection();
-	            connection.connect();
-	            InputStream input = new BufferedInputStream(url.openStream());
-	            OutputStream output = new ByteArrayOutputStream();
-	            byte data[] = new byte[1024];
-	            int count;
-	            
-	            while ((count = input.read(data)) != -1) {
-	                output.write(data, 0, count);    
-	            }
-	            
-	            response = new JSONObject(output.toString());
-	            Log.d("OUT", "Response: "+response.toString());
-	            if(response.getString("cod").equals("200")){
-	            	String loc = response.getJSONObject("city").getString("name")+", "+response.getJSONObject("city").getString("country");
-	            	Log.d("OUT", "Response: "+loc+" found!");
-//	            	imageId_results.add(null);
-//	            	product_results.add(loc);
-//	            	adapter.notifyDataSetChanged();    	
-	            }
-			}catch(Exception e){}
-			return null;
+			String temp = "";
+			String [] res = {params[0], ""};
+			other_results.clear();
+			OpenWeatherMapHandler owmh = new OpenWeatherMapHandler();
+			if(owmh.load(params[0])){
+				res[1] = owmh.getCurrentTemp();
+				other_results.add(params[0]);
+				//temperature_results.add(temp+"°");
+			}
+			
+			return res;
+		}
+		
+		@Override
+        protected void onPostExecute(String [] s) {
+				Log.d("OUT", "Search text: "+inputSearch.getText()+", own seaerch: "+s);
+			if(other_results.size()>0 && s[0].equalsIgnoreCase(inputSearch.getText().toString())){
+//				  product_results.remove(product_results.size()-1);
+//		    	  imageId_results.remove(imageId_results.size()-1);
+//		      	  temperature_results.remove(temperature_results.size()-1);
+		      	  
+		      	  product_results.addAll(other_results);
+		      	  imageId_results.add(null);
+		      	  temperature_results.add(s[1]);
+		      	  adapter.notifyDataSetChanged();
+			}
+			else{
+//				product_results.remove(product_results.size()-1);
+//				imageId_results.remove(imageId_results.size()-1);
+//      	    	temperature_results.remove(temperature_results.size()-1);
+//      	    	adapter.notifyDataSetChanged();
+			}
 		}
 		
 	}
