@@ -70,11 +70,21 @@ public class SearchViewActivity extends Activity {
         weatherReader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
 		Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
 
-    	
-        saved_places = new ArrayList<String>(Arrays.asList(new Filer().fileToString("savedLocations.csv").split("[,]")));
+		// load all places list
+       	try{
+       		all_places = weatherReader.getAllPlaces();
+       		java.util.Collections.sort(all_places);
+       	} catch(Exception e){}
+       	
+    	String fileString = new Filer().fileToString("savedLocations.csv");
+    	if(fileString.length()>0){
+    		saved_places = new ArrayList<String>(Arrays.asList(new Filer().fileToString("savedLocations.csv").split("[,]")));
+    	}
+    	Log.d("OUT","saved_places: "+saved_places.size());
         
         reset();
         
+        Log.d("OUT", "products: "+product_results);
         adapter = new CustomAdapter(SearchViewActivity.this, product_results, imageId_results, temperature_results);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -109,28 +119,22 @@ public class SearchViewActivity extends Activity {
         	   String searchString=inputSearch.getText().toString();
         	   int textLength=searchString.length();
         	 
-        	   // load all places list
-	           	try{
-	           		all_places = weatherReader.getAllPlaces();
-	           		java.util.Collections.sort(all_places);
-	           	} catch(Exception e){}
-        	   
-        	   
         	   //clear the initial data set
         	   product_results.clear();
         	   imageId_results.clear();
         	   temperature_results.clear();
         	   
         	   if(textLength == 0){
-        		   for(int i=0;i<saved_places.size();i++){
-	        		   if(textLength<=saved_places.get(i).length()){
-	     	        	    if(searchString.equalsIgnoreCase(saved_places.get(i).substring(0,textLength))){
-	     	        	    	product_results.add(saved_places.get(i));
-	     	        	    	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
-	     	        	    	temperature_results.add(weatherReader.getDetailString(saved_places.get(i), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
-	     	        	    }
-	     	        	}
-        	   		}
+        		   reset();
+//        		   for(int i=0;i<saved_places.size();i++){
+//	        		   if(textLength<=saved_places.get(i).length()){
+//	     	        	    if(searchString.equalsIgnoreCase(saved_places.get(i).substring(0,textLength))){
+//	     	        	    	product_results.add(saved_places.get(i));
+//	     	        	    	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+//	     	        	    	temperature_results.add(weatherReader.getDetailString(saved_places.get(i), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
+//	     	        	    }
+//	     	        	}
+//        	   		}
         	   }
         	   else{
 	        	   for(int i=0;i<all_places.size();i++){
@@ -162,6 +166,7 @@ public class SearchViewActivity extends Activity {
 // 	      	   temperature_results.add("");
 //        	   new OnlineSearch().execute(searchString);
         	   
+        	   Log.d("OUT", "products: "+product_results);
         	   adapter.notifyDataSetChanged();    	
                
             }
@@ -231,12 +236,22 @@ public class SearchViewActivity extends Activity {
  	   	imageId_results.clear();
  	   	temperature_results.clear();
  	   	other_results.clear();
-		for(int i = 0; i<saved_places.size(); i++){
-        	product_results.add(saved_places.get(i));
-        	//imageId_results.add(imageId[0]);
-        	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
-        	temperature_results.add(weatherReader.getDetailString(saved_places.get(i), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
-		}
+ 	   	if(saved_places.size()>0){
+			for(int i = 0; i<saved_places.size(); i++){
+	        	product_results.add(saved_places.get(i));
+	        	//imageId_results.add(imageId[0]);
+	        	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+	        	temperature_results.add(weatherReader.getDetailString(saved_places.get(i), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
+			}
+ 	   	}
+ 	   	else{
+	 	   	for(int i = 0; i<all_places.size(); i++){
+	 	   		Log.d("OUT", "add to products"+all_places.get(i));
+	        	product_results.add(all_places.get(i));
+	        	imageId_results.add(null);
+	        	temperature_results.add("");
+			}
+ 	   	}
 	}
 	
 	protected void saveLocationsToFile(){
