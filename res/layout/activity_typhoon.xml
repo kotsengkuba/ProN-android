@@ -9,68 +9,179 @@
         android:layout_height="match_parent"
         android:layout_weight="0.13" >
 
+        <TextView
+            android:id="@+id/header_typhoon"
+            android:layout_width="190dp"
+            android:layout_height="175dp"
+            android:layout_alignTop="@+id/icon_typhoon"
+            android:layout_marginTop="12dp"
+            android:layout_toRightOf="@+id/icon_typhoon"
+            android:text="TYPHOON DETAILS"
+            android:textColor="#3A3A3A"
+            android:textSize="36sp" />
+<!--
+       <TextView
+            android:id="@+id/amt_rainfall"
+            android:layout_width="190dp"
+            android:layout_height="175dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/header_typhoon"
+            android:layout_marginTop="120dp"
+            android:text="150mm"
+            android:textColor="#3A3A3A"
+            android:textSize="45sp" />
+       
+       <TextView
+            android:id="@+id/label_totalrainfall"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/header_typhoon"
+            android:layout_marginTop="165dp"
+            android:text="TOTAL RAINFALL"
+            android:textColor="#3A3A3A"
+            android:textSize="23sp" />
+       
+       <TextView
+            android:id="@+id/amt_rate"
+            android:layout_width="200dp"
+            android:layout_height="175dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/header_typhoon"
+            android:layout_marginTop="220dp"
+            android:text="35mm/hr"
+            android:textColor="#3A3A3A"
+            android:textSize="45sp" />
+       
+       <TextView
+            android:id="@+id/label_rate"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_marginLeft="160dp"
+            android:layout_marginTop="265dp"
+            android:text="RATE"
+            android:textColor="#3A3A3A"
+            android:textSize="23sp" />
+       
+		<TextView
+            android:id="@+id/amt_wind"
+            android:layout_width="190dp"
+            android:layout_height="175dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/amt_rainfall"
+            android:layout_marginTop="325dp"
+            android:text="150kph"
+            android:textColor="#3A3A3A"
+            android:textSize="45sp" />
+		
+		<TextView
+            android:id="@+id/label_winddirection"
+            android:layout_width="190dp"
+            android:layout_height="175dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_alignLeft="@+id/header_typhoon"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="365dp"
+            android:text="NNW"
+            android:textColor="#3A3A3A"
+            android:textSize="45sp" />
+       
+       <TextView
+            android:id="@+id/label_wind"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_alignTop="@+id/header_typhoon"
+            android:layout_marginLeft="160dp"
+            android:layout_marginTop="410dp"
+            android:text="WIND"
+            android:textColor="#3A3A3A"
+            android:textSize="23sp" />
+-->
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignBottom="@+id/textView1"
-            android:layout_alignRight="@+id/imageView1"
-            android:layout_marginRight="14dp"
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/icon_map"
+            android:layout_below="@+id/icon_map"
+            android:layout_marginLeft="26dp"
+            android:src="@drawable/icons" />
+        
+        <ImageView
+            android:id="@+id/icon_map"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:layout_alignBottom="@+id/header_typhoon"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="12dp"
+            android:clickable="true"
+            android:src="@drawable/icon1" />
+
+        <ImageView
+            android:id="@+id/icon_signal"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:layout_alignLeft="@+id/icon_map"
+            android:layout_below="@+id/icon_map"
+            android:layout_marginTop="30dp"
             android:clickable="true"
             android:src="@drawable/icon2" />
 
         <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignLeft="@+id/imageView2"
-            android:layout_below="@+id/imageView2"
-            android:layout_marginTop="20dp"
+            android:id="@+id/icon_rainfall"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:layout_alignLeft="@+id/icon_signal"
+            android:layout_below="@+id/icon_signal"
+            android:layout_marginTop="30dp"
             android:clickable="true"
             android:src="@drawable/icon3" />
 
         <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignLeft="@+id/imageView4"
-            android:layout_below="@+id/imageView4"
-            android:layout_marginTop="20dp"
-            android:clickable="true"
-            android:src="@drawable/icon5" />
-
-        <ImageView
-            android:id="@+id/imageView5"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignLeft="@+id/imageView3"
-            android:layout_below="@+id/imageView3"
-            android:layout_marginTop="20dp"
+            android:id="@+id/icon_share"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:layout_alignLeft="@+id/icon_rainfall"
+            android:layout_marginTop="30dp"
+   			android:layout_below="@+id/icon_rainfall"
             android:clickable="true"
             android:src="@drawable/icon4" />
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="175dp"
-            android:layout_height="175dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="14dp"
-            android:layout_marginTop="38dp"
-            android:layout_toRightOf="@+id/imageView1"
-            android:layout_gravity="center"
-            android:text="TYPHOON DETAILS"
-            android:textColor="#3A3A3A"
-            android:textSize="36sp" />
-
+        
         <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
+            android:id="@+id/icon_typhoon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_alignParentLeft="true"
-            android:layout_alignTop="@+id/textView1"
-            android:clickable="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp"
+            android:clickable="false"
             android:src="@drawable/icon_typhoon" />
 
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_alignBottom="@+id/icon_share"
+            android:layout_alignRight="@+id/header_typhoon"
+            android:layout_alignTop="@+id/icon_map"
+            android:layout_marginTop="19dp"
+            android:layout_toRightOf="@+id/icon_typhoon"
+            android:clickable="true"
+            android:onClick="displayMap" />
+        
+       <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.MapFragment"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_alignBottom="@+id/icon_share"
+            android:layout_alignRight="@+id/header_typhoon"
+            android:layout_alignTop="@+id/icon_map"
+            android:layout_marginTop="19dp"
+            android:layout_toRightOf="@+id/icon_typhoon"
+            android:clickable="true"
+            android:onClick="displayMap" />
+                
     </RelativeLayout>
-
 </LinearLayout>

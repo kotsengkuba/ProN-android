@@ -32,7 +32,7 @@ public class MapViewFragment extends Fragment {
         return view;
     }
     
-    private GoogleMap getMap() {
+	GoogleMap getMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -45,7 +45,6 @@ public class MapViewFragment extends Fragment {
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 // The Map is verified. It is now safe to manipulate the map.
-
             }
         }
     }
