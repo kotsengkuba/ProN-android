@@ -97,9 +97,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		        container, false);
 		
 		tempTextView = (TextView) view.findViewById(R.id.tempTextView);	
-//		rainTextView1 = (TextView) view.findViewById(R.id.rainTextView1);
-//		rainTextView2 = (TextView) view.findViewById(R.id.rainTextView2);
-//		rainTextView3 = (TextView) view.findViewById(R.id.rainTextView3);
 		timeTextView = (TextView) view.findViewById(R.id.timeTextView);
 		dayTextView = (TextView) view.findViewById(R.id.dayTextView);
 		rainLabelTextView = (TextView) view.findViewById(R.id.rainLabelTextView);		
@@ -116,9 +113,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
 		//Set the TextView's typeface (font)
 		tempTextView.setTypeface(font);
-//		rainTextView1.setTypeface(font);
-//		rainTextView2.setTypeface(font);
-//		rainTextView3.setTypeface(font);
 		timeTextView.setTypeface(font);
 		dayTextView.setTypeface(font);
 		rainLabelTextView.setTypeface(font);
@@ -274,17 +268,29 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    return view;
 	  }	  
 	  
-		public void reset(){
+		public boolean reset(){
 			currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
 			
-			weatherReader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
-			Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
-			
-			rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
-			Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
-			
-			setToCurrentTime();
-			setDataFromLocation();			
+			String s = new Filer().fileToString("fourdaylive.json"),
+					s2 = new Filer().fileToString("rainchancelive.json");
+			if(s.length()>0){
+				weatherReader = new WeatherJSONReader(s);
+				Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
+				
+				if(s2.length()>0){
+					rainReader = new RainJSONReader(s2);
+					Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
+				}
+				
+				setToCurrentTime();
+				setDataFromLocation();
+				
+				return true;
+			}
+			else{
+//				showLoading();
+				return false;
+			}
 			
 		}
 		
@@ -378,6 +384,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					dayGDetector.onTouchEvent(event);
 					return true;
 				}});
+		}
+		
+		public void showLoading(){
+			
 		}
 		
 		public void updateData(){
