@@ -19,7 +19,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapActivity extends Activity{
-<<<<<<< HEAD
 	MapViewFragment fragment;
 	
 	int latitude, longitude;
@@ -27,10 +26,7 @@ public class MapActivity extends Activity{
 	LatLng currLocation;
 	ArrayList<Double> PARcoor = new ArrayList<Double>();
 	PolylineOptions PAROptions;
-	
-=======
-	//MapViewFragment fragment;
->>>>>>> ff27a50065c7a320e3e61c1661d211a8daf70242
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
