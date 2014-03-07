@@ -2,6 +2,8 @@ package com.example.pron;
 
 import java.util.List;
 
+import twitter4j.Twitter;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -15,16 +17,19 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements LocationListener{
 	TextView locationTextView;
-	String currentCity = "Manila"; //default
+	String currentCity = "Quezon City"; //default
 	protected LocationManager locationManager;
 	private String provider;
 	Geocoder geocoder;
 	MainWeatherFragment fragment;
+	
+	//Twitter t;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,7 @@ public class MainActivity extends Activity implements LocationListener{
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		locationTextView.setTypeface(font);
+		//Log.d("OUT", "Twitter: "+t);
 		
 		initLocation();
 		
@@ -89,6 +95,14 @@ public class MainActivity extends Activity implements LocationListener{
 	}
 	
 	public void setLocationText(){
+		int l = currentCity.length();
+		if(l <= 11)
+			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.bigtext));
+		else if(currentCity.length()>11 && currentCity.length()<=15)
+			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medbigtext));
+		else if(currentCity.length()>15)
+			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medtext));
+		
 		locationTextView.setText(currentCity);
 	}
 	
@@ -157,7 +171,18 @@ public class MainActivity extends Activity implements LocationListener{
     
     public void openMap(View view){
     	Intent intent = new Intent(this, MapActivity.class);
-        //startActivityForResult(intent, 0);
+//    	double lat = locationManager.getLastKnownLocation(provider).getLatitude();
+//    	double lon = locationManager.getLastKnownLocation(provider).getLongitude();
+    	if(locationManager.getLastKnownLocation(provider) != null){
+    		intent.putExtra("Latitude", locationManager.getLastKnownLocation(provider).getLatitude());
+        	intent.putExtra("Longitude", locationManager.getLastKnownLocation(provider).getLongitude());
+    	}
+    	else{
+    		intent.putExtra("Latitude", 0);
+        	intent.putExtra("Longitude", 0);
+    	}
+    	
+    	 startActivity(intent);
     }
     
     public void openTyphoon(View view){

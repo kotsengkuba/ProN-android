@@ -10,21 +10,19 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -35,6 +33,7 @@ import android.os.Environment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -43,28 +42,38 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainWeatherFragment extends Fragment implements GestureDetector.OnGestureListener{
 
 	private static final int RESULT_OK = 0;
-	TextView tempTextView, timeTextView, rainTextView1, rainTextView2, rainTextView3, dayTextView, rainLabelTextView;
+	TextView tempTextView, timeTextView, dayTextView, rainLabelTextView, owmTextView;
 	Wheel wheelView;
+	RainWheel rainWheelView;
 	WebView webview;
+	LinearLayout rainLayout, temperatureLayout;
+	TableLayout rainTableLayout;
 	boolean center = false;
 	
 	String DEBUG_TAG = "touch event";
 	
 	String [] time_array = new String[8];
 	String [] temp_array = new String[8];
-	String [] rain_array = new String[3];
+	String [] rain_array = new String[4];
+	String [] raintime_array = new String[4];
 	
 	// default values
-	String currentCity = "Manila";
+	String currentCity;
 	String day = "Today";
 	int dayIndex = 0;
 	int timeIndex = 0;
+
+	List<String> dates;
 	
 	JSONObject cityData = new JSONObject();
 	JSONObject rainData = new JSONObject();
@@ -75,35 +84,41 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	String fourdaydata;
 	
 	GestureDetectorCompat dayGDetector;
+	
+	View view;
+	float downY = 0;
+	Typeface font;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	      Bundle savedInstanceState) {
 		
-		View view = inflater.inflate(R.layout.fragment_weather_detail,
+		view = inflater.inflate(R.layout.fragment_weather_detail,
 		        container, false);
 		
 		tempTextView = (TextView) view.findViewById(R.id.tempTextView);	
-		rainTextView1 = (TextView) view.findViewById(R.id.rainTextView1);
-		rainTextView2 = (TextView) view.findViewById(R.id.rainTextView2);
-		rainTextView3 = (TextView) view.findViewById(R.id.rainTextView3);
 		timeTextView = (TextView) view.findViewById(R.id.timeTextView);
 		dayTextView = (TextView) view.findViewById(R.id.dayTextView);
 		rainLabelTextView = (TextView) view.findViewById(R.id.rainLabelTextView);		
 		wheelView = (Wheel) view.findViewById(R.id.wheelView);
+		rainLayout = (LinearLayout) view.findViewById(R.id.LinearLayout1);
+		rainTableLayout = new TableLayout(this.getActivity());
+		rainLayout.addView(rainTableLayout);
+		//rainWheelView = (RainWheel) view.findViewById(R.id.rainWheelView);
+		owmTextView = new TextView(this.getActivity());
+		temperatureLayout = (LinearLayout) view.findViewById(R.id.tempLinearLayout);
+		temperatureLayout.addView(owmTextView);
 		
 		//Get the typeface from assets
-		Typeface font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
+		font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
 		//Set the TextView's typeface (font)
 		tempTextView.setTypeface(font);
-		rainTextView1.setTypeface(font);
-		rainTextView2.setTypeface(font);
-		rainTextView3.setTypeface(font);
 		timeTextView.setTypeface(font);
 		dayTextView.setTypeface(font);
 		rainLabelTextView.setTypeface(font);
 		
 		reset();
+		updateData();
 		
 		initGestureDetector();	
 		view.setOnTouchListener(new OnTouchListener(){
@@ -119,6 +134,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		            case MotionEvent.ACTION_DOWN:
 		            	Log.d(DEBUG_TAG,"onDown: " + event.getX() + event.getY());
 		            	wheelView.lasty = event.getY();
+		            	Log.d("OUT", "set downY = "+event.getY());
+		            	downY = event.getY();
 		            	if(event.getX() > wheelView.width*0.8)
 		            		wheelView.onWheelArea = false;
 		            	else
@@ -175,14 +192,15 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		            case MotionEvent.ACTION_UP:
 		            	
 		            	Log.d("OUT", "center: "+center);
+		            	float deg;
 		            	if(center){
 		            		center = false;
 		            		loadDetailsFrag();
 		            	}
 		            	else{
 			            	wheelView.snap = true;
-			        		if(wheelView.snap){
-			        			float deg = (wheelView.rad*180/(float)Math.PI)%360;
+			            	deg = (wheelView.rad*180/(float)Math.PI)%360;
+			        		if(wheelView.snap){	
 			        			if(deg<0)
 			        				deg = deg + 360;
 			        			if((deg>0 && deg<45/2)|| deg>360-(45/2))
@@ -212,9 +230,25 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			            			i-=(float) 2*Math.PI;
 			            	}
 			            	Log.d("snap", "i="+i);
+			            	int temp = timeIndex;
 			            	timeIndex = (int) (Math.round(4*i/Math.PI)%8);
 			            	timeIndex = (timeIndex+wheelView.offset) %8;
 			            	timeIndex = timeIndex%8;
+			            	
+			            	// change day from wheel
+			            	float deltaY = downY-event.getY();
+			            	Log.d("OUT", "downY: "+ downY);
+			            	Log.d("OUT", "upY: "+ event.getY());
+			            	Log.d("OUT", "downIndex: "+ temp);
+			            	Log.d("OUT", "upIndex: "+ timeIndex);
+			            	if(timeIndex-temp<0 && deltaY>0){
+			            		plusDay();
+			            	}
+			            	else if(temp-timeIndex<-3 && deltaY<0)
+			            	{
+			            		minusDay();
+			            	}
+			            	
 			            	setTimeText(time_array[timeIndex]);
 			            	setTempText(temp_array[timeIndex]);
 			            	
@@ -234,18 +268,30 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    return view;
 	  }	  
 	  
-		public void reset(){
+		public boolean reset(){
 			currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
 			
-			weatherReader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
-			Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
+			String s = new Filer().fileToString("fourdaylive.json"),
+					s2 = new Filer().fileToString("rainchancelive.json");
+			if(s.length()>0){
+				weatherReader = new WeatherJSONReader(s);
+				Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
+				
+				if(s2.length()>0){
+					rainReader = new RainJSONReader(s2);
+					Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
+				}
+				
+				setToCurrentTime();
+				setDataFromLocation();
+				
+				return true;
+			}
+			else{
+//				showLoading();
+				return false;
+			}
 			
-			rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
-			Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
-			
-			setToCurrentTime();
-			setDataFromLocation();			
-			updateData();
 		}
 		
 		public void loadDetailsFrag(){
@@ -262,7 +308,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    }
 	    
 	    public void setToCurrentTime(){
-	    	Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"), Locale.US);
+	    	//Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"), Locale.US);
 			int hour = Integer.parseInt((new SimpleDateFormat("HH")).format(new Date()));
 			timeIndex = (int) Math.floor(hour/3);
 			wheelView.setOffset(timeIndex);
@@ -274,11 +320,22 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void setDataFromLocation(){
 			// read and search files for location data
 			cityData = weatherReader.getPlaceObject(currentCity);
+			dates = weatherReader.getDates(currentCity);
+			Log.d("OUT","dates: "+dates);
+			Log.d("OUT", "Current Date: "+getCurrentDate("MMMM dd, yyyy"));
+			
+			dayIndex = 0;
+			for(int i=0; i<dates.size(); i++){
+				if(getCurrentDate("MMMM dd, yyyy").equals(dates.get(i))){
+					dayIndex = i;
+				}
+			}
+			
 			rainData = rainReader.getPlaceObject(currentCity);
 			if(rainData == null)
 				Log.d("jsoup", "Rain data from file: NULL");
-			setDataStrings(0);
-			setWeatherIcons(0);
+			setDataStrings(dayIndex);
+			setWeatherIcons(dayIndex);
 			reset_textviews();
 		}
 		
@@ -294,18 +351,20 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 
 				@Override
 				public void onRightToLeft() {
-					dayIndex = (dayIndex+1)%4;
-					setDataStrings(dayIndex);
-					setWeatherIcons(dayIndex);
-					reset_textviews();
+					plusDay();
+//					dayIndex = (dayIndex+1)%4;
+//					setDataStrings(dayIndex);
+//					setWeatherIcons(dayIndex);
+//					reset_textviews();
 				}
 
 				@Override
 				public void onLeftToRight() {
-					dayIndex = (dayIndex+3)%4;
-					setDataStrings(dayIndex);
-					setWeatherIcons(dayIndex);
-					reset_textviews();
+					minusDay();
+//					dayIndex = (dayIndex+3)%4;
+//					setDataStrings(dayIndex);
+//					setWeatherIcons(dayIndex);
+//					reset_textviews();
 				}
 
 				@Override
@@ -327,6 +386,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				}});
 		}
 		
+		public void showLoading(){
+			
+		}
+		
 		public void updateData(){
 			try{
 				JSONObject j = cityData.getJSONArray("dates").getJSONObject(0);
@@ -338,18 +401,24 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				Log.d("jsoup", "Current Date: "+Calendar.getInstance().get(Calendar.DATE));
 				Log.d("jsoup", "Current Month: "+Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
 				Log.d("jsoup", "Current Year: "+Calendar.getInstance().get(Calendar.YEAR));
-				if(month.equalsIgnoreCase(Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US))
-						&& day == Calendar.getInstance().get(Calendar.DATE)
-						&& year == Calendar.getInstance().get(Calendar.YEAR)){
-					Log.d("OUT", "weather data: updated");
-				}
-				else{
-					Log.d("OUT", "weather data: downloading... ");
+				
+				File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
+		        //Log.d("OUT", "FILE date modified: "+file.lastModified());
+				
+				Log.d("OUT", "rain data: downloading... ");
+				new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML", "storm");
+	
+		        if(file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy"))){
+		        	Log.d("OUT", "weather data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 					Log.d("OUT", "rain data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
-					
-				}
+					Toast.makeText(getActivity(), "Updating...", Toast.LENGTH_SHORT).show();
+		        }
+		        else{
+		        	Log.d("OUT", "weather data is updated.");
+		        }
+
 			} catch (Exception e){
 				Log.d("OUT", "weather data: exception "+e);
 			}
@@ -358,8 +427,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void reset_textviews(){
 			setDayText();
 			setTimeText(time_array[timeIndex]);
-			setTempText(temp_array[0]);
-			setRainText(rain_array);
+			setTempText(temp_array[timeIndex]);
+			setRainText();
 		}
 		
 		public void setTimeText(String s){
@@ -368,30 +437,55 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		
 		public void setTempText(String s){
 			tempTextView.setText(s);
+			new OWMHTask().execute(currentCity);
 		}
 		
-		public void setRainText(String [] s){
-			rainTextView1.setText(s[0]);
-			rainTextView2.setText(s[1]);
-			rainTextView3.setText(s[2]);
+		public void setRainText(){
+			if(rainTableLayout==null){
+				rainTableLayout = new TableLayout(this.getActivity());
+				rainLayout.addView(rainTableLayout);
+			}
+			if(dayIndex == 0 && rain_array[0].length()>0){
+				rainTableLayout.removeAllViews();
+				for(int i=0; i<rain_array.length; i++){
+					TableRow rowItem = new TableRow(this.getActivity());
+					
+					TextView RainTextViewItem = new TextView(this.getActivity());
+					RainTextViewItem.setTypeface(font);
+					RainTextViewItem.setPadding(10, 10, 10, 10);
+					RainTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
+					RainTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
+					RainTextViewItem.setText(rain_array[i]);
+					rowItem.addView(RainTextViewItem);
+					
+					TextView RainTimeTextViewItem = new TextView(this.getActivity());
+					RainTimeTextViewItem.setTypeface(font);
+					RainTimeTextViewItem.setPadding(10, 10, 10, 10);
+					RainTimeTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
+					RainTimeTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
+					RainTimeTextViewItem.setText(raintime_array[i]);
+					rowItem.addView(RainTimeTextViewItem);
+					
+					rainTableLayout.addView(rowItem);
+				}
+				setRainVisibility(View.VISIBLE);
+				
+				// static pa yung width ng rainLayout
+			}
+			else
+				setRainVisibility(View.INVISIBLE);
 		}
 		
 		public void setDayText(){
-			JSONArray j;
-			if(dayIndex == 0)
+			
+			if(dates.get(dayIndex).equals(getCurrentDate("MMMM dd, yyyy"))){
 				dayTextView.setText("Today");
-			else if(dayIndex == 1)
+			}
+			else if(dayIndex>0 && dates.get(dayIndex-1).equals(getCurrentDate("MMMM dd, yyyy"))){
 				dayTextView.setText("Tomorrow");
+			}
 			else{
-				try {
-					j = cityData.getJSONArray("dates");
-					String date = j.getJSONObject(dayIndex).getString("date");
-					date = date.split(",")[0];
-					dayTextView.setText(date);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				dayTextView.setText(dates.get(dayIndex).split(",")[0]);
 			}
 		}
 		
@@ -406,8 +500,9 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					else
 						temp_array[j] = s;					
 				}
-				for(int j = 0; j < rainReader.getLength(); j++){
+				for(int j = 0; j < 4; j++){
 					rain_array[j] = rainReader.getRainData(currentCity, j);
+					raintime_array[j] = rainReader.getRainTimes(currentCity, j);
 				}
 	    	}catch(Exception e){}
 	    }
@@ -428,6 +523,34 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			}
 			wheelView.setIcons(arr);
 			wheelView.invalidate();
+		}
+		
+		public void plusDay(){
+			dayIndex = (dayIndex+1)%dates.size();
+			setDataStrings(dayIndex);
+			setWeatherIcons(dayIndex);
+			reset_textviews();
+		}
+		
+		public void minusDay(){
+			if(dayIndex == 0)
+				dayIndex = dates.size()-1;
+			else
+				dayIndex--;
+			setDataStrings(dayIndex);
+			setWeatherIcons(dayIndex);
+			reset_textviews();
+		}
+		
+		public void addTyphoonButton(){
+			Button b = new Button(view.getContext());
+			b.setText("asd");
+			LinearLayout l = (LinearLayout)view.findViewById(R.id.linearLayout2);
+			//l.addView(b, 2);
+		}
+		
+		public void setRainVisibility(int v){
+			rainLayout.setVisibility(v);
 		}
 		
 		/* Check network connection */
@@ -461,12 +584,20 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		    }
 		    return false;
 		}
+		
+		public String getCurrentDate(String format){
+			Calendar c = Calendar.getInstance();
+			SimpleDateFormat df = new SimpleDateFormat(format);
+			String formattedDate = df.format(c.getTime());
+			return formattedDate;
+		}
 	    
 	    private class XMLparser extends AsyncTask<String,Void,String>{
 	    	SAXParserFactory factory;
 	    	SAXParser saxParser;
 	    	FourDayXMLParser fourday_handler;
 	    	RainChanceXMLParser rainchance_handler;
+	    	StormTrackXMLParser stormtrack_handler;
 	    	
 	    	@Override
 	    	protected void onPreExecute (){
@@ -520,6 +651,17 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		                Log.i("kml","s = "+s);
 		                new Filer().saveFile(s,"rainchancelive.json");
 	    			}
+	    			else if(params[1].equals("storm")){
+	    				stormtrack_handler = new StormTrackXMLParser();
+	    	            saxParser.parse(params[0], stormtrack_handler);
+	                    //Log.d("OUT", "storm exists: "+stormtrack_handler.stormExists());
+	    	            if(stormtrack_handler.stormExists()){
+	    	            	addTyphoonButton();
+	    	            }
+	    			}
+	    			else if(params[1].equals("openweathermmap")){
+	    				Log.d("OUT", "OWM"+(new Filer().fileToString(params[1]+"RAW.txt")));
+	    			}
 
 	    	    } catch(Exception e){
 	    	    	e.printStackTrace();
@@ -533,10 +675,39 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	  Log.i("kml","End parse...");
 	    	  
 	    	  // reload displayed data
-	    	  setDataFromLocation();
+	    	  //setDataFromLocation();
 	    	  //Toast.makeText(null, "New data downloaded.", dayIndex).show();
+	    	  
+	    	  reset();
 	        }
 	    }
+	    
+	    private class OWMHTask extends AsyncTask<String,Void,String>{
+	    	String temp = "";
+	    	
+	    	@Override
+	    	protected void onPreExecute (){
+	    		owmTextView.setText("Loading...");
+	    	}
+	    	
+			@Override
+			protected String doInBackground(String... params) {
+				OpenWeatherMapHandler owmh = new OpenWeatherMapHandler();
+				if(owmh.load(params[0])){
+					temp = owmh.getTemp(dates.get(dayIndex),time_array[timeIndex]);
+				}
+				return "";
+			}
+			
+			@Override
+	        protected void onPostExecute(String s) {
+	    	  Log.i("OUT","OpenWeatherMAp temp: "+temp);
+	    	  if(temp.length()>0)
+	    		  owmTextView.setText(Math.round(Double.parseDouble(temp)*100)/100+" from Open Weather Map ");
+	    	  else
+	    		  owmTextView.setText("");
+			}
+		}
 
 	    /* Gestures */
 	    

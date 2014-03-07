@@ -15,18 +15,20 @@ public class CustomAdapter extends ArrayAdapter{
 
 	private final Activity context;
 	private final List<String> names;
+	private final List<String> temperatures;
 	private final List<Integer> images;
-	public CustomAdapter(Activity context,	List<String> names, List<Integer> images) {
+	public CustomAdapter(Activity context,	List<String> names, List<Integer> images, List<String> temperatures) {
 		super(context, R.layout.list_item, names);
 		this.context = context;
 		this.names = names;
 		this.images = images;
+		this.temperatures = temperatures;
 	}
 	
 	@Override
 	public View getView(int position, View view, ViewGroup parent) {		
 		CityItemView civ = new CityItemView(context);
-		civ.setText(names.get(position).toString());
+		civ.setText(names.get(position));
 		civ.setFont(Typeface.createFromAsset(context.getAssets(), "TRACK.OTF"));
 		
 		if(images.get(position) == null){
@@ -48,6 +50,7 @@ public class CustomAdapter extends ArrayAdapter{
 		else{
 			civ.setSavedLocation();
 			civ.setImage(context.getResources().getDrawable(images.get(position)));
+			civ.setTemp(temperatures.get(position));
 		}
 				
 		return civ;		

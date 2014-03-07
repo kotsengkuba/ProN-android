@@ -2,6 +2,7 @@ package com.example.pron;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,10 @@ public class MapViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Toast.makeText(this, "Map Activity",Toast.LENGTH_SHORT).show();
-        View view = inflater.inflate(R.layout.activity_map, null, false);
+        View view = inflater.inflate(R.layout.fragment_map, null, false);
         //setContentView(R.layout.activity_map);
+        
+        Log.d("OUT", "MapViewFragment");
         
         mMap = getMap();
         setUpMapIfNeeded();

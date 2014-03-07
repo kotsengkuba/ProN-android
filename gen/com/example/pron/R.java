@@ -11,12 +11,25 @@ public final class R {
     public static final class attr {
     }
     public static final class dimen {
+        public static final int activity_big_margin=0x7f080002;
         /**  Default screen margins, per the Android Design guidelines. 
 
          Customize dimensions originally defined in res/values/dimens.xml (such as
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
+<<<<<<< HEAD
+        public static final int activity_horizontal_margin=0x7f080000;
+        public static final int activity_vertical_margin=0x7f080001;
+        public static final int bigtext=0x7f080005;
+        public static final int medbigtext=0x7f080006;
+        public static final int medtext=0x7f080007;
+        public static final int smalltext=0x7f080008;
+        public static final int xltext=0x7f080004;
+        public static final int xstext=0x7f080009;
+        public static final int xxltext=0x7f080003;
+        public static final int xxstext=0x7f08000a;
+=======
         public static final int activity_horizontal_margin=0x7f050000;
         public static final int activity_vertical_margin=0x7f050001;
         public static final int bigtext=0x7f050004;
@@ -25,6 +38,7 @@ public final class R {
         public static final int xltext=0x7f050003;
         public static final int xstext=0x7f050007;
         public static final int xxltext=0x7f050002;
+>>>>>>> ff27a50065c7a320e3e61c1661d211a8daf70242
     }
     public static final class drawable {
         public static final int back_button=0x7f020000;
@@ -32,6 +46,80 @@ public final class R {
         public static final int border2=0x7f020002;
         public static final int clear=0x7f020003;
         public static final int cloudy=0x7f020004;
+<<<<<<< HEAD
+        public static final int common_signin_btn_icon_dark=0x7f020005;
+        public static final int common_signin_btn_icon_disabled_dark=0x7f020006;
+        public static final int common_signin_btn_icon_disabled_focus_dark=0x7f020007;
+        public static final int common_signin_btn_icon_disabled_focus_light=0x7f020008;
+        public static final int common_signin_btn_icon_disabled_light=0x7f020009;
+        public static final int common_signin_btn_icon_focus_dark=0x7f02000a;
+        public static final int common_signin_btn_icon_focus_light=0x7f02000b;
+        public static final int common_signin_btn_icon_light=0x7f02000c;
+        public static final int common_signin_btn_icon_normal_dark=0x7f02000d;
+        public static final int common_signin_btn_icon_normal_light=0x7f02000e;
+        public static final int common_signin_btn_icon_pressed_dark=0x7f02000f;
+        public static final int common_signin_btn_icon_pressed_light=0x7f020010;
+        public static final int common_signin_btn_text_dark=0x7f020011;
+        public static final int common_signin_btn_text_disabled_dark=0x7f020012;
+        public static final int common_signin_btn_text_disabled_focus_dark=0x7f020013;
+        public static final int common_signin_btn_text_disabled_focus_light=0x7f020014;
+        public static final int common_signin_btn_text_disabled_light=0x7f020015;
+        public static final int common_signin_btn_text_focus_dark=0x7f020016;
+        public static final int common_signin_btn_text_focus_light=0x7f020017;
+        public static final int common_signin_btn_text_light=0x7f020018;
+        public static final int common_signin_btn_text_normal_dark=0x7f020019;
+        public static final int common_signin_btn_text_normal_light=0x7f02001a;
+        public static final int common_signin_btn_text_pressed_dark=0x7f02001b;
+        public static final int common_signin_btn_text_pressed_light=0x7f02001c;
+        public static final int gradient_bg=0x7f02001d;
+        public static final int gradient_bg_hover=0x7f02001e;
+        public static final int ic_launcher=0x7f02001f;
+        public static final int ic_plusone_medium_off_client=0x7f020020;
+        public static final int ic_plusone_small_off_client=0x7f020021;
+        public static final int ic_plusone_standard_off_client=0x7f020022;
+        public static final int ic_plusone_tall_off_client=0x7f020023;
+        public static final int icon2=0x7f020024;
+        public static final int icon3=0x7f020025;
+        public static final int icon4=0x7f020026;
+        public static final int icon5=0x7f020027;
+        public static final int icon_typhoon=0x7f020028;
+        public static final int image_bg=0x7f020029;
+        public static final int list_selector=0x7f02002a;
+        public static final int logo1=0x7f02002b;
+        public static final int logo2=0x7f02002c;
+        public static final int null_gray=0x7f02002d;
+        public static final int plus_icon=0x7f02002e;
+        public static final int rainy=0x7f02002f;
+    }
+    public static final class id {
+        public static final int GridLayout1=0x7f060010;
+        public static final int LinearLayout1=0x7f060018;
+        public static final int action_settings=0x7f06001a;
+        public static final int cityTextView=0x7f060005;
+        public static final int dayTextView=0x7f060014;
+        public static final int detailsTableLayout=0x7f060011;
+        public static final int hybrid=0x7f060004;
+        public static final int imageView1=0x7f06000c;
+        public static final int imageView2=0x7f06000a;
+        public static final int imageView3=0x7f06000e;
+        public static final int imageView4=0x7f06000d;
+        public static final int imageView5=0x7f06000f;
+        public static final int inputSearch=0x7f060008;
+        public static final int linearLayout2=0x7f060012;
+        public static final int list_view=0x7f060009;
+        public static final int map=0x7f060007;
+        public static final int none=0x7f060000;
+        public static final int normal=0x7f060001;
+        public static final int rainLabelTextView=0x7f060019;
+        public static final int satellite=0x7f060002;
+        public static final int tempLinearLayout=0x7f060016;
+        public static final int tempTextView=0x7f060017;
+        public static final int terrain=0x7f060003;
+        public static final int textView1=0x7f06000b;
+        public static final int timeTextView=0x7f060013;
+        public static final int weather_detail_fragment=0x7f060006;
+        public static final int wheelView=0x7f060015;
+=======
         public static final int gradient_bg=0x7f020005;
         public static final int gradient_bg_hover=0x7f020006;
         public static final int ic_launcher=0x7f020007;
@@ -76,6 +164,7 @@ public final class R {
         public static final int typhoonbutton=0x7f090002;
         public static final int weather_detail_fragment=0x7f090003;
         public static final int wheelView=0x7f090013;
+>>>>>>> ff27a50065c7a320e3e61c1661d211a8daf70242
     }
     public static final class layout {
         public static final int activity_main_v2=0x7f030000;
@@ -83,8 +172,10 @@ public final class R {
         public static final int activity_search_view=0x7f030002;
         public static final int activity_typhoon=0x7f030003;
         public static final int asd=0x7f030004;
-        public static final int fragment_weather_detail=0x7f030005;
-        public static final int list_item=0x7f030006;
+        public static final int dialog_details=0x7f030005;
+        public static final int fragment_map=0x7f030006;
+        public static final int fragment_weather_detail=0x7f030007;
+        public static final int list_item=0x7f030008;
     }
     public static final class menu {
         public static final int choose_location=0x7f080000;
