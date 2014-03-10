@@ -24,7 +24,12 @@ public class LoadScreenActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_load_screen);
 		if((new Filer().fileExists("fourdaylive.json"))){
-			gotoMain();
+			File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
+			if(file.lastModified()-System.currentTimeMillis()<240000000)
+				gotoMain();
+			else
+				new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+
 		} 
 		else{
 			new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
