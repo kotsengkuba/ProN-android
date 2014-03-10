@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Weather Wheel</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="location_name">Quezon City</string>
+    <string name="temperature">Temperature</string>
+    <string name="chance_of_rain">Chance of Rain</string>
+    <string name="humidity">Humidity</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="title_activity_choose_location">Locations</string>
+
+    <string name="week_view_activity">Week View Activity</string>
+    <string name="typhoon_activity">Typhoon Activity</string>
+    <string name="search_view_activity">Search View Activity</string>
+    <string name="map_activity">Map Activity</string>
+    <string name="main_activity_v2">ProN Main v2</string>
+    <string name="OpenGLES20">OpenGLES20</string>
+    
+    <string name="search_hint">Search City</string>
+
+</resources>

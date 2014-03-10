@@ -2,8 +2,6 @@ package com.example.pron;
 
 import java.util.List;
 
-import twitter4j.Twitter;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
