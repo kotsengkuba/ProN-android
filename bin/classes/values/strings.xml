@@ -16,7 +16,7 @@
     <string name="search_view_activity">Search View Activity</string>
     <string name="map_activity">Map Activity</string>
     <string name="main_activity_v2">ProN Main v2</string>
-    <string name="load_screen_activity">Load Screen Activity</string>
+    <string name="load_screen_activity">Weather Wheel</string>
     <string name="OpenGLES20">OpenGLES20</string>
     
     <string name="search_hint">Search City</string>
