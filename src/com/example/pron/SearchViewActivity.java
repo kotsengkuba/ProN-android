@@ -166,7 +166,7 @@ public class SearchViewActivity extends Activity {
 // 	      	   temperature_results.add("");
 //        	   new OnlineSearch().execute(searchString);
         	   
-        	   Log.d("OUT", "products: "+product_results);
+//        	   Log.d("OUT", "products: "+product_results);
         	   adapter.notifyDataSetChanged();    	
                
             }

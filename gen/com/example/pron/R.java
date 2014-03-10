@@ -216,24 +216,24 @@ containing a value of this type.
         public static final int rainy=0x7f020031;
     }
     public static final class id {
-        public static final int GridLayout1=0x7f060011;
+        public static final int GridLayout1=0x7f060012;
         public static final int LinearLayout1=0x7f06001a;
         public static final int action_settings=0x7f06001c;
-        public static final int cityTextView=0x7f060005;
+        public static final int cityTextView=0x7f060006;
         public static final int dayTextView=0x7f060016;
         public static final int detailsTableLayout=0x7f060013;
-        public static final int header_typhoon=0x7f06000a;
+        public static final int header_typhoon=0x7f06000b;
         public static final int hybrid=0x7f060004;
-        public static final int icon_map=0x7f06000d;
-        public static final int icon_rainfall=0x7f06000f;
-        public static final int icon_share=0x7f060010;
-        public static final int icon_signal=0x7f06000e;
-        public static final int icon_typhoon=0x7f06000b;
-        public static final int imageView1=0x7f06000c;
-        public static final int inputSearch=0x7f060008;
+        public static final int icon_map=0x7f06000e;
+        public static final int icon_rainfall=0x7f060010;
+        public static final int icon_share=0x7f060011;
+        public static final int icon_signal=0x7f06000f;
+        public static final int icon_typhoon=0x7f06000c;
+        public static final int imageView1=0x7f06000d;
+        public static final int inputSearch=0x7f060009;
         public static final int linearLayout2=0x7f060014;
-        public static final int list_view=0x7f060009;
-        public static final int map=0x7f060007;
+        public static final int list_view=0x7f06000a;
+        public static final int map=0x7f060008;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
         public static final int rainLabelTextView=0x7f06001b;
@@ -241,28 +241,29 @@ containing a value of this type.
         public static final int tempLinearLayout=0x7f060018;
         public static final int tempTextView=0x7f060019;
         public static final int terrain=0x7f060003;
-        public static final int textView1=0x7f060012;
+        public static final int textView1=0x7f060005;
         public static final int timeTextView=0x7f060015;
-        public static final int weather_detail_fragment=0x7f060006;
+        public static final int weather_detail_fragment=0x7f060007;
         public static final int wheelView=0x7f060017;
     }
     public static final class layout {
-        public static final int activity_main_v2=0x7f030000;
-        public static final int activity_map=0x7f030001;
-        public static final int activity_search_view=0x7f030002;
-        public static final int activity_typhoon=0x7f030003;
-        public static final int asd=0x7f030004;
-        public static final int dialog_details=0x7f030005;
-        public static final int fragment_map=0x7f030006;
-        public static final int fragment_weather_detail=0x7f030007;
-        public static final int list_item=0x7f030008;
+        public static final int activity_load_screen=0x7f030000;
+        public static final int activity_main_v2=0x7f030001;
+        public static final int activity_map=0x7f030002;
+        public static final int activity_search_view=0x7f030003;
+        public static final int activity_typhoon=0x7f030004;
+        public static final int asd=0x7f030005;
+        public static final int dialog_details=0x7f030006;
+        public static final int fragment_map=0x7f030007;
+        public static final int fragment_weather_detail=0x7f030008;
+        public static final int list_item=0x7f030009;
     }
     public static final class menu {
         public static final int choose_location=0x7f0a0000;
         public static final int main=0x7f0a0001;
     }
     public static final class string {
-        public static final int OpenGLES20=0x7f070027;
+        public static final int OpenGLES20=0x7f070028;
         public static final int action_settings=0x7f07001a;
         public static final int app_name=0x7f070019;
         /**   Title for notification shown when GooglePlayServices needs to be
@@ -358,10 +359,11 @@ containing a value of this type.
         public static final int common_signin_button_text_long=0x7f070012;
         public static final int hello_world=0x7f07001b;
         public static final int humidity=0x7f07001f;
+        public static final int load_screen_activity=0x7f070027;
         public static final int location_name=0x7f07001c;
         public static final int main_activity_v2=0x7f070026;
         public static final int map_activity=0x7f070025;
-        public static final int search_hint=0x7f070028;
+        public static final int search_hint=0x7f070029;
         public static final int search_view_activity=0x7f070024;
         public static final int temperature=0x7f07001d;
         public static final int title_activity_choose_location=0x7f070021;

@@ -271,14 +271,13 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public boolean reset(){
 			currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
 			
-			String s = new Filer().fileToString("fourdaylive.json"),
-					s2 = new Filer().fileToString("rainchancelive.json");
+			String s = new Filer().fileToString("fourdaylive.json");
 			if(s.length()>0){
 				weatherReader = new WeatherJSONReader(s);
 				Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
 				
-				if(s2.length()>0){
-					rainReader = new RainJSONReader(s2);
+				if((new Filer().fileExists("rainchancelive.json"))){
+					rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
 					Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
 				}
 				
@@ -330,10 +329,15 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					dayIndex = i;
 				}
 			}
+			if((new Filer().fileExists("rainchancelive.json"))){
+				rainData = rainReader.getPlaceObject(currentCity);
+				if(rainData == null)
+					Log.d("jsoup", "Rain data from file: NULL");
+			}
+			else{
+				rainData = null;
+			}
 			
-			rainData = rainReader.getPlaceObject(currentCity);
-			if(rainData == null)
-				Log.d("jsoup", "Rain data from file: NULL");
 			setDataStrings(dayIndex);
 			setWeatherIcons(dayIndex);
 			reset_textviews();
@@ -411,13 +415,14 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		        if(file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy"))){
 		        	Log.d("OUT", "weather data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
-					Log.d("OUT", "rain data: downloading... ");
-					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
 					Toast.makeText(getActivity(), "Updating...", Toast.LENGTH_SHORT).show();
 		        }
 		        else{
 		        	Log.d("OUT", "weather data is updated.");
 		        }
+		        Log.d("OUT", "rain data: downloading... ");
+				new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
+				
 
 			} catch (Exception e){
 				Log.d("OUT", "weather data: exception "+e);
@@ -501,8 +506,15 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 						temp_array[j] = s;					
 				}
 				for(int j = 0; j < 4; j++){
-					rain_array[j] = rainReader.getRainData(currentCity, j);
-					raintime_array[j] = rainReader.getRainTimes(currentCity, j);
+					if((new Filer().fileExists("rainchancelive.json"))){
+						rain_array[j] = rainReader.getRainData(currentCity, j);
+						raintime_array[j] = rainReader.getRainTimes(currentCity, j);
+					}
+					else{
+						rain_array[j] = "";
+						raintime_array[j] = "";
+					}
+					
 				}
 	    	}catch(Exception e){}
 	    }
@@ -672,7 +684,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	
 	    	@Override
 	        protected void onPostExecute(String s) {
-	    	  Log.i("kml","End parse...");
+	    	  Log.i("OUT","Data updated: "+s);
 	    	  
 	    	  // reload displayed data
 	    	  //setDataFromLocation();

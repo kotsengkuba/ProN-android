@@ -53,4 +53,11 @@ public class Filer {
         Log.d("jsoup", "FILE TO STRING: "+filename+" ("+stringBuffer.length() +")");
     	return stringBuffer.toString();
     }
+    
+    public boolean fileExists(String filename){
+    	String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/pron/saved_files");    
+        File file = new File (myDir, filename);
+        return file.exists();
+    }
 }

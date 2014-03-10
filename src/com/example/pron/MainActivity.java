@@ -18,6 +18,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener{
 	TextView locationTextView;
@@ -40,7 +41,6 @@ public class MainActivity extends Activity implements LocationListener{
 		//Log.d("OUT", "Twitter: "+t);
 		
 		initLocation();
-		
 		fragment = (MainWeatherFragment) getFragmentManager().
 				  findFragmentById(R.id.weather_detail_fragment);
 				if (fragment==null || ! fragment.isInLayout()) {
@@ -160,6 +160,11 @@ public class MainActivity extends Activity implements LocationListener{
     protected void onPause() {
       super.onPause();
       //locationManager.removeUpdates(this);
+    }
+    
+    public void gotoLoadScreen(){
+    	Intent intent = new Intent(this, LoadScreenActivity.class);
+        startActivityForResult(intent, 0);
     }
 
     public void searchCity(View view) {
