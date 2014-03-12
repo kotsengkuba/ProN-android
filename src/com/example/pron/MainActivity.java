@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener{
 	TextView locationTextView;
-	String currentCity = "Quezon City"; //default
+	String currentCity = "Manila"; //default
 	protected LocationManager locationManager;
 	private String provider;
 	Geocoder geocoder;
@@ -38,6 +38,7 @@ public class MainActivity extends Activity implements LocationListener{
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		locationTextView.setTypeface(font);
+		setLocationText();
 		//Log.d("OUT", "Twitter: "+t);
 		
 		initLocation();

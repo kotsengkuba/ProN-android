@@ -34,7 +34,6 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:clickable="true"
         android:onClick="searchCity"
-        android:text="Quezon City"
         android:textColor="#3A3A3A"
         android:textSize="@dimen/bigtext" 
         android:scrollHorizontally="true" 
