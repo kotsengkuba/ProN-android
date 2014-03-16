@@ -50,6 +50,7 @@ public class Wheel extends View{
 		display.getSize(size);
 		width = size.x;
 		height = size.y;
+		Log.d("OUT", "width: "+width+" height: "+height);
 		bitmap_array = new Bitmap [8]; 		
 		cx = 0;
 		cy = height/2 - 200;
@@ -68,7 +69,8 @@ public class Wheel extends View{
     	
     	for(int i=0; i<8; i++){
 			Bitmap bmp = BitmapFactory.decodeResource(getResources(), icon_array[i]);
-			bmp = Bitmap.createScaledBitmap(bmp, 200, 200, true);
+//			bmp = Bitmap.createScaledBitmap(bmp, 200, 200, true);
+			bmp = Bitmap.createScaledBitmap(bmp, (int)(width/5), (int)(width/5), true);
 			bitmap_array[i] = bmp;
 		}
     }

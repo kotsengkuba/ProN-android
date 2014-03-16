@@ -59,7 +59,7 @@
     
     <LinearLayout
         android:id="@+id/LinearLayout1"
-        android:layout_width="100dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tempLinearLayout"
         android:layout_below="@+id/tempLinearLayout"
