@@ -24,7 +24,7 @@ public class Wheel extends View{
 	//private GestureDetectorCompat mDetector; 
 	public VelocityTracker mVelocityTracker = null;
 	
-	float width,height,cx,cy,r,delta,lasty,ex,ey,rad;
+	float width,height,cx,cy,r,delta,lasty,ex,ey,rad,circle_rad;
 	float nex, ney, angle;
 	boolean snap = true, onWheelArea = false;
 	int [] icon_array = new int[]{R.drawable.clear, R.drawable.cloudy, R.drawable.cloudy, R.drawable.rainy, R.drawable.rainy, R.drawable.rainy, R.drawable.clear, R.drawable.cloudy};
@@ -51,6 +51,7 @@ public class Wheel extends View{
 		width = size.x;
 		height = size.y;
 		Log.d("OUT", "width: "+width+" height: "+height);
+		circle_rad = width/5;
 		bitmap_array = new Bitmap [8]; 		
 		cx = 0;
 		cy = height/2 - 200;
@@ -70,7 +71,7 @@ public class Wheel extends View{
     	for(int i=0; i<8; i++){
 			Bitmap bmp = BitmapFactory.decodeResource(getResources(), icon_array[i]);
 //			bmp = Bitmap.createScaledBitmap(bmp, 200, 200, true);
-			bmp = Bitmap.createScaledBitmap(bmp, (int)(width/5), (int)(width/5), true);
+			bmp = Bitmap.createScaledBitmap(bmp, (int)circle_rad, (int)circle_rad, true);
 			bitmap_array[i] = bmp;
 		}
     }
@@ -163,11 +164,11 @@ public class Wheel extends View{
 				Bitmap bmp = Bitmap.createScaledBitmap(bitmap_array[i], (int)(bitmap_array[i].getWidth()*0.8), (int)(bitmap_array[i].getHeight()*0.8), true);
 				p.setColor(circle_colors_array[i]);
 				p.setStyle(Paint.Style.FILL_AND_STROKE);
-				canvas.drawCircle(nex, ney, 90, p);
+				canvas.drawCircle(nex, ney, (int)(circle_rad*0.52), p);
 				
 				p.setColor(Color.WHITE);
 				p.setStyle(Paint.Style.FILL_AND_STROKE);
-				canvas.drawCircle(nex, ney, 70, p);
+				canvas.drawCircle(nex, ney, (int)(circle_rad*0.41), p);
 				
 				canvas.drawBitmap(bmp, nex-bmp.getWidth()/2, ney-bmp.getHeight()/2, null);
 	
@@ -175,11 +176,11 @@ public class Wheel extends View{
 			else{
 				p.setColor(circle_colors_array[i]);
 				p.setStyle(Paint.Style.FILL_AND_STROKE);
-				canvas.drawCircle(nex, ney, 120, p);
+				canvas.drawCircle(nex, ney, (int)(circle_rad*0.62), p);
 				
 				p.setColor(Color.WHITE);
 				p.setStyle(Paint.Style.FILL_AND_STROKE);
-				canvas.drawCircle(nex, ney, 100, p);
+				canvas.drawCircle(nex, ney, (int)(circle_rad*0.52), p);
 				
 		        canvas.drawBitmap(bitmap_array[i], nex-bitmap_array[i].getWidth()/2, ney-bitmap_array[i].getHeight()/2, null);
 	

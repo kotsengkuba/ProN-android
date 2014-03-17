@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,7 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-public class MapActivity extends Activity{
+public class MapActivity extends Fragment{
 	MapViewFragment fragment;
 	
 	int latitude, longitude;
@@ -26,17 +29,30 @@ public class MapActivity extends Activity{
 	LatLng currLocation;
 	ArrayList<Double> PARcoor = new ArrayList<Double>();
 	PolylineOptions PAROptions;
+	
+	View view;
 
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+  	      Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("OUT", "MapActivity");
-        setContentView(R.layout.activity_map);
-        Intent intent = getIntent();
-        currLocation = new LatLng(intent.getDoubleExtra("Latitude", 14.5833), intent.getDoubleExtra("Longitude", 121));
+//        setContentView(R.layout.activity_map);
+        view = inflater.inflate(R.layout.activity_map,
+		        container, false);
+//        Intent intent = getIntent();
+//        currLocation = new LatLng(intent.getDoubleExtra("Latitude", 14.5833), intent.getDoubleExtra("Longitude", 121));
         
-        new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML", "fourday");
+        currLocation = new LatLng(14.5833,121.0);
+        
+        new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML", "storm");
         setupMap();
+        
+        return view;
+	}
+	
+	public GoogleMap getMap(){
+		return mMap;
 	}
 	
 	public void setPAR(){
@@ -50,7 +66,6 @@ public class MapActivity extends Activity{
 	
 	public void setupMap(){
 		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-
         //LatLng sydney = new LatLng(-33.867, 151.206);
         
 

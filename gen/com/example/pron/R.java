@@ -216,12 +216,12 @@ containing a value of this type.
         public static final int rainy=0x7f020031;
     }
     public static final class id {
-        public static final int GridLayout1=0x7f060014;
-        public static final int LinearLayout1=0x7f06001c;
-        public static final int action_settings=0x7f06001e;
+        public static final int GridLayout1=0x7f060015;
+        public static final int LinearLayout1=0x7f06001d;
+        public static final int action_settings=0x7f06001f;
         public static final int cityTextView=0x7f060007;
-        public static final int dayTextView=0x7f060018;
-        public static final int detailsTableLayout=0x7f060015;
+        public static final int dayTextView=0x7f060019;
+        public static final int detailsTableLayout=0x7f060016;
         public static final int header_typhoon=0x7f06000d;
         public static final int hybrid=0x7f060004;
         public static final int icon_map=0x7f060010;
@@ -231,22 +231,23 @@ containing a value of this type.
         public static final int icon_typhoon=0x7f06000e;
         public static final int imageView1=0x7f06000f;
         public static final int inputSearch=0x7f06000b;
-        public static final int linearLayout2=0x7f060016;
+        public static final int linearLayout2=0x7f060017;
         public static final int list_view=0x7f06000c;
         public static final int map=0x7f06000a;
+        public static final int mapActivity=0x7f060014;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
-        public static final int rainLabelTextView=0x7f06001d;
+        public static final int rainLabelTextView=0x7f06001e;
         public static final int satellite=0x7f060002;
         public static final int stormLinearLayout=0x7f060008;
-        public static final int tempLinearLayout=0x7f06001a;
-        public static final int tempTextView=0x7f06001b;
+        public static final int tempLinearLayout=0x7f06001b;
+        public static final int tempTextView=0x7f06001c;
         public static final int terrain=0x7f060003;
         public static final int textView1=0x7f060005;
-        public static final int timeTextView=0x7f060017;
+        public static final int timeTextView=0x7f060018;
         public static final int typhoonButton=0x7f060006;
         public static final int weather_detail_fragment=0x7f060009;
-        public static final int wheelView=0x7f060019;
+        public static final int wheelView=0x7f06001a;
     }
     public static final class layout {
         public static final int activity_load_screen=0x7f030000;

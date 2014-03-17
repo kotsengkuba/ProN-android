@@ -6,12 +6,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class TyphoonActivity extends Activity {
 
 	TextView typhoonTextView;
-	GoogleMap gmap;
+	MapActivity mapActivity;
+	LatLng currLocation;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +27,20 @@ public class TyphoonActivity extends Activity {
 		typhoonTextView = (TextView) findViewById(R.id.header_typhoon);
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		typhoonTextView.setTypeface(font);
-	   
+		
+		mapActivity = (MapActivity) getFragmentManager().
+				  findFragmentById(R.id.mapActivity);
+				if (mapActivity==null || ! mapActivity.isInLayout()) {
+				  // start new Activity
+				  }
+				else {
+				  //fragment.update(...);
+				}
+				
 	}
 	
 	public void displayMap(){
-		MapViewFragment mvf = (MapViewFragment) getFragmentManager().findFragmentById(R.id.map);
-		gmap = mvf.getMap();
-		setContentView(R.layout.activity_typhoon);
+
 	}
-	
+
 }
