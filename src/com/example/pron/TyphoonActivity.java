@@ -1,16 +1,12 @@
 package com.example.pron;
 
 import android.app.Activity;
-import java.util.List;
-
-import com.google.android.gms.maps.GoogleMap;
-
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.util.Log;
 import android.widget.TextView;
-import android.widget.ImageView;
+
+import com.google.android.gms.maps.GoogleMap;
 
 public class TyphoonActivity extends Activity {
 
@@ -19,6 +15,7 @@ public class TyphoonActivity extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d("OUT", "Typhoon Activity");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_typhoon);
 		

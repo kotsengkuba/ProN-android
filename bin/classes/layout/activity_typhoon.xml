@@ -157,7 +157,7 @@
             android:clickable="false"
             android:src="@drawable/icon_typhoon" />
 
-        <fragment
+        <!-- <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="50dp"
@@ -168,7 +168,7 @@
             android:layout_marginTop="19dp"
             android:layout_toRightOf="@+id/icon_typhoon"
             android:clickable="true"
-            android:onClick="displayMap" />
+            android:onClick="displayMap" /> -->
         
        <fragment
             android:id="@+id/map"

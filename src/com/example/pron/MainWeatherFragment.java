@@ -39,6 +39,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -52,6 +53,7 @@ import android.widget.Toast;
 public class MainWeatherFragment extends Fragment implements GestureDetector.OnGestureListener{
 
 	private static final int RESULT_OK = 0;
+	MainActivity mainActivity;
 	TextView tempTextView, timeTextView, dayTextView, rainLabelTextView, owmTextView;
 	Wheel wheelView;
 	RainWheel rainWheelView;
@@ -96,6 +98,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		view = inflater.inflate(R.layout.fragment_weather_detail,
 		        container, false);
 		
+		mainActivity = (MainActivity)view.getContext();
 		tempTextView = (TextView) view.findViewById(R.id.tempTextView);	
 		timeTextView = (TextView) view.findViewById(R.id.timeTextView);
 		dayTextView = (TextView) view.findViewById(R.id.dayTextView);
@@ -108,6 +111,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		owmTextView = new TextView(this.getActivity());
 		temperatureLayout = (LinearLayout) view.findViewById(R.id.tempLinearLayout);
 		temperatureLayout.addView(owmTextView);
+		addTyphoonButton();
 		
 		//Get the typeface from assets
 		font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
@@ -555,10 +559,20 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		}
 		
 		public void addTyphoonButton(){
-			Button b = new Button(view.getContext());
-			b.setText("asd");
-			LinearLayout l = (LinearLayout)view.findViewById(R.id.linearLayout2);
-			//l.addView(b, 2);
+//			Log.d("OUT", "addTyphoonButton");
+//			final TextView b = new TextView(this.getActivity());
+//			LinearLayout l = (LinearLayout)view.findViewById(R.id.stormLinearLayout);
+//			b.setText("Typhoon");
+//			b.setOnClickListener(new OnClickListener(){
+//
+//				@Override
+//				public void onClick(View arg0) {
+//					// TODO Auto-generated method stub
+//					((MainActivity) view.getContext()).openTyphoon(b);
+//				}});
+//			l.addView(b);
+			
+//			((MainActivity) this.getActivity()).addTyphoonButton();
 		}
 		
 		public void setRainVisibility(int v){
@@ -667,9 +681,9 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    				stormtrack_handler = new StormTrackXMLParser();
 	    	            saxParser.parse(params[0], stormtrack_handler);
 	                    //Log.d("OUT", "storm exists: "+stormtrack_handler.stormExists());
-	    	            if(stormtrack_handler.stormExists()){
+	    	            //if(stormtrack_handler.stormExists()){
 	    	            	addTyphoonButton();
-	    	            }
+	    	            //}
 	    			}
 	    			else if(params[1].equals("openweathermmap")){
 	    				Log.d("OUT", "OWM"+(new Filer().fileToString(params[1]+"RAW.txt")));
@@ -684,7 +698,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	
 	    	@Override
 	        protected void onPostExecute(String s) {
-	    	  Log.i("OUT","Data updated: "+s);
+//	    	  Log.i("OUT","Data updated: "+s);
 	    	  
 	    	  // reload displayed data
 	    	  //setDataFromLocation();

@@ -17,11 +17,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener{
 	TextView locationTextView;
+	Button typhoonButton;
 	String currentCity = "Manila"; //default
 	protected LocationManager locationManager;
 	private String provider;
@@ -38,6 +39,11 @@ public class MainActivity extends Activity implements LocationListener{
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		locationTextView.setTypeface(font);
+		
+		typhoonButton = (Button) findViewById(R.id.typhoonButton);
+		typhoonButton.setVisibility(View.INVISIBLE);
+		addTyphoonButton();
+		
 		setLocationText();
 		//Log.d("OUT", "Twitter: "+t);
 		
@@ -193,6 +199,25 @@ public class MainActivity extends Activity implements LocationListener{
     	Intent intent = new Intent(this, TyphoonActivity.class);
         startActivity(intent);
     }
+    
+    public void addTyphoonButton(){
+//		final TextView b = new TextView(this);
+//		LinearLayout l = (LinearLayout)findViewById(R.id.stormLinearLayout);
+//		b.setText("Typhoon");
+//		b.setOnClickListener(new OnClickListener(){
+//
+//			@Override
+//			public void onClick(View arg0) {
+//				// TODO Auto-generated method stub
+//				openTyphoon(b);
+//			}});
+//		Log.d("OUT", "addTyphoonButton b: "+b+" l: "+l);
+//		l.addView(b);
+    	
+    	typhoonButton = (Button) findViewById(R.id.typhoonButton);
+		typhoonButton.setVisibility(View.VISIBLE);
+    	
+	}
     
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("jsoup", "REQUEST CODE:" + requestCode);
