@@ -1,6 +1,16 @@
 package com.example.pron;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,15 +24,16 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements LocationListener{
 	TextView locationTextView;
-	Button typhoonButton;
+	ImageView typhoonButton;
 	String currentCity = "Manila"; //default
 	protected LocationManager locationManager;
 	private String provider;
@@ -40,9 +51,9 @@ public class MainActivity extends Activity implements LocationListener{
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		locationTextView.setTypeface(font);
 		
-		typhoonButton = (Button) findViewById(R.id.typhoonButton);
+		typhoonButton = (ImageView) findViewById(R.id.typhoonButton);
 		typhoonButton.setVisibility(View.INVISIBLE);
-		addTyphoonButton();
+		new StormParser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML");
 		
 		setLocationText();
 		//Log.d("OUT", "Twitter: "+t);
@@ -213,10 +224,7 @@ public class MainActivity extends Activity implements LocationListener{
 //			}});
 //		Log.d("OUT", "addTyphoonButton b: "+b+" l: "+l);
 //		l.addView(b);
-    	
-    	typhoonButton = (Button) findViewById(R.id.typhoonButton);
 		typhoonButton.setVisibility(View.VISIBLE);
-    	
 	}
     
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -233,6 +241,66 @@ public class MainActivity extends Activity implements LocationListener{
             break;
         default:
             break;
+        }
+    }
+	
+	private class StormParser extends AsyncTask<String,Void,String>{
+    	SAXParserFactory factory;
+    	SAXParser saxParser;
+    	StormTrackXMLParser stormtrack_handler;
+    	
+    	@Override
+    	protected void onPreExecute (){
+    	}
+    	@Override
+		protected String doInBackground(String... params) {
+			String s = "";
+    		
+    	    try {
+    	        factory = SAXParserFactory.newInstance();
+    			saxParser = factory.newSAXParser();
+    			
+    			Log.d("jsoup", "writing RAW..."+params[0]);
+    			URL url = new URL(params[0]);
+                URLConnection connection = url.openConnection();
+                connection.connect();
+                InputStream input = new BufferedInputStream(url.openStream());
+                
+                String path = Environment.getExternalStorageDirectory()
+                        + "/pron/saved_files";
+                File file = new File(path);
+	            file.mkdirs();
+	            File outputFile = new File(file, "stormRAW.txt");
+	            OutputStream output = new FileOutputStream(outputFile);
+	
+	            byte data[] = new byte[1024];
+	            int count;
+	            
+	            while ((count = input.read(data)) != -1) {
+	                    output.write(data, 0, count);
+	            }
+	
+	            output.flush();
+	            output.close();
+	            Log.d("jsoup", "RAW written.");
+
+				stormtrack_handler = new StormTrackXMLParser();
+	            saxParser.parse(params[0], stormtrack_handler);
+                Log.d("OUT", "storm exists: "+stormtrack_handler.stormExists());
+	            //if(stormtrack_handler.stormExists()){
+	            	addTyphoonButton();
+	            //}
+
+
+    	    } catch(Exception e){
+    	    	e.printStackTrace();
+    	    }
+    	    
+    	    return s;
+		}
+    	
+    	@Override
+        protected void onPostExecute(String s) {
         }
     }
     

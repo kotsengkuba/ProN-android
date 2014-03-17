@@ -26,13 +26,20 @@
             android:onClick="openTyphoon"
             android:text="Typhoon" /> -->
 
-        <Button
+        <ImageView
+            android:id="@+id/typhoonButton"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:onClick="openTyphoon"
+            android:src="@drawable/icon_typhoon" />
+
+        <!-- <Button
             android:id="@+id/typhoonButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Typhoon"
             android:visibility="visible" 
-            android:onClick="openTyphoon"/>
+            android:onClick="openTyphoon"/> -->
 
         <TextView
             android:id="@+id/cityTextView"

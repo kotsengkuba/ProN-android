@@ -111,7 +111,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		owmTextView = new TextView(this.getActivity());
 		temperatureLayout = (LinearLayout) view.findViewById(R.id.tempLinearLayout);
 		temperatureLayout.addView(owmTextView);
-		addTyphoonButton();
 		
 		//Get the typeface from assets
 		font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
@@ -400,22 +399,19 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		
 		public void updateData(){
 			try{
-				JSONObject j = cityData.getJSONArray("dates").getJSONObject(0);
-				String date = j.getString("date");
-				String[] tokens = date.split(" ");
-				String month  = tokens[0];
-				int day = Integer.parseInt(tokens[1].replaceAll(",", ""));
-				int year = Integer.parseInt(tokens[2]);
-				Log.d("jsoup", "Current Date: "+Calendar.getInstance().get(Calendar.DATE));
-				Log.d("jsoup", "Current Month: "+Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
-				Log.d("jsoup", "Current Year: "+Calendar.getInstance().get(Calendar.YEAR));
+//				JSONObject j = cityData.getJSONArray("dates").getJSONObject(0);
+//				String date = j.getString("date");
+//				String[] tokens = date.split(" ");
+//				String month  = tokens[0];
+//				int day = Integer.parseInt(tokens[1].replaceAll(",", ""));
+//				int year = Integer.parseInt(tokens[2]);
+//				Log.d("jsoup", "Current Date: "+Calendar.getInstance().get(Calendar.DATE));
+//				Log.d("jsoup", "Current Month: "+Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
+//				Log.d("jsoup", "Current Year: "+Calendar.getInstance().get(Calendar.YEAR));
 				
 				File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
 		        //Log.d("OUT", "FILE date modified: "+file.lastModified());
-				
-				Log.d("OUT", "rain data: downloading... ");
-				new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML", "storm");
-	
+					
 		        if(file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy"))){
 		        	Log.d("OUT", "weather data: downloading... ");
 					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
@@ -558,23 +554,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			reset_textviews();
 		}
 		
-		public void addTyphoonButton(){
-//			Log.d("OUT", "addTyphoonButton");
-//			final TextView b = new TextView(this.getActivity());
-//			LinearLayout l = (LinearLayout)view.findViewById(R.id.stormLinearLayout);
-//			b.setText("Typhoon");
-//			b.setOnClickListener(new OnClickListener(){
-//
-//				@Override
-//				public void onClick(View arg0) {
-//					// TODO Auto-generated method stub
-//					((MainActivity) view.getContext()).openTyphoon(b);
-//				}});
-//			l.addView(b);
-			
-//			((MainActivity) this.getActivity()).addTyphoonButton();
-		}
-		
 		public void setRainVisibility(int v){
 			rainLayout.setVisibility(v);
 		}
@@ -623,7 +602,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	SAXParser saxParser;
 	    	FourDayXMLParser fourday_handler;
 	    	RainChanceXMLParser rainchance_handler;
-	    	StormTrackXMLParser stormtrack_handler;
 	    	
 	    	@Override
 	    	protected void onPreExecute (){
@@ -677,14 +655,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		                Log.i("kml","s = "+s);
 		                new Filer().saveFile(s,"rainchancelive.json");
 	    			}
-	    			else if(params[1].equals("storm")){
-	    				stormtrack_handler = new StormTrackXMLParser();
-	    	            saxParser.parse(params[0], stormtrack_handler);
-	                    //Log.d("OUT", "storm exists: "+stormtrack_handler.stormExists());
-	    	            //if(stormtrack_handler.stormExists()){
-	    	            	addTyphoonButton();
-	    	            //}
-	    			}
 	    			else if(params[1].equals("openweathermmap")){
 	    				Log.d("OUT", "OWM"+(new Filer().fileToString(params[1]+"RAW.txt")));
 	    			}
@@ -728,7 +698,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			@Override
 	        protected void onPostExecute(String s) {
 	    	  Log.i("OUT","OpenWeatherMAp temp: "+temp);
-	    	  if(temp.length()>0)
+	    	  if(temp!=null && temp.length()>0)
 	    		  owmTextView.setText(Math.round(Double.parseDouble(temp)*100)/100+" from Open Weather Map ");
 	    	  else
 	    		  owmTextView.setText("");
