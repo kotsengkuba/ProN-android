@@ -15,8 +15,10 @@ public class StormTrackXMLParser extends DefaultHandler{
 	JSONObject json_final = new JSONObject();
 	JSONArray json_array = new JSONArray();
 	JSONObject json_obj = new JSONObject();
-	boolean is_name, is_body, is_PAR, is_linestring, is_coordinates, is_actualtrack;
+	boolean is_name, is_body, is_PAR, is_linestring, is_coordinates, is_actualtrack, is_forecasttrack;
 	ArrayList PARcoor = new ArrayList();
+	ArrayList actualTrackCoor = new ArrayList();
+	ArrayList forecastTrackCoor = new ArrayList();
 	int counter = 0;
 	boolean storm = false;
 	
@@ -47,9 +49,6 @@ public class StormTrackXMLParser extends DefaultHandler{
     	else if(qName.equals("coordinates")){
     		is_coordinates = true;
     	}
-    	else if(qName.equals("Actual Track")){
-    		is_actualtrack = true;
-    	}
     }
 
 
@@ -68,8 +67,11 @@ public class StormTrackXMLParser extends DefaultHandler{
     	else if(qName.equals("Folder") && is_PAR){
     		is_PAR = false;
     	}
-    	else if(qName.equals("Actual Track")){
+    	else if(qName.equals("Folder") && is_actualtrack){
     		is_actualtrack = false;
+    	}
+    	else if(qName.equals("Folder") && is_forecasttrack){
+    		is_forecasttrack = false;
     	}
     }
 
@@ -80,7 +82,7 @@ public class StormTrackXMLParser extends DefaultHandler{
     	if(is_name && s.equals("PAR")){
     		is_PAR = true;
     	}
-    	if(is_PAR && is_coordinates){    		
+    	else if(is_PAR && is_coordinates){    		
     		String [] toks = s.split(",");
     		for(int i = 0; i<toks.length;i++){
     			if(toks[i].contains("0 "))
@@ -90,15 +92,51 @@ public class StormTrackXMLParser extends DefaultHandler{
     				PARcoor.add(Double.parseDouble(toks[i]));
     		}
     	}
-    	if(is_actualtrack && is_coordinates){
-    		if(s.length()>0)
+    	else if(is_name && s.equals("Actual Position")){
+    		is_actualtrack = true;
+    	}
+    	else if(is_name && s.equals("Forecast Track")){
+    		is_forecasttrack = true;
+    	}
+    	else if(is_actualtrack && is_coordinates){
+    		if(s.length()>0){
     			storm = true;
+    			String [] toks = s.split(",");
+        		for(int i = 0; i<toks.length;i++){
+        			if(toks[i].contains("0 "))
+        				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
+        			Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
+        			if(!toks[i].equals("0"))
+        				actualTrackCoor.add(Double.parseDouble(toks[i]));
+        		}
+    		}
+    	}
+    	else if(is_forecasttrack && is_coordinates){
+    		if(s.length()>0){
+    			storm = true;
+    			String [] toks = s.split(",| ");
+        		for(int i = 0; i<toks.length;i++){
+        			if(toks[i].contains("0 "))
+        				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
+        			Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
+        			if(!toks[i].equals("0"))
+        				forecastTrackCoor.add(Double.parseDouble(toks[i]));
+        		}
+    		}
     	}
 
 	}
     
     public ArrayList getPARcoor(){
     	return PARcoor;
+    }
+    
+    public ArrayList getActualTrack(){
+    	return actualTrackCoor;
+    }
+    
+    public ArrayList getForecastTrack(){
+    	return forecastTrackCoor;
     }
     
     public boolean stormExists(){

@@ -54,6 +54,13 @@ public class Filer {
     	return stringBuffer.toString();
     }
     
+    public File getFile(String filename){
+    	String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/pron/saved_files");    
+        //myDir.mkdirs();
+        return new File (myDir, filename);
+    }
+    
     public boolean fileExists(String filename){
     	String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/pron/saved_files");    

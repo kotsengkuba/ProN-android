@@ -1,5 +1,6 @@
 package com.example.pron;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParser;
@@ -28,6 +29,8 @@ public class MapActivity extends Fragment{
 	GoogleMap mMap;
 	LatLng currLocation;
 	ArrayList<Double> PARcoor = new ArrayList<Double>();
+	ArrayList<Double> actualTrack = new ArrayList<Double>();
+	ArrayList<Double> forecastTrack = new ArrayList<Double>();
 	PolylineOptions PAROptions;
 	
 	View view;
@@ -79,6 +82,13 @@ public class MapActivity extends Fragment{
         
 
 	}
+	
+	public void setTrack(ArrayList<Double> a){
+		for(int i = 0; i<a.size()/2; i++){
+			mMap.addMarker(new MarkerOptions().position(new LatLng(a.get(i*2+1), a.get(i*2))));
+		}
+	}
+	
 	private class XMLparser extends AsyncTask<String,Void,String>{
     	SAXParserFactory factory;
     	SAXParser saxParser;
@@ -95,11 +105,17 @@ public class MapActivity extends Fragment{
     	        factory = SAXParserFactory.newInstance();
     			saxParser = factory.newSAXParser();
 	            stormtrack_handler = new StormTrackXMLParser();
-	            saxParser.parse(params[0], stormtrack_handler);
+//	            saxParser.parse(params[0], stormtrack_handler);
+	            File testfile = new Filer().getFile("storm-track-YOLANDA-4.KML");
+	            saxParser.parse(testfile, stormtrack_handler);
+	            Log.d("OUT", "kml testfile: "+new Filer().fileExists("storm-track-YOLANDA-4.KML"));
                 Log.d("OUT", "PARcoor "+stormtrack_handler.getPARcoor());
                 PARcoor = stormtrack_handler.getPARcoor();
+                actualTrack = stormtrack_handler.getActualTrack();
+                forecastTrack = stormtrack_handler.getForecastTrack();
     	    } catch(Exception e){
     	    	e.printStackTrace();
+    	    	Log.d("OUT", "stormparse exception: "+e);
     	    }
 			return s;
 		}
@@ -107,6 +123,11 @@ public class MapActivity extends Fragment{
     	@Override
         protected void onPostExecute(String s) {
     		setPAR();
+    		Log.d("OUT", "Track: "+actualTrack);
+    		if(actualTrack.size()>0)
+    			setTrack(actualTrack);
+    		if(forecastTrack.size()>0)
+    			setTrack(forecastTrack);
         }
     }
 	

@@ -90,7 +90,7 @@ public class OpenWeatherMapHandler {
 				SimpleDateFormat postFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				
 				String newDateStr = postFormater.format(date);
-				Log.d("OUT", "main: "+newDateStr+", owm: "+listItem.getString("dt_txt"));
+//				Log.d("OUT", "main: "+newDateStr+", owm: "+listItem.getString("dt_txt"));
 				if(listItem.getString("dt_txt").equals(newDateStr)){
 					if(i>0){
 						double d = Double.parseDouble(listItem.getJSONObject("main").getString("temp")) - 273.15;
