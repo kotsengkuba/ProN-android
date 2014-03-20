@@ -3,6 +3,7 @@ package com.example.pron;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
@@ -12,10 +13,11 @@ import android.util.Log;
 public class StormTrackXMLParser extends DefaultHandler{
 	
 	String html = "";
-	JSONObject json_final = new JSONObject();
-	JSONArray json_array = new JSONArray();
-	JSONObject json_obj = new JSONObject();
-	boolean is_name, is_body, is_PAR, is_linestring, is_coordinates, is_actualtrack, is_forecasttrack;
+	JSONArray track = new JSONArray();
+	JSONArray forecast_error = new JSONArray();
+	//JSONArray error_array;
+	JSONObject obj;
+	boolean is_name, is_body, is_PAR, is_linestring, is_coordinates, is_actualtrack, is_forecasttrack, is_desc, is_p, is_error;
 	ArrayList PARcoor = new ArrayList();
 	ArrayList actualTrackCoor = new ArrayList();
 	ArrayList forecastTrackCoor = new ArrayList();
@@ -49,6 +51,18 @@ public class StormTrackXMLParser extends DefaultHandler{
     	else if(qName.equals("coordinates")){
     		is_coordinates = true;
     	}
+    	else if(qName.equals("description")){
+    		is_desc = true;
+    		try {
+				obj.put("Description", "");
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	else if(qName.equals("p")){
+    		is_p = true;
+    	}
     }
 
 
@@ -73,6 +87,26 @@ public class StormTrackXMLParser extends DefaultHandler{
     	else if(qName.equals("Folder") && is_forecasttrack){
     		is_forecasttrack = false;
     	}
+    	else if(qName.equals("Folder") && is_error){
+    		is_error = false;
+    	}
+    	else if(qName.equals("Placemark") && (is_actualtrack || is_forecasttrack)){
+    		try {
+				track.put(new JSONObject(obj.toString()));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	else if(qName.equals("Folder") && is_forecasttrack){
+    		is_forecasttrack = false;
+    	}
+    	else if(qName.equals("desc")){
+    		is_desc = false;
+    	}
+    	else if(qName.equals("p")){
+    		is_p = false;
+    	}
     }
 
 
@@ -94,34 +128,106 @@ public class StormTrackXMLParser extends DefaultHandler{
     	}
     	else if(is_name && s.equals("Actual Position")){
     		is_actualtrack = true;
+    		obj = new JSONObject();
     	}
     	else if(is_name && s.equals("Forecast Track")){
     		is_forecasttrack = true;
+    		obj = new JSONObject();
+    	}
+    	else if(is_name && s.equals("Forecast Error")){
+    		is_error = true;
     	}
     	else if(is_actualtrack && is_coordinates){
     		if(s.length()>0){
     			storm = true;
     			String [] toks = s.split(",");
+    			JSONArray coor = new JSONArray();
         		for(int i = 0; i<toks.length;i++){
-        			if(toks[i].contains("0 "))
+        			if(toks[i].contains("0 ")){
         				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
-        			Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
-        			if(!toks[i].equals("0"))
+        			}
+        			Log.d("OUT", "actual track toks int "+Double.parseDouble(toks[i]));
+        			if(!toks[i].equals("0")){
         				actualTrackCoor.add(Double.parseDouble(toks[i]));
+        				try {
+							coor.put(Double.parseDouble(toks[i]));
+						} catch (NumberFormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+        			}
         		}
+        		try {
+					obj.put("Coordinates", coor);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
     		}
     	}
     	else if(is_forecasttrack && is_coordinates){
     		if(s.length()>0){
     			storm = true;
+    			JSONArray coor = new JSONArray();
     			String [] toks = s.split(",| ");
         		for(int i = 0; i<toks.length;i++){
         			if(toks[i].contains("0 "))
         				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
-        			Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
+//        			Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
         			if(!toks[i].equals("0"))
         				forecastTrackCoor.add(Double.parseDouble(toks[i]));
+        			try {
+						coor.put(Double.parseDouble(toks[i]));
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
         		}
+        		try {
+					obj.put("Coordinates", coor);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    	}
+    	else if((is_actualtrack || is_forecasttrack) && is_desc && is_p){
+    		try {
+				obj.put("Description", obj.get("Description")+s);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	else if(is_error && is_coordinates){
+    		if(s.length()>0){
+    			JSONArray coor = new JSONArray();
+    			String [] toks = s.split(",| ");
+        		for(int i = 0; i<toks.length;i++){
+        			if(toks[i].contains("0 "))
+        				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
+//        			Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
+        			if(!toks[i].equals("0"))
+        				//forecastTrackCoor.add(Double.parseDouble(toks[i]));
+        			try {
+						coor.put(Double.parseDouble(toks[i]));
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        		}
+    		
+				forecast_error.put(coor);
+			
     		}
     	}
 
@@ -137,6 +243,14 @@ public class StormTrackXMLParser extends DefaultHandler{
     
     public ArrayList getForecastTrack(){
     	return forecastTrackCoor;
+    }
+    
+    public JSONArray getActualTrackJSON(){
+    	return track;
+    }
+    
+    public JSONArray getForecastErrorJSON(){
+    	return forecast_error;
     }
     
     public boolean stormExists(){
