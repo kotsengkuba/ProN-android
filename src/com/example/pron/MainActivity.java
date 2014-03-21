@@ -45,28 +45,19 @@ public class MainActivity extends Activity implements LocationListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main_v2);
-		
-		locationTextView = (TextView) findViewById(R.id.cityTextView);
-		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
-		locationTextView.setTypeface(font);
-		
-		typhoonButton = (ImageView) findViewById(R.id.typhoonButton);
-		typhoonButton.setVisibility(View.INVISIBLE);
-		new StormParser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML");
-		
-		setLocationText();
-		//Log.d("OUT", "Twitter: "+t);
-		
-		initLocation();
-		fragment = (MainWeatherFragment) getFragmentManager().
-				  findFragmentById(R.id.weather_detail_fragment);
-				if (fragment==null || ! fragment.isInLayout()) {
-				  // start new Activity
-				  }
-				else {
-				  //fragment.update(...);
-				} 
+		setContentView(R.layout.activity_load_screen);
+		Log.d("OUT", "MainAct OnCreate");
+		if((new Filer().fileExists("fourdaylive.json"))){
+			File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
+			if(file.lastModified()-System.currentTimeMillis()<240000000)
+				loadMain();
+			else
+				new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+
+		} 
+		else{
+			new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+		}
 	}
 	
 	/*
@@ -108,6 +99,30 @@ public class MainActivity extends Activity implements LocationListener{
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras){
 		
+	}
+	
+	public void loadMain(){
+		setContentView(R.layout.activity_main_v2);
+		locationTextView = (TextView) findViewById(R.id.cityTextView);
+		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
+		locationTextView.setTypeface(font);
+		
+		typhoonButton = (ImageView) findViewById(R.id.typhoonButton);
+		typhoonButton.setVisibility(View.INVISIBLE);
+		new StormParser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML");
+		
+		setLocationText();
+		//Log.d("OUT", "Twitter: "+t);
+		
+		initLocation();
+		fragment = (MainWeatherFragment) getFragmentManager().
+				  findFragmentById(R.id.weather_detail_fragment);
+				if (fragment==null || ! fragment.isInLayout()) {
+				  // start new Activity
+				  }
+				else {
+				  //fragment.update(...);
+				} 
 	}
 	
 	public void setLocationText(){
@@ -178,11 +193,6 @@ public class MainActivity extends Activity implements LocationListener{
     protected void onPause() {
       super.onPause();
       //locationManager.removeUpdates(this);
-    }
-    
-    public void gotoLoadScreen(){
-    	Intent intent = new Intent(this, LoadScreenActivity.class);
-        startActivityForResult(intent, 0);
     }
 
     public void searchCity(View view) {
@@ -303,5 +313,73 @@ public class MainActivity extends Activity implements LocationListener{
         protected void onPostExecute(String s) {
         }
     }
-    
+	
+	private class XMLparser extends AsyncTask<String,Void,String>{
+    	SAXParserFactory factory;
+    	SAXParser saxParser;
+    	FourDayXMLParser fourday_handler;
+    	
+    	@Override
+    	protected void onPreExecute (){
+    	}
+    	@Override
+		protected String doInBackground(String... params) {
+			String s = "";
+    		
+    	    try {
+    	        factory = SAXParserFactory.newInstance();
+    			saxParser = factory.newSAXParser();
+    			
+    			Log.d("jsoup", "writing RAW..."+params[0]);
+    			URL url = new URL(params[0]);
+                URLConnection connection = url.openConnection();
+                connection.connect();
+                InputStream input = new BufferedInputStream(url.openStream());
+                
+                String path = Environment.getExternalStorageDirectory()
+                        + "/pron/saved_files";
+                File file = new File(path);
+	            file.mkdirs();
+	            File outputFile = new File(file, params[1]+"RAW.txt");
+	            OutputStream output = new FileOutputStream(outputFile);
+	
+	            byte data[] = new byte[1024];
+	            int count;
+	            
+	            while ((count = input.read(data)) != -1) {
+	                    output.write(data, 0, count);
+	            }
+	
+	            output.flush();
+	            output.close();
+	            Log.d("jsoup", "RAW written.");
+	            
+	            
+    			if(params[1].equals("fourday")){
+    				Log.d("jsoup", "writing PARSED...");
+    				fourday_handler = new FourDayXMLParser();
+	                saxParser.parse(outputFile, fourday_handler);
+	                s = fourday_handler.get_json_string();
+	                new Filer().saveFile(s,"fourdaylive.json");
+	                Log.d("jsoup", "PARSED written.");
+    			}
+    	    } catch(Exception e){
+    	    	e.printStackTrace();
+    	    }
+    	    
+    	    return s;
+		}
+    	
+    	@Override
+        protected void onPostExecute(String s) {
+    	  Log.i("kml","End parse...");
+    	  
+    	  // reload displayed data
+    	  //setDataFromLocation();
+    	  //Toast.makeText(null, "New data downloaded.", dayIndex).show();
+    	  
+    	  loadMain();
+        }
+    }
 }
+    
