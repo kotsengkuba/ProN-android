@@ -55,7 +55,7 @@ public class RainJSONReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d("OUT", "getRainData: NOTFOUND");
+//		Log.d("OUT", "getRainData: NOTFOUND");
 		return s;
 	}
 	
@@ -70,7 +70,7 @@ public class RainJSONReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d("OUT", "getRainData: NOTFOUND");
+//		Log.d("OUT", "getRainData: NOTFOUND");
 		return s;
 	}
 }

@@ -146,7 +146,7 @@ public class StormTrackXMLParser extends DefaultHandler{
         			if(toks[i].contains("0 ")){
         				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
         			}
-        			Log.d("OUT", "actual track toks int "+Double.parseDouble(toks[i]));
+//        			Log.d("OUT", "actual track toks int "+Double.parseDouble(toks[i]));
         			if(!toks[i].equals("0")){
         				actualTrackCoor.add(Double.parseDouble(toks[i]));
         				try {

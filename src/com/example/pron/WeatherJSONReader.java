@@ -49,18 +49,21 @@ public class WeatherJSONReader {
 	
 	public JSONObject getPlaceObject(String placename){
 		JSONObject place;
-		try {
-			for(int i = 0; i < places.length(); i++){
-				place = places.getJSONObject(i);
-				//Log.d("OUT", "getPlaceObject: "+place.getString("name")+", "+placename);
-				if(place.getString("name").indexOf(placename) == 0){
-					currentPlace = place;
-					return currentPlace;
+		if(placename.length()>0){
+			try {
+				for(int i = 0; i < places.length(); i++){
+					place = places.getJSONObject(i);
+//					Log.d("OUT", "getPlaceObject: "+place.getString("name")+", "+placename);
+					if(place.getString("name").indexOf(placename) == 0){
+						currentPlace = place;
+						return currentPlace;
+					}
 				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Log.d("OUT","find place object exception:"+e);
 			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return null;
 	}
@@ -155,4 +158,9 @@ public class WeatherJSONReader {
 		}
 		return null;
 	}	
+	
+	public String getFirstPlace(){
+		Log.d("OUT", "first place:" + getAllPlaces().get(0));
+		return getAllPlaces().get(0);
+	}
 }

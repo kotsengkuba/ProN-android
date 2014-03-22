@@ -168,7 +168,7 @@ public class MapActivity extends Fragment{
         protected void onPostExecute(String s) {
     		setPAR();
 //    		Log.d("OUT", "Track: "+track);
-    		Log.d("OUT", "Forecast Error: "+forecast_error);
+//    		Log.d("OUT", "Forecast Error: "+forecast_error);
     		if(track.length()>0)
     			setTrack(track);
     		for(int i = 0;i<forecast_error.length()-1;i++){

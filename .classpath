@@ -7,6 +7,10 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/Minnie_2/Downloads/jsoup-1.7.3.jar"/>
-	<classpathentry kind="src" path="/google-play-services_lib"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Minnie_2/Documents/adt-bundle-windows-x86_64-20130522/adt-bundle-windows-x86_64-20130522/sdk/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/Minnie_2/Documents/adt-bundle-windows-x86_64-20130522/adt-bundle-windows-x86_64-20130522/sdk/extras/google/google_play_services/libproject/google-play-services_lib/libs/../../../docs/reference/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

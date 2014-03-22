@@ -272,8 +272,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	  }	  
 	  
 		public boolean reset(){
-			currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
-			
 			String s = new Filer().fileToString("fourdaylive.json");
 			if(s.length()>0){
 				weatherReader = new WeatherJSONReader(s);
@@ -282,6 +280,15 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				if((new Filer().fileExists("rainchancelive.json"))){
 					rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
 					Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
+				}
+				
+				if(((MainActivity) this.getActivity()).getCurrentCity()!= null && weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) != null)
+					currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
+				else if(weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) == null){
+					// kung wala yung default O:
+					currentCity = weatherReader.getFirstPlace();
+					((MainActivity) this.getActivity()).setCurrentCity(currentCity);
+					//((MainActivity) this.getActivity()).setLocationText();
 				}
 				
 				setToCurrentTime();
@@ -321,29 +328,35 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    		
 		public void setDataFromLocation(){
 			// read and search files for location data
+			Log.d("OUT", "setDataFromLocation: "+currentCity);
 			cityData = weatherReader.getPlaceObject(currentCity);
-			dates = weatherReader.getDates(currentCity);
-			Log.d("OUT","dates: "+dates);
-			Log.d("OUT", "Current Date: "+getCurrentDate("MMMM dd, yyyy"));
-			
-			dayIndex = 0;
-			for(int i=0; i<dates.size(); i++){
-				if(getCurrentDate("MMMM dd, yyyy").equals(dates.get(i))){
-					dayIndex = i;
+			if(cityData!=null){
+				dates = weatherReader.getDates(currentCity);
+				Log.d("OUT","cityData: "+cityData);
+	//			Log.d("OUT", "Current Date: "+getCurrentDate("MMMM dd, yyyy"));
+				
+				dayIndex = 0;
+				for(int i=0; i<dates.size(); i++){
+					if(getCurrentDate("MMMM dd, yyyy").equals(dates.get(i))){
+						dayIndex = i;
+					}
 				}
-			}
-			if((new Filer().fileExists("rainchancelive.json"))){
-				rainData = rainReader.getPlaceObject(currentCity);
-				if(rainData == null)
-					Log.d("jsoup", "Rain data from file: NULL");
+				if((new Filer().fileExists("rainchancelive.json"))){
+					rainData = rainReader.getPlaceObject(currentCity);
+					if(rainData == null)
+						Log.d("jsoup", "Rain data from file: NULL");
+				}
+				else{
+					rainData = null;
+				}
+				
+				setDataStrings(dayIndex);
+				setWeatherIcons(dayIndex);
+				reset_textviews();
 			}
 			else{
-				rainData = null;
+				//
 			}
-			
-			setDataStrings(dayIndex);
-			setWeatherIcons(dayIndex);
-			reset_textviews();
 		}
 		
 		public void initGestureDetector(){

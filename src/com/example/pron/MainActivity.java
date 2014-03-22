@@ -35,7 +35,7 @@ import android.widget.TextView;
 public class MainActivity extends Activity implements LocationListener{
 	TextView locationTextView;
 	ImageView typhoonButton;
-	String currentCity = "Manila"; //default
+	String currentCity = null;
 	protected LocationManager locationManager;
 	private String provider;
 	Geocoder geocoder;
@@ -54,7 +54,28 @@ public class MainActivity extends Activity implements LocationListener{
 			File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
 			if(file.lastModified()-System.currentTimeMillis()<240000000){
 				loaded = true;
-				loadMain();
+				geocoder = new Geocoder(this);
+				initLocation();
+				Thread waiter = new Thread(){
+					int wait = 0;
+					@Override
+				    public void run() {
+			        try {
+			        	Log.d("OUT", "wait start. CurrentCity: "+currentCity);
+			            super.run();
+			            while (wait < 5000) {
+			                sleep(100);
+			                wait += 100;
+			            }
+			            Log.d("OUT", "wait end. CurrentCity: "+currentCity);
+			        } catch (Exception e) {
+			            // ..
+			        } finally {
+			        	// ..
+			        }
+			    }};
+			    //waiter.start();
+			    loadMain();
 			}
 			else
 				loadNOAH();
@@ -76,11 +97,13 @@ public class MainActivity extends Activity implements LocationListener{
 	    provider = locationManager.getBestProvider(criteria, false);
 	    Location location = locationManager.getLastKnownLocation(provider);
 	    
+	    Log.d("OUT", "Location:"+location);
 	    // Initialize the location fields
 	    if (location != null) {
 	      onLocationChanged(location);
 	    } else {
 	      //locationTextView.setText(provider + "Location not available");
+//	    	setCurrentCity("Manila"); //default
 	    }
 	}
 	
@@ -105,24 +128,32 @@ public class MainActivity extends Activity implements LocationListener{
 		
 	}
 	
+	public void setCurrentCity(String s){
+		currentCity = s;
+	}
+	
 	public void loadNOAH(){
 		new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 	}
 	
 	public void loadMain(){
+	    if(currentCity == null)
+			setCurrentCity("Manila");
+		
 		setContentView(R.layout.activity_main_v2);
+		
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
 		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		locationTextView.setTypeface(font);
 		
 		typhoonButton = (ImageView) findViewById(R.id.typhoonButton);
 		typhoonButton.setVisibility(View.INVISIBLE);
+		
 		new StormParser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML");
 		
 		setLocationText();
 		//Log.d("OUT", "Twitter: "+t);
 		
-		initLocation();
 		fragment = (MainWeatherFragment) getFragmentManager().
 				  findFragmentById(R.id.weather_detail_fragment);
 				if (fragment==null || ! fragment.isInLayout()) {
@@ -154,13 +185,18 @@ public class MainActivity extends Activity implements LocationListener{
     	@Override
     	protected void onPreExecute (){
     		//locationTextView.setText("loading location...");
+    		Log.d("OUT", "Finding location...");
     	}
     	
     	@Override
 		protected String doInBackground(Location... params) {
     		String location = "";
     	    try {
+//    	    	Log.d("OUT", "Latitude: "+params[0].getLatitude());
+//    	    	Log.d("OUT", "Longitude: "+params[0].getLongitude());
+//    	    	Log.d("OUT", "adresses: "+geocoder);
     	    	List<Address> addresses = geocoder.getFromLocation(params[0].getLatitude(), params[0].getLongitude(), 10);
+
     	    	int index = 2;
     	    	if(addresses.size() != 0) {
 		    		   Address returnedAddress = addresses.get(index);
@@ -172,20 +208,24 @@ public class MainActivity extends Activity implements LocationListener{
 		    		   location = strReturnedAddress.toString();
 	    		}
 	    		else{
-	    		   location = "No Address returned!";
+	    		   location = "";
 	    		}
     	    } catch(Exception e){
     	    	e.printStackTrace();
+    	    	Log.d("OUT", "Location find error: "+e.toString());
     	    }
     	    return location;
 		}
     	
     	@Override
         protected void onPostExecute(String s) {
-           if(s != ""){
-    		currentCity = s;
+    	   Log.d("OUT", "Location: "+s);
+           if(s.length()>0){
+    		setCurrentCity(s);
     		setLocationText();
            }
+           else
+        	   setCurrentCity("Manila");
         }
     }
 	
@@ -262,7 +302,7 @@ public class MainActivity extends Activity implements LocationListener{
         case 0:
             if (resultCode == RESULT_OK) {
             	// Get city from search view activity
-    			currentCity = data.getStringExtra("key");
+    			setCurrentCity(data.getStringExtra("key"));
     			setLocationText();
     			fragment.reset();
     			Log.d("jsoup", "intent"); 		

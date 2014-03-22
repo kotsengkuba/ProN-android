@@ -87,8 +87,9 @@ int drawable plus_icon 0x7f020030
 int drawable rainy 0x7f020031
 int id GridLayout1 0x7f060015
 int id LinearLayout1 0x7f06001d
+int id RelativeLayout1 0x7f060006
 int id action_settings 0x7f06001f
-int id cityTextView 0x7f060007
+int id cityTextView 0x7f060008
 int id dayTextView 0x7f060019
 int id detailsTableLayout 0x7f060016
 int id header_typhoon 0x7f06000d
@@ -108,13 +109,12 @@ int id none 0x7f060000
 int id normal 0x7f060001
 int id rainLabelTextView 0x7f06001e
 int id satellite 0x7f060002
-int id stormLinearLayout 0x7f060008
 int id tempLinearLayout 0x7f06001b
 int id tempTextView 0x7f06001c
 int id terrain 0x7f060003
 int id textView1 0x7f060005
 int id timeTextView 0x7f060018
-int id typhoonButton 0x7f060006
+int id typhoonButton 0x7f060007
 int id weather_detail_fragment 0x7f060009
 int id wheelView 0x7f06001a
 int layout activity_load_screen 0x7f030000
