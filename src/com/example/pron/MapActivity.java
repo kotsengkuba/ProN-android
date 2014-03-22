@@ -80,7 +80,7 @@ public class MapActivity extends Fragment{
         
 
         mMap.setMyLocationEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, 5));        
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, 3));        
 
 	}
 	

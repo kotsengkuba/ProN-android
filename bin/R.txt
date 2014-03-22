@@ -124,9 +124,10 @@ int layout activity_search_view 0x7f030003
 int layout activity_typhoon 0x7f030004
 int layout asd 0x7f030005
 int layout dialog_details 0x7f030006
-int layout fragment_map 0x7f030007
-int layout fragment_weather_detail 0x7f030008
-int layout list_item 0x7f030009
+int layout dialog_error 0x7f030007
+int layout fragment_map 0x7f030008
+int layout fragment_weather_detail 0x7f030009
+int layout list_item 0x7f03000a
 int menu choose_location 0x7f0a0000
 int menu main 0x7f0a0001
 int string OpenGLES20 0x7f070028

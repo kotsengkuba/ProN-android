@@ -13,6 +13,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -39,6 +40,7 @@ public class MainActivity extends Activity implements LocationListener{
 	private String provider;
 	Geocoder geocoder;
 	MainWeatherFragment fragment;
+	boolean loaded = false;
 	
 	//Twitter t;
 
@@ -47,16 +49,18 @@ public class MainActivity extends Activity implements LocationListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_load_screen);
 		Log.d("OUT", "MainAct OnCreate");
+
 		if((new Filer().fileExists("fourdaylive.json"))){
 			File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
-			if(file.lastModified()-System.currentTimeMillis()<240000000)
+			if(file.lastModified()-System.currentTimeMillis()<240000000){
+				loaded = true;
 				loadMain();
+			}
 			else
-				new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
-
+				loadNOAH();
 		} 
 		else{
-			new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+			loadNOAH();
 		}
 	}
 	
@@ -99,6 +103,10 @@ public class MainActivity extends Activity implements LocationListener{
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras){
 		
+	}
+	
+	public void loadNOAH(){
+		new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 	}
 	
 	public void loadMain(){
@@ -237,6 +245,17 @@ public class MainActivity extends Activity implements LocationListener{
 		typhoonButton.setVisibility(View.VISIBLE);
 	}
     
+    public void loadErrorFrag(){
+		DialogFragment errorFragment = new ErrorFragment();
+	    errorFragment.show(this.getFragmentManager(), "errorFrag");    
+	}
+    
+    public void doPositiveClick() {
+        // Do stuff here.
+        Log.d("OUT", "Positive click!");
+        loadNOAH();
+    }
+    
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("jsoup", "REQUEST CODE:" + requestCode);
         switch (requestCode) {
@@ -318,6 +337,7 @@ public class MainActivity extends Activity implements LocationListener{
     	SAXParserFactory factory;
     	SAXParser saxParser;
     	FourDayXMLParser fourday_handler;
+    	boolean loaded = true;
     	
     	@Override
     	protected void onPreExecute (){
@@ -365,6 +385,8 @@ public class MainActivity extends Activity implements LocationListener{
     			}
     	    } catch(Exception e){
     	    	e.printStackTrace();
+    	    	Log.d("OUT", e.toString());
+    	    	loaded = false;
     	    }
     	    
     	    return s;
@@ -377,8 +399,12 @@ public class MainActivity extends Activity implements LocationListener{
     	  // reload displayed data
     	  //setDataFromLocation();
     	  //Toast.makeText(null, "New data downloaded.", dayIndex).show();
-    	  
-    	  loadMain();
+    	  if(loaded)
+    		  loadMain();
+    	  else{
+    		 loadErrorFrag(); 
+    	  }
+    		  
         }
     }
 }

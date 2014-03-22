@@ -6,7 +6,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="0.13" >
 
         <TextView
@@ -157,36 +157,11 @@
             android:clickable="false"
             android:src="@drawable/icon_typhoon" />
 
-        <!-- <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:layout_width="50dp"
-            android:layout_height="100dp"
-            android:layout_alignBottom="@+id/icon_share"
-            android:layout_alignRight="@+id/header_typhoon"
-            android:layout_alignTop="@+id/icon_map"
-            android:layout_marginTop="19dp"
-            android:layout_toRightOf="@+id/icon_typhoon"
-            android:clickable="true"
-            android:onClick="displayMap" /> -->
-        
-       <!-- <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:layout_width="50dp"
-            android:layout_height="100dp"
-            android:layout_alignBottom="@+id/icon_share"
-            android:layout_alignRight="@+id/header_typhoon"
-            android:layout_alignTop="@+id/icon_map"
-            android:layout_marginTop="19dp"
-            android:layout_toRightOf="@+id/icon_typhoon"
-            android:clickable="true"
-            android:onClick="displayMap" /> -->
             
             <fragment
 		    android:id="@+id/mapActivity"
-		    android:layout_width="50dp"
-            android:layout_height="100dp"
+		    android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_alignBottom="@+id/icon_share"
             android:layout_alignRight="@+id/header_typhoon"
             android:layout_alignTop="@+id/icon_map"
