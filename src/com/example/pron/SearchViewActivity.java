@@ -84,7 +84,7 @@ public class SearchViewActivity extends Activity {
         
         reset();
         
-        Log.d("OUT", "products: "+product_results);
+//        Log.d("OUT", "products: "+product_results);
         adapter = new CustomAdapter(SearchViewActivity.this, product_results, imageId_results, temperature_results);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

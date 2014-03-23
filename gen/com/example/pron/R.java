@@ -211,9 +211,11 @@ containing a value of this type.
         public static final int list_selector=0x7f02002c;
         public static final int logo1=0x7f02002d;
         public static final int logo2=0x7f02002e;
-        public static final int null_gray=0x7f02002f;
-        public static final int plus_icon=0x7f020030;
-        public static final int rainy=0x7f020031;
+        public static final int marker_typhoon=0x7f02002f;
+        public static final int marker_typhoon_small=0x7f020030;
+        public static final int null_gray=0x7f020031;
+        public static final int plus_icon=0x7f020032;
+        public static final int rainy=0x7f020033;
     }
     public static final class id {
         public static final int GridLayout1=0x7f060015;

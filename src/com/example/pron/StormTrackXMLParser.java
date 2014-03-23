@@ -17,10 +17,11 @@ public class StormTrackXMLParser extends DefaultHandler{
 	JSONArray forecast_error = new JSONArray();
 	//JSONArray error_array;
 	JSONObject obj;
-	boolean is_name, is_body, is_PAR, is_linestring, is_coordinates, is_actualtrack, is_forecasttrack, is_desc, is_p, is_error;
+	boolean is_name, is_placemark, is_body, is_PAR, is_linestring, is_coordinates, is_actualtrack, is_forecasttrack, is_desc, is_p, is_error;
 	ArrayList PARcoor = new ArrayList();
 	ArrayList actualTrackCoor = new ArrayList();
 	ArrayList forecastTrackCoor = new ArrayList();
+	String storm_name = "";
 	int counter = 0;
 	boolean storm = false;
 	
@@ -40,10 +41,13 @@ public class StormTrackXMLParser extends DefaultHandler{
 
     public void startElement (String uri, String name, String qName, Attributes atts)
     {
-    	//Log.i("OUT","start element: "+qName);
+//    	Log.i("OUT","start element: "+qName);
     	if(qName.equals("name")){
     		is_name = true;
     		
+    	}
+    	else if(qName.equals("Placemark")){
+    		is_placemark = true;
     	}
     	else if(qName.equals("LineString")){
     		is_linestring = true;
@@ -54,6 +58,7 @@ public class StormTrackXMLParser extends DefaultHandler{
     	else if(qName.equals("description")){
     		is_desc = true;
     		try {
+    			obj.put("Title", "");
 				obj.put("Description", "");
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -68,9 +73,9 @@ public class StormTrackXMLParser extends DefaultHandler{
 
     public void endElement (String uri, String name, String qName)
     {	
+//    	Log.i("OUT","end element: "+qName);
     	if(qName.equals("name")){
     		is_name = false;
-    		
     	}
     	else if(qName.equals("LineString")){
     		is_linestring = false;
@@ -97,6 +102,7 @@ public class StormTrackXMLParser extends DefaultHandler{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+    		is_placemark = false;
     	}
     	else if(qName.equals("Folder") && is_forecasttrack){
     		is_forecasttrack = false;
@@ -126,7 +132,12 @@ public class StormTrackXMLParser extends DefaultHandler{
     				PARcoor.add(Double.parseDouble(toks[i]));
     		}
     	}
+    	else if(is_name && is_placemark && storm_name.length()==0){
+    		storm_name = s;
+//    		Log.d("OUT", "storm placemark: "+s);
+    	}
     	else if(is_name && s.equals("Actual Position")){
+//    		Log.d("OUT", "is_actualtrack");
     		is_actualtrack = true;
     		obj = new JSONObject();
     	}
@@ -138,6 +149,7 @@ public class StormTrackXMLParser extends DefaultHandler{
     		is_error = true;
     	}
     	else if(is_actualtrack && is_coordinates){
+//    		Log.d("OUT", "is_actualtrack and is_coordinates");
     		if(s.length()>0){
     			storm = true;
     			String [] toks = s.split(",");
@@ -199,7 +211,12 @@ public class StormTrackXMLParser extends DefaultHandler{
     	}
     	else if((is_actualtrack || is_forecasttrack) && is_desc && is_p){
     		try {
-				obj.put("Description", obj.get("Description")+s);
+    			if(s.equals("Actual Position") || s.equals("Forecast Track")){
+    				obj.put("Title", obj.get("Title")+s);
+    			}
+    			else if(!s.contains("Source")){
+    				obj.put("Description", obj.get("Description")+s);
+    			}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -255,6 +272,10 @@ public class StormTrackXMLParser extends DefaultHandler{
     
     public boolean stormExists(){
     	return storm;
+    }
+    
+    public String getStormName(){
+    	return storm_name;
     }
 	
 	//private class HTMLParser{}

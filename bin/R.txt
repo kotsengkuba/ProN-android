@@ -82,9 +82,11 @@ int drawable image_bg 0x7f02002b
 int drawable list_selector 0x7f02002c
 int drawable logo1 0x7f02002d
 int drawable logo2 0x7f02002e
-int drawable null_gray 0x7f02002f
-int drawable plus_icon 0x7f020030
-int drawable rainy 0x7f020031
+int drawable marker_typhoon 0x7f02002f
+int drawable marker_typhoon_small 0x7f020030
+int drawable null_gray 0x7f020031
+int drawable plus_icon 0x7f020032
+int drawable rainy 0x7f020033
 int id GridLayout1 0x7f060015
 int id LinearLayout1 0x7f06001d
 int id RelativeLayout1 0x7f060006
