@@ -259,7 +259,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		            	}
 		            case MotionEvent.ACTION_CANCEL:
 		                // Return a VelocityTracker object back to be re-used by others.
-		            	wheelView.mVelocityTracker.recycle();
+		            	//wheelView.mVelocityTracker.recycle();
 		                break;
 		        }
 		    	Log.d(DEBUG_TAG,"onTouch: " + event.toString());
@@ -422,7 +422,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 //				Log.d("jsoup", "Current Month: "+Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
 //				Log.d("jsoup", "Current Year: "+Calendar.getInstance().get(Calendar.YEAR));
 				
-				File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
+				File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/weatherwheel/saved_files"), "fourdaylive.json");
 		        //Log.d("OUT", "FILE date modified: "+file.lastModified());
 					
 		        if(file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy"))){
@@ -634,7 +634,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	                InputStream input = new BufferedInputStream(url.openStream());
 	                
 	                String path = Environment.getExternalStorageDirectory()
-	                        + "/pron/saved_files";
+	                        + "/weatherwheel/saved_files";
 	                File file = new File(path);
 		            file.mkdirs();
 		            File outputFile = new File(file, params[1]+"RAW.txt");

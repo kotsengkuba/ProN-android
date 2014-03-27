@@ -14,7 +14,7 @@ public class Filer {
 	public void saveFile(String s, String filename){
     	Log.d("jsoup", "Saving file..." + "TO: " + filename);
     	String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/pron/saved_files");    
+        File myDir = new File(root + "/weatherwheel/saved_files");    
         myDir.mkdirs();
         File file = new File (myDir, filename);
         //Log.d("OUT", "FILE date modified: "+file.lastModified());
@@ -32,7 +32,7 @@ public class Filer {
     
     public String fileToString(String filename){
     	String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/pron/saved_files");    
+        File myDir = new File(root + "/weatherwheel/saved_files");    
         //myDir.mkdirs();
         File file = new File (myDir, filename);
         String s = "";
@@ -56,14 +56,14 @@ public class Filer {
     
     public File getFile(String filename){
     	String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/pron/saved_files");    
+        File myDir = new File(root + "/weatherwheel/saved_files");    
         //myDir.mkdirs();
         return new File (myDir, filename);
     }
     
     public boolean fileExists(String filename){
     	String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/pron/saved_files");    
+        File myDir = new File(root + "/weatherwheel/saved_files");    
         File file = new File (myDir, filename);
         return file.exists();
     }

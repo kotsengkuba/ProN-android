@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements LocationListener{
 		Log.d("OUT", "MainAct OnCreate");
 
 		if((new Filer().fileExists("fourdaylive.json"))){
-			File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/pron/saved_files"), "fourdaylive.json");
+			File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/weatherwheel/saved_files"), "fourdaylive.json");
 			if(file.lastModified()-System.currentTimeMillis()<240000000){
 				loaded = true;
 				geocoder = new Geocoder(this);
@@ -336,7 +336,7 @@ public class MainActivity extends Activity implements LocationListener{
                 InputStream input = new BufferedInputStream(url.openStream());
                 
                 String path = Environment.getExternalStorageDirectory()
-                        + "/pron/saved_files";
+                        + "/weatherwheel/saved_files";
                 File file = new File(path);
 	            file.mkdirs();
 	            File outputFile = new File(file, "stormRAW.txt");
@@ -392,16 +392,28 @@ public class MainActivity extends Activity implements LocationListener{
     			
     			Log.d("jsoup", "writing RAW..."+params[0]);
     			URL url = new URL(params[0]);
+    			Log.d("OUT", "URL: "+url); 
+    			
                 URLConnection connection = url.openConnection();
+                Log.d("OUT", "URLconnection: "+connection);
                 connection.connect();
+
+                Log.d("OUT", "url.openStream: "+url.openStream());
                 InputStream input = new BufferedInputStream(url.openStream());
+                Log.d("OUT", "InputStream: "+input);
+                
                 
                 String path = Environment.getExternalStorageDirectory()
-                        + "/pron/saved_files";
+                        + "/weatherwheel/saved_files";
+                
+                Log.d("OUT", "Path: "+path); 
+                
                 File file = new File(path);
 	            file.mkdirs();
 	            File outputFile = new File(file, params[1]+"RAW.txt");
 	            OutputStream output = new FileOutputStream(outputFile);
+	            
+	            Log.d("OUT", "OutputStream: "+output.toString());
 	
 	            byte data[] = new byte[1024];
 	            int count;
@@ -425,7 +437,7 @@ public class MainActivity extends Activity implements LocationListener{
     			}
     	    } catch(Exception e){
     	    	e.printStackTrace();
-    	    	Log.d("OUT", e.toString());
+    	    	Log.d("OUT", "Exception"+e.toString()+e.getLocalizedMessage());
     	    	loaded = false;
     	    }
     	    
