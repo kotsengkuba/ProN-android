@@ -22,6 +22,9 @@ public class HelpActivity extends Activity{
 		images = new ArrayList<Integer>();
 		images.add(R.drawable.screenshot1);
 		images.add(R.drawable.screenshot2);
+		images.add(R.drawable.screenshot3);
+		images.add(R.drawable.screenshot4);
+		images.add(R.drawable.screenshot5);
 		
 		index = 0;
 		
@@ -44,6 +47,7 @@ public class HelpActivity extends Activity{
 	}
 	
 	public void setImage(){
-		image.setImageResource(images.get(index));
+//		image.setImageResource(images.get(index));
+		image.setImageDrawable(getResources().getDrawable(images.get(index)));
 	}
 }

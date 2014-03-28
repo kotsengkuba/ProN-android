@@ -10,6 +10,7 @@
     <string name="humidity">Humidity</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="title_activity_choose_location">Locations</string>
+    <string name="typhoon_header">TYPHOON TRACK</string>
 
     <string name="week_view_activity">Week View Activity</string>
     <string name="typhoon_activity">Typhoon Activity</string>

@@ -42,6 +42,7 @@ public class MainActivity extends Activity implements LocationListener{
 	MainWeatherFragment fragment;
 	boolean loaded = false;
 	
+	
 	//Twitter t;
 
 	@Override
@@ -168,9 +169,9 @@ public class MainActivity extends Activity implements LocationListener{
 		int l = currentCity.length();
 		if(l <= 11)
 			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.bigtext));
-		else if(currentCity.length()>11 && currentCity.length()<=15)
+		else if(currentCity.length()>11 && currentCity.length()<=14)
 			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medbigtext));
-		else if(currentCity.length()>15)
+		else if(currentCity.length()>14)
 			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medtext));
 		
 		locationTextView.setText(currentCity);
@@ -362,9 +363,9 @@ public class MainActivity extends Activity implements LocationListener{
 				stormtrack_handler = new StormTrackXMLParser();
 	            saxParser.parse(params[0], stormtrack_handler);
                 Log.d("OUT", "storm exists: "+stormtrack_handler.stormExists());
-	            //if(stormtrack_handler.stormExists()){
+	            if(stormtrack_handler.stormExists()){
 	            	addTyphoonButton();
-	            //}
+	            }
 
 
     	    } catch(Exception e){

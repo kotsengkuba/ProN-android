@@ -4,63 +4,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/helpButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Help" 
-        android:onClick="openHelp"/>
-
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:orientation="vertical"
-        android:paddingTop="30dp" >
-
-        <!--
-        <Button
-            android:id="@+id/mapbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="openMap"
-            android:text="Map" />
-
-        <Button
-            android:id="@+id/typhoonbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="openTyphoon"
-            android:text="Typhoon" />
-        -->
-
-        <!--
-             <Button
-            android:id="@+id/typhoonButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Typhoon"
-            android:visibility="visible" 
-            android:onClick="openTyphoon"/>
-        -->
+        android:layout_height="wrap_content" 
+        android:paddingTop="5dp">
 
         <ImageView
-            android:id="@+id/typhoonButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
+            android:id="@+id/helpButton"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:onClick="openTyphoon"
-            android:src="@drawable/icon_typhoon" />
+            android:maxHeight="10dp"
+            android:layout_height="20dp"
+            android:onClick="openHelp"
+            android:src="@drawable/help" />
 
         <TextView
             android:id="@+id/cityTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/helpButton"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:clickable="true"
             android:gravity="right"
@@ -70,6 +36,24 @@
             android:textColor="#3A3A3A"
             android:textSize="@dimen/bigtext" />
 
+        <ImageView
+            android:id="@+id/typhoonButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/helpButton"
+            android:onClick="openTyphoon"
+            android:src="@drawable/icon_typhoon" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="vertical"
+        android:paddingTop="30dp" >
     </RelativeLayout>
 
     <fragment
