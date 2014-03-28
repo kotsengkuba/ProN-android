@@ -192,8 +192,6 @@ public class MainActivity extends Activity implements LocationListener{
 		protected String doInBackground(Location... params) {
     		String location = "";
     	    try {
-//    	    	Log.d("OUT", "Latitude: "+params[0].getLatitude());
-//    	    	Log.d("OUT", "Longitude: "+params[0].getLongitude());
 //    	    	Log.d("OUT", "adresses: "+geocoder);
     	    	List<Address> addresses = geocoder.getFromLocation(params[0].getLatitude(), params[0].getLongitude(), 10);
 
@@ -201,11 +199,14 @@ public class MainActivity extends Activity implements LocationListener{
     	    	if(addresses.size() != 0) {
 		    		   Address returnedAddress = addresses.get(index);
 		    		   StringBuilder strReturnedAddress = new StringBuilder("");
+		    		   String s = "";
 		    		   for(int i=0; i<returnedAddress.getMaxAddressLineIndex(); i++) {
-		    		    strReturnedAddress.append(returnedAddress.getAddressLine(i));
-		    		    Log.i("address", returnedAddress.getAddressLine(i));
+//		    			   strReturnedAddress.append(returnedAddress.getAddressLine(i));
+		    			   s = returnedAddress.getAddressLine(i);
+		    			   Log.i("address", returnedAddress.getAddressLine(i));
 		    		   }
-		    		   location = strReturnedAddress.toString();
+//		    		   location = strReturnedAddress.toString();
+		    		   location = s;
 	    		}
 	    		else{
 	    		   location = "";
@@ -246,6 +247,11 @@ public class MainActivity extends Activity implements LocationListener{
     public void searchCity(View view) {
         Intent intent = new Intent(this, SearchViewActivity.class);
         startActivityForResult(intent, 0);
+    }
+    
+    public void openHelp(View view){
+    	Intent intent = new Intent(this, HelpActivity.class);
+        startActivity(intent);
     }
     
     public void openMap(View view){
