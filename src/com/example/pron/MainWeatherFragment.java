@@ -292,7 +292,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				
 				setToCurrentTime();
 				setDataFromLocation();
-				setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(new Date(new Filer().getFile("fourdayRAW.txt").lastModified())));
+				setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(new Date(new Filer().getFile("fourdaylive.json").lastModified())));
 				return true;
 			}
 			else{

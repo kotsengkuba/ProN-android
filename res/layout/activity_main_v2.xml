@@ -20,6 +20,16 @@
             android:layout_marginRight="10dp"
             android:onClick="openHelp"
             android:src="@drawable/help" />
+        
+        <ImageView
+            android:id="@+id/gpsButton"
+            android:layout_width="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/helpButton"
+            android:onClick="gpsclick"
+            android:src="@drawable/gps" />
 
         <TextView
             android:id="@+id/cityTextView"
@@ -44,6 +54,7 @@
             android:layout_below="@+id/helpButton"
             android:onClick="openTyphoon"
             android:src="@drawable/icon_typhoon" />
+
 
     </RelativeLayout>
 

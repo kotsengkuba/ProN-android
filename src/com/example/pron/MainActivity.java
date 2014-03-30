@@ -31,6 +31,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements LocationListener{
 	TextView locationTextView;
@@ -41,6 +42,7 @@ public class MainActivity extends Activity implements LocationListener{
 	Geocoder geocoder;
 	MainWeatherFragment fragment;
 	boolean loaded = false;
+	SetAddressFromLocation gpsfinder;
 	
 	
 	//Twitter t;
@@ -111,7 +113,9 @@ public class MainActivity extends Activity implements LocationListener{
 	@Override
 	public void onLocationChanged(Location location) {
 		// Set text for location textview
-		new SetAddressFromLocation().execute(location);
+//		gpsfinder.cancel(true);
+		gpsfinder = new SetAddressFromLocation();
+		gpsfinder.execute(location);
 	}
 	
 	@Override
@@ -192,6 +196,11 @@ public class MainActivity extends Activity implements LocationListener{
 		return currentCity;
 	}
 	
+	public void gpsclick(View v){
+		Toast.makeText(this, "Finding your location...", Toast.LENGTH_SHORT).show();
+		initLocation();
+	}
+	
 	private class SetAddressFromLocation extends AsyncTask<Location,Void,String>{
 
     	@Override
@@ -233,15 +242,25 @@ public class MainActivity extends Activity implements LocationListener{
     	@Override
         protected void onPostExecute(String s) {
     	   Log.d("OUT", "Location: "+s);
+    	   
            if(s.length()>0 && new WeatherJSONReader(new Filer().fileToString("fourdaylive.json")).getPlaceObject(s)!=null){
         	   setCurrentCity(s);
         	   setLocationText();
+        	   showGPSToast("GPS location found: "+s);
            }
            else
         	   setCurrentCity("Manila");
         	   setLocationText();
+        	   if(s.length()==0)
+        		   showGPSToast("Unable to get location");
+        	   else
+        		   showGPSToast("Unable to get data for "+s+". Default location loaded.");
         }
     }
+	
+	public void showGPSToast(String s){
+		Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+	}
 	
 	@Override
 	protected void onResume() {
