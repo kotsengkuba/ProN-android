@@ -87,25 +87,43 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 	
 	public void setTable(JSONObject o){
 		try{
+			String units="", label, value;
 			for(int i=2; i<o.length();i++){
 				TableRow rowItem = new TableRow(this.getActivity());
+				value = o.getString(o.names().getString(i));
+				label = o.names().getString(i);
 				
-				TextView RainTextViewItem = new TextView(this.getActivity());
+				if(label.equalsIgnoreCase("Real Feel"))
+					units = "°C";
+				else if(label.equalsIgnoreCase("Windspeed"))
+					units = "kph";
+				else if(label.equalsIgnoreCase("Rainfall"))
+					units = "mm";
+				else if(label.equalsIgnoreCase("Temperature"))
+					units = "°C";
+				else if(label.equalsIgnoreCase("Wind Direction"))
+					units = "";
+				else if(label.equalsIgnoreCase("Relative Humidity"))
+					units = "%";
+				
+				TextView ValueTextViewItem = new TextView(this.getActivity());
 				//RainTextViewItem.setTypeface(font);
-				RainTextViewItem.setPadding(10, 10, 10, 10);
-				RainTextViewItem.setGravity(Gravity.CENTER);
-				RainTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
-				RainTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
-				RainTextViewItem.setText(o.getString(o.names().getString(i)));
-				rowItem.addView(RainTextViewItem);
+				ValueTextViewItem.setPadding(10, 10, 10, 10);
+				ValueTextViewItem.setGravity(Gravity.CENTER);
+				ValueTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
+				ValueTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
 				
-				TextView RainTimeTextViewItem = new TextView(this.getActivity());
+				TextView LabelTimeTextViewItem = new TextView(this.getActivity());
 				//RainTimeTextViewItem.setTypeface(font);
-				RainTimeTextViewItem.setPadding(10, 10, 10, 10);
-				RainTimeTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
-				RainTimeTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
-				RainTimeTextViewItem.setText(o.names().getString(i));
-				rowItem.addView(RainTimeTextViewItem);
+				LabelTimeTextViewItem.setPadding(10, 10, 10, 10);
+				LabelTimeTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
+				LabelTimeTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
+				
+				ValueTextViewItem.setText(value+" "+units);
+				rowItem.addView(ValueTextViewItem);
+				
+				LabelTimeTextViewItem.setText(label);
+				rowItem.addView(LabelTimeTextViewItem);
 			
 				tl.addView(rowItem);
 			}
