@@ -20,11 +20,17 @@ public class HelpActivity extends Activity{
 		setContentView(R.layout.activity_help);
 		
 		images = new ArrayList<Integer>();
-		images.add(R.drawable.screenshot1);
-		images.add(R.drawable.screenshot2);
-		images.add(R.drawable.screenshot3);
-		images.add(R.drawable.screenshot4);
-		images.add(R.drawable.screenshot5);
+		images.add(R.drawable.shot1);
+		images.add(R.drawable.shot2);
+		images.add(R.drawable.shot3);
+		images.add(R.drawable.shot4);
+		images.add(R.drawable.shot5);
+		images.add(R.drawable.shot6);
+		images.add(R.drawable.shot7);
+		images.add(R.drawable.shot8);
+		images.add(R.drawable.shot9);
+		images.add(R.drawable.shot10);
+		images.add(R.drawable.shot11);
 		
 		index = 0;
 		

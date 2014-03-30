@@ -13,5 +13,19 @@
         android:gravity="center"
         android:textColor="#ffffff"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+        <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/intro_text" />
+
+    <Button
+        android:id="@+id/helpButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/help_button_label"
+        android:onClick="openHelp" />
+
 
 </LinearLayout>
