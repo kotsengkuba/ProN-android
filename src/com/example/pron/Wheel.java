@@ -149,9 +149,6 @@ public class Wheel extends View{
 			p.setStyle(Paint.Style.FILL);
 			canvas.drawArc(rect, (((rad+angle)*180)/(float)Math.PI)%360, 45, true, p);
 			
-			if(!snap && (ney<cy-30 || ney>cy+30))
-				canvas.drawText(time_array[i], cx + (float) ((r+150)*Math.cos(rad+angle)), cy + (float) ((r+150)*Math.sin(rad+angle)), textp);
-			
 			i++;
 			ctr++;
 		}  
@@ -167,9 +164,6 @@ public class Wheel extends View{
 			p.setColor(pie_colors_array[i]);
 			p.setStyle(Paint.Style.FILL);
 			canvas.drawArc(rect, (((rad+angle)*180)/(float)Math.PI)%360, 45, true, p);
-			
-			if(!snap && (ney<cy-30 || ney>cy+30))
-				canvas.drawText(time_array[i], cx + (float) ((r+150)*Math.cos(rad+angle)), cy + (float) ((r+150)*Math.sin(rad+angle)), textp);
 			
 //			nex = cx + (float) ((r+10)*Math.cos(rad+angle));
 //			ney = cy + (float) ((r+10)*Math.sin(rad+angle));
@@ -213,6 +207,10 @@ public class Wheel extends View{
 	
 			}
 			
+			if(!snap && (ney<cy-30 || ney>cy+30))
+				canvas.drawText(time_array[i], nex + (float) ((rad1)*Math.cos(rad+angle)), ney + (float) ((rad1)*Math.sin(rad+angle)), textp);
+			
+			
 			i++;
 			ctr++;
 		}  
@@ -250,6 +248,10 @@ public class Wheel extends View{
 		        canvas.drawBitmap(bitmap_array[i], nex-bitmap_array[i].getWidth()/2, ney-bitmap_array[i].getHeight()/2, null);
 
 			}
+			
+			if(!snap && (ney<cy-30 || ney>cy+30))
+				canvas.drawText(time_array[i], nex + (float) ((rad1)*Math.cos(rad+angle)), ney + (float) ((rad1)*Math.sin(rad+angle)), textp);
+			
 			
 			i++;
 			ctr = (ctr+1)%8;

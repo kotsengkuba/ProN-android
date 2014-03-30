@@ -612,6 +612,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			String formattedDate = df.format(c.getTime());
 			return formattedDate;
 		}
+		
+		public void displayToast(String s){
+			Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+		}
 	    
 	    private class XMLparser extends AsyncTask<String,Void,String>{
 	    	SAXParserFactory factory;
@@ -679,7 +683,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	    	e.printStackTrace();
 	    	    }
 	    	    
-	    	    return s;
+	    	    return params[0];
 			}
 	    	
 	    	@Override
@@ -688,9 +692,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	  
 	    	  // reload displayed data
 	    	  //setDataFromLocation();
-	    	  //Toast.makeText(null, "New data downloaded.", dayIndex).show();
-	    	  
-	    	  reset();
+//	    	  Toast.makeText(null, "New data downloaded.", dayIndex).show();
+	    		if(s.equalsIgnoreCase("fourday"))
+	    			displayToast("Weather data updated");
+	    		reset();
 	        }
 	    }
 	    

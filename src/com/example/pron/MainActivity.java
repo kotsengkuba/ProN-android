@@ -103,10 +103,12 @@ public class MainActivity extends Activity implements LocationListener{
 	    Log.d("OUT", "Location:"+location);
 	    // Initialize the location fields
 	    if (location != null) {
-	      onLocationChanged(location);
+	    	Toast.makeText(this, "Finding your location...", Toast.LENGTH_SHORT).show();
+	    	onLocationChanged(location);
 	    } else {
 	      //locationTextView.setText(provider + "Location not available");
 //	    	setCurrentCity("Manila"); //default
+	    	Toast.makeText(this, "Unable to get gps location", Toast.LENGTH_LONG).show();
 	    }
 	}
 	
@@ -197,7 +199,6 @@ public class MainActivity extends Activity implements LocationListener{
 	}
 	
 	public void gpsclick(View v){
-		Toast.makeText(this, "Finding your location...", Toast.LENGTH_SHORT).show();
 		initLocation();
 	}
 	
