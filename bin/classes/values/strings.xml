@@ -6,11 +6,13 @@
     <string name="hello_world">Hello world!</string>
     <string name="location_name">Quezon City</string>
     <string name="temperature">Temperature</string>
+    <string name="rain">Rain</string>
     <string name="chance_of_rain">Chance of Rain</string>
     <string name="humidity">Humidity</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="title_activity_choose_location">Locations</string>
     <string name="typhoon_header">TYPHOON TRACK</string>
+    <string name="loading_text">"Loading takes around a minute. Please wait.</string>
 
     <string name="week_view_activity">Week View Activity</string>
     <string name="typhoon_activity">Typhoon Activity</string>

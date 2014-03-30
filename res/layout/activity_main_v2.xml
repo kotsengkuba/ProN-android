@@ -47,14 +47,14 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <!--<RelativeLayout
         android:id="@+id/RelativeLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right"
         android:orientation="vertical"
         android:paddingTop="30dp" >
-    </RelativeLayout>
+    </RelativeLayout>-->
 
     <fragment
         android:id="@+id/weather_detail_fragment"

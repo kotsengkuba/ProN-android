@@ -26,7 +26,6 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:clickable="true"
             android:onClick="toggleFourDay"
-            android:text="Today"
             android:textColor="#4D4D4D"
             android:textSize="@dimen/medtext" />
 
@@ -72,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:text="Rain"
+            android:text="@string/rain"
             android:textColor="#0B5FA5"
             android:textSize="@dimen/smalltext" />
     </LinearLayout>
