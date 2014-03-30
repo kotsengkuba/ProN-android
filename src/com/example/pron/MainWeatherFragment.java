@@ -54,7 +54,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 
 	private static final int RESULT_OK = 0;
 	MainActivity mainActivity;
-	TextView tempTextView, timeTextView, dayTextView, rainLabelTextView, owmTextView;
+	TextView tempTextView, timeTextView, dayTextView, rainLabelTextView, owmTextView, sourceTextView;
 	Wheel wheelView;
 	RainWheel rainWheelView;
 	WebView webview;
@@ -103,6 +103,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		timeTextView = (TextView) view.findViewById(R.id.timeTextView);
 		dayTextView = (TextView) view.findViewById(R.id.dayTextView);
 		rainLabelTextView = (TextView) view.findViewById(R.id.rainLabelTextView);		
+		sourceTextView = (TextView) view.findViewById(R.id.sourceTextView);
 		wheelView = (Wheel) view.findViewById(R.id.wheelView);
 		rainLayout = (LinearLayout) view.findViewById(R.id.LinearLayout1);
 		rainTableLayout = new TableLayout(this.getActivity());
@@ -120,6 +121,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		timeTextView.setTypeface(font);
 		dayTextView.setTypeface(font);
 		rainLabelTextView.setTypeface(font);
+		sourceTextView.setTypeface(font);
 		
 		reset();
 		updateData();
@@ -233,7 +235,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			            		else
 			            			i-=(float) 2*Math.PI;
 			            	}
-			            	Log.d("snap", "i="+i);
+//			            	Log.d("snap", "i="+i);
 			            	int temp = timeIndex;
 			            	timeIndex = (int) (Math.round(4*i/Math.PI)%8);
 			            	timeIndex = (timeIndex+wheelView.offset) %8;
@@ -241,10 +243,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			            	
 			            	// change day from wheel
 			            	float deltaY = downY-event.getY();
-			            	Log.d("OUT", "downY: "+ downY);
-			            	Log.d("OUT", "upY: "+ event.getY());
-			            	Log.d("OUT", "downIndex: "+ temp);
-			            	Log.d("OUT", "upIndex: "+ timeIndex);
 			            	if(timeIndex-temp<0 && deltaY>0){
 			            		plusDay();
 			            	}
@@ -282,23 +280,22 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
 					Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
 				}
-				
+
 				if(((MainActivity) this.getActivity()).getCurrentCity()!= null && weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) != null)
 					currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
 				else if(weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) == null){
 					// kung wala yung default O:
 					currentCity = weatherReader.getFirstPlace();
 					((MainActivity) this.getActivity()).setCurrentCity(currentCity);
-					//((MainActivity) this.getActivity()).setLocationText();
+					((MainActivity) this.getActivity()).setLocationText();
 				}
 				
 				setToCurrentTime();
 				setDataFromLocation();
-				
+				setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(new Date(new Filer().getFile("fourdayRAW.txt").lastModified())));
 				return true;
 			}
 			else{
-//				showLoading();
 				return false;
 			}
 			
@@ -332,10 +329,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			Log.d("OUT", "setDataFromLocation: "+currentCity);
 			cityData = weatherReader.getPlaceObject(currentCity);
 			if(cityData!=null){
-				dates = weatherReader.getDates(currentCity);
-				Log.d("OUT","cityData: "+cityData);
-	//			Log.d("OUT", "Current Date: "+getCurrentDate("MMMM dd, yyyy"));
-				
+				dates = weatherReader.getDates(currentCity);				
 				dayIndex = 0;
 				for(int i=0; i<dates.size(); i++){
 					if(getCurrentDate("MMMM dd, yyyy").equals(dates.get(i))){
@@ -570,6 +564,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		
 		public void setRainVisibility(int v){
 			rainLayout.setVisibility(v);
+		}
+		
+		public void setSourceText(String s){
+			sourceTextView.setText("Last updated: "+ s);
 		}
 		
 		/* Check network connection */

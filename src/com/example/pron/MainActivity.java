@@ -131,6 +131,8 @@ public class MainActivity extends Activity implements LocationListener{
 	
 	public void setCurrentCity(String s){
 		currentCity = s;
+		if(fragment!=null)
+			fragment.reset();
 	}
 	
 	public void loadNOAH(){
@@ -231,12 +233,13 @@ public class MainActivity extends Activity implements LocationListener{
     	@Override
         protected void onPostExecute(String s) {
     	   Log.d("OUT", "Location: "+s);
-           if(s.length()>0){
-    		setCurrentCity(s);
-    		setLocationText();
+           if(s.length()>0 && new WeatherJSONReader(new Filer().fileToString("fourdaylive.json")).getPlaceObject(s)!=null){
+        	   setCurrentCity(s);
+        	   setLocationText();
            }
            else
         	   setCurrentCity("Manila");
+        	   setLocationText();
         }
     }
 	

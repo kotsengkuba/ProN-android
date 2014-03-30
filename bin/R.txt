@@ -98,7 +98,7 @@ int drawable screenshot5 0x7f02003a
 int id GridLayout1 0x7f060012
 int id LinearLayout1 0x7f06001a
 int id RelativeLayout1 0x7f060007
-int id action_settings 0x7f06001c
+int id action_settings 0x7f06001d
 int id cityTextView 0x7f060009
 int id dayTextView 0x7f060016
 int id detailsTableLayout 0x7f060013
@@ -116,6 +116,7 @@ int id none 0x7f060000
 int id normal 0x7f060001
 int id rainLabelTextView 0x7f06001b
 int id satellite 0x7f060002
+int id sourceTextView 0x7f06001c
 int id tempLinearLayout 0x7f060018
 int id tempTextView 0x7f060019
 int id terrain 0x7f060003

@@ -229,7 +229,7 @@ containing a value of this type.
         public static final int GridLayout1=0x7f060012;
         public static final int LinearLayout1=0x7f06001a;
         public static final int RelativeLayout1=0x7f060007;
-        public static final int action_settings=0x7f06001c;
+        public static final int action_settings=0x7f06001d;
         public static final int cityTextView=0x7f060009;
         public static final int dayTextView=0x7f060016;
         public static final int detailsTableLayout=0x7f060013;
@@ -247,6 +247,7 @@ containing a value of this type.
         public static final int normal=0x7f060001;
         public static final int rainLabelTextView=0x7f06001b;
         public static final int satellite=0x7f060002;
+        public static final int sourceTextView=0x7f06001c;
         public static final int tempLinearLayout=0x7f060018;
         public static final int tempTextView=0x7f060019;
         public static final int terrain=0x7f060003;
