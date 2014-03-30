@@ -108,7 +108,7 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 				
 				TextView ValueTextViewItem = new TextView(this.getActivity());
 				//RainTextViewItem.setTypeface(font);
-				ValueTextViewItem.setPadding(10, 10, 10, 10);
+				ValueTextViewItem.setPadding(20, 10, 20, 10);
 				ValueTextViewItem.setGravity(Gravity.CENTER);
 				ValueTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
 				ValueTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));

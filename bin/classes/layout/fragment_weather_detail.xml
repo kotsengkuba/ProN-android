@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
             android:textColor="#A60000"
-            android:textSize="@dimen/smalltext" />
+            android:textSize="@dimen/medtext" />
 
         <TextView
             android:id="@+id/dayTextView"

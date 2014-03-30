@@ -248,13 +248,14 @@ public class MainActivity extends Activity implements LocationListener{
         	   setLocationText();
         	   showGPSToast("GPS location found: "+s);
            }
-           else
+           else{
         	   setCurrentCity("Manila");
         	   setLocationText();
         	   if(s.length()==0)
         		   showGPSToast("Unable to get location");
         	   else
         		   showGPSToast("Unable to get data for "+s+". Default location loaded.");
+           }
         }
     }
 	

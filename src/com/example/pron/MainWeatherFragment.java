@@ -196,7 +196,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		                        pointerId));
 		                break;
 		            case MotionEvent.ACTION_UP:
-		            	
+		            	wheelView.snap = true;
 		            	Log.d("OUT", "center: "+center);
 		            	float deg;
 		            	if(center){
@@ -204,7 +204,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		            		loadDetailsFrag();
 		            	}
 		            	else{
-			            	wheelView.snap = true;
 			            	deg = (wheelView.rad*180/(float)Math.PI)%360;
 			        		if(wheelView.snap){	
 			        			if(deg<0)
@@ -346,7 +345,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				}
 				
 				setDataStrings(dayIndex);
-				setWeatherIcons(dayIndex);
+//				setWeatherIcons(dayIndex);
+				setWheel(dayIndex);
 				reset_textviews();
 			}
 			else{
@@ -466,7 +466,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					TextView RainTextViewItem = new TextView(this.getActivity());
 					RainTextViewItem.setTypeface(font);
 					RainTextViewItem.setPadding(10, 10, 10, 10);
-					RainTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
+					RainTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.smalltext));
 					RainTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
 					RainTextViewItem.setText(rain_array[i]);
 					rowItem.addView(RainTextViewItem);
@@ -474,7 +474,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					TextView RainTimeTextViewItem = new TextView(this.getActivity());
 					RainTimeTextViewItem.setTypeface(font);
 					RainTimeTextViewItem.setPadding(10, 10, 10, 10);
-					RainTimeTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
+					RainTimeTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.smalltext));
 					RainTimeTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
 					RainTimeTextViewItem.setText(raintime_array[i]);
 					rowItem.addView(RainTimeTextViewItem);
@@ -527,6 +527,11 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	}catch(Exception e){}
 	    }
 		
+		public void setWheel(int day){
+			setWeatherIcons(day);
+			wheelView.setTimeStrings(time_array);
+			wheelView.invalidate();
+		}
 		public void setWeatherIcons(int day){
 			int [] arr = new int[8];
 			try {
@@ -542,7 +547,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				e.printStackTrace();
 			}
 			wheelView.setIcons(arr);
-			wheelView.invalidate();
 		}
 		
 		public void plusDay(){
