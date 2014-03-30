@@ -25,7 +25,8 @@ public class TyphoonActivity extends Activity {
 		setContentView(R.layout.activity_typhoon);
 		
 		typhoonTextView = (TextView) findViewById(R.id.header_typhoon);
-		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
+//		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
+		Typeface font = Typeface.createFromAsset(getAssets(), "REGULAR.TTF");
 		typhoonTextView.setTypeface(font);
 		
 		mapActivity = (MapActivity) getFragmentManager().

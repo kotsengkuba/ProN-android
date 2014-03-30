@@ -144,7 +144,8 @@ public class MainActivity extends Activity implements LocationListener{
 		setContentView(R.layout.activity_main_v2);
 		
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
-		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
+//		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
+		Typeface font = Typeface.createFromAsset(getAssets(), "REGULAR.TTF");
 		locationTextView.setTypeface(font);
 		
 		typhoonButton = (ImageView) findViewById(R.id.typhoonButton);
@@ -167,12 +168,20 @@ public class MainActivity extends Activity implements LocationListener{
 	
 	public void setLocationText(){
 		int l = currentCity.length();
-		if(l <= 11)
+		
+		//for track font:
+//		if(l <= 11)
+//			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.bigtext));
+//		else if(currentCity.length()>11 && currentCity.length()<=14)
+//			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medbigtext));
+//		else if(currentCity.length()>14)
+//			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medtext));
+		
+		//for regular font
+		if(l <= 14)
+			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.biggertext));
+		else
 			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.bigtext));
-		else if(currentCity.length()>11 && currentCity.length()<=14)
-			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medbigtext));
-		else if(currentCity.length()>14)
-			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medtext));
 		
 		locationTextView.setText(currentCity);
 	}

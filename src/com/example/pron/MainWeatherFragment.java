@@ -113,7 +113,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		temperatureLayout.addView(owmTextView);
 		
 		//Get the typeface from assets
-		font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
+//		font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
+		font = Typeface.createFromAsset(this.getActivity().getAssets(), "REGULAR.TTF");
 		//Set the TextView's typeface (font)
 		tempTextView.setTypeface(font);
 		timeTextView.setTypeface(font);
@@ -512,7 +513,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	try{
 				for(int j = 0; j < 8; j++){
 					time_array[j] = weatherReader.getDetailString(currentCity, "Time", day, j);
-					String s = weatherReader.getDetailString(currentCity, "Temperature", day, j)+"°";
+					String s = weatherReader.getDetailString(currentCity, "Temperature", day, j)+"°C";
 					if(s.equals(null))
 						temp_array[j] = "--";
 					else

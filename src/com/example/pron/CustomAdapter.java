@@ -29,7 +29,9 @@ public class CustomAdapter extends ArrayAdapter{
 	public View getView(int position, View view, ViewGroup parent) {		
 		CityItemView civ = new CityItemView(context);
 		civ.setText(names.get(position));
-		civ.setFont(Typeface.createFromAsset(context.getAssets(), "TRACK.OTF"));
+//		civ.setFont(Typeface.createFromAsset(context.getAssets(), "TRACK.OTF"));
+		civ.setFont(Typeface.createFromAsset(context.getAssets(), "REGULAR.TTF"));
+		civ.setFontSize(R.dimen.medbigtext);
 		
 		if(images.get(position) == null){
 			civ.setUnsavedLocation();

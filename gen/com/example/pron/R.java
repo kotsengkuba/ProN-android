@@ -154,14 +154,15 @@ containing a value of this type.
          */
         public static final int activity_horizontal_margin=0x7f080000;
         public static final int activity_vertical_margin=0x7f080001;
-        public static final int bigtext=0x7f080005;
-        public static final int medbigtext=0x7f080006;
-        public static final int medtext=0x7f080007;
-        public static final int smalltext=0x7f080008;
+        public static final int biggertext=0x7f080005;
+        public static final int bigtext=0x7f080006;
+        public static final int medbigtext=0x7f080007;
+        public static final int medtext=0x7f080008;
+        public static final int smalltext=0x7f080009;
         public static final int xltext=0x7f080004;
-        public static final int xstext=0x7f080009;
+        public static final int xstext=0x7f08000a;
         public static final int xxltext=0x7f080003;
-        public static final int xxstext=0x7f08000a;
+        public static final int xxstext=0x7f08000b;
     }
     public static final class drawable {
         public static final int back_button=0x7f020000;
@@ -216,12 +217,13 @@ containing a value of this type.
         public static final int marker_typhoon_small=0x7f020031;
         public static final int null_gray=0x7f020032;
         public static final int plus_icon=0x7f020033;
-        public static final int rainy=0x7f020034;
-        public static final int screenshot1=0x7f020035;
-        public static final int screenshot2=0x7f020036;
-        public static final int screenshot3=0x7f020037;
-        public static final int screenshot4=0x7f020038;
-        public static final int screenshot5=0x7f020039;
+        public static final int plus_icon2=0x7f020034;
+        public static final int rainy=0x7f020035;
+        public static final int screenshot1=0x7f020036;
+        public static final int screenshot2=0x7f020037;
+        public static final int screenshot3=0x7f020038;
+        public static final int screenshot4=0x7f020039;
+        public static final int screenshot5=0x7f02003a;
     }
     public static final class id {
         public static final int GridLayout1=0x7f060012;

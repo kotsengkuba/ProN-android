@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,8 +43,8 @@ public class CityItemView extends LinearLayout{
 		this.addView(tv);
 		//this.addView(temptv);		
 		
-		add_iv.setImageDrawable(getResources().getDrawable(R.drawable.plus_icon));
-		add_iv.setPadding(10, 10, 10, 10);
+		add_iv.setImageDrawable(getResources().getDrawable(R.drawable.plus_icon2));
+		add_iv.setPadding(20, 40, 10, 10);
 		add_iv.setTag("add_me");
 		//add_iv.setClickable(true);
 		/*add_iv.setOnClickListener(new View.OnClickListener(){
@@ -78,9 +79,15 @@ public class CityItemView extends LinearLayout{
 	public void setBG(int c){
 		this.setBackgroundColor(c);
 	}
+	
 	public void setFont(Typeface font){
 		tv.setTypeface(font);
 		temptv.setTypeface(font);
+	}
+	
+	public void setFontSize(int dimen){
+		tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(dimen));
+		temptv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(dimen));
 	}
 	
 	public String getText(){

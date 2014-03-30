@@ -11,14 +11,14 @@
 
         <TextView
             android:id="@+id/header_typhoon"
-            android:layout_width="190dp"
-            android:layout_height="175dp"
             android:layout_alignTop="@+id/icon_typhoon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_toRightOf="@+id/icon_typhoon"
             android:text="@string/typhoon_header"
             android:textColor="#3A3A3A"
-            android:textSize="36sp" />
+            android:textSize="@dimen/medbigtext" />
 <!--
 
 
@@ -73,8 +73,8 @@
 -->        
         <ImageView
             android:id="@+id/icon_typhoon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="30dp"
@@ -89,7 +89,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/icon_typhoon"
+                android:layout_below="@+id/header_typhoon"
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginLeft="10dp"

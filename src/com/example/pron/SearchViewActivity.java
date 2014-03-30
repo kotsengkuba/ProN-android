@@ -10,18 +10,19 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class SearchViewActivity extends Activity {
@@ -215,16 +216,36 @@ public class SearchViewActivity extends Activity {
     }
     
     protected void addLocation(String loc) {
-    	if(!saved_places.contains(loc))
+    	if(!saved_places.contains(loc)){
 			saved_places.add(loc);
+	    	
+			// make toast
+			Context context = getApplicationContext();
+	    	CharSequence text = loc+" added.";
+	    	int duration = Toast.LENGTH_SHORT;
+	
+	    	Toast toast = Toast.makeText(context, text, duration);
+	    	toast.setGravity(Gravity.TOP, 0, 0);
+	    	toast.show();
+    	}
 		reset();
 		//adapter.notifyDataSetChanged();
 		inputSearch.setText("");
 	}
     
     protected void removeLocation(String loc) {
-    	if(saved_places.contains(loc))
+    	if(saved_places.contains(loc)){
 			saved_places.remove(loc);
+			
+			// make toast
+			Context context = getApplicationContext();
+	    	CharSequence text = loc+" removed.";
+	    	int duration = Toast.LENGTH_SHORT;
+	
+	    	Toast toast = Toast.makeText(context, text, duration);
+	    	toast.setGravity(Gravity.TOP, 0, 0);
+	    	toast.show();
+    	}
 		reset();
 		//adapter.notifyDataSetChanged();
 		inputSearch.setText("");
