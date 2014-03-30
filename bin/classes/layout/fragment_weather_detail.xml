@@ -82,7 +82,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="5dp"
-            android:text="Last updated: 3/30/2014 6:20pm"
             android:textColor="#CCCCCC"
             android:textSize="@dimen/xstext" />
 

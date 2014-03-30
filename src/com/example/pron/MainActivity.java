@@ -202,6 +202,10 @@ public class MainActivity extends Activity implements LocationListener{
 		initLocation();
 	}
 	
+	public void refreshclick(View v){
+		fragment.updateData(1);
+	}
+	
 	private class SetAddressFromLocation extends AsyncTask<Location,Void,String>{
 
     	@Override

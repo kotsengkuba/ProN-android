@@ -7,37 +7,49 @@
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:paddingTop="5dp">
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp" >
 
-        <ImageView
-            android:id="@+id/helpButton"
+        <LinearLayout
+            android:id="@+id/iconsLinearLayout"
             android:layout_width="wrap_content"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:maxHeight="10dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="10dp"
-            android:onClick="openHelp"
-            android:src="@drawable/help" />
-        
-        <ImageView
-            android:id="@+id/gpsButton"
-            android:layout_width="40dp"
-            android:layout_alignParentTop="true"
-            android:layout_height="40dp"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/helpButton"
-            android:onClick="gpsclick"
-            android:src="@drawable/gps" />
+            android:gravity="right" >
+
+            <ImageView
+                android:id="@+id/gpsButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:onClick="gpsclick"
+                android:src="@drawable/gps" />
+
+            <ImageView
+                android:id="@+id/refreshButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/refresh" 
+                android:onClick="refreshclick" />
+
+            <ImageView
+                android:id="@+id/helpButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:onClick="openHelp"
+                android:src="@drawable/help" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/cityTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/helpButton"
             android:layout_marginRight="10dp"
+            android:layout_below="@+id/iconsLinearLayout"
             android:clickable="true"
             android:gravity="right"
             android:onClick="searchCity"
@@ -51,10 +63,9 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/helpButton"
+            android:layout_alignTop="@+id/cityTextView"
             android:onClick="openTyphoon"
             android:src="@drawable/icon_typhoon" />
-
 
     </RelativeLayout>
 

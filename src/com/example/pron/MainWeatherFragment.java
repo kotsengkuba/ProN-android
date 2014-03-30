@@ -61,6 +61,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	LinearLayout rainLayout, temperatureLayout;
 	TableLayout rainTableLayout;
 	boolean center = false;
+	XMLparser fourdayparser;
 	
 	String DEBUG_TAG = "touch event";
 	
@@ -123,8 +124,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		rainLabelTextView.setTypeface(font);
 		sourceTextView.setTypeface(font);
 		
+		fourdayparser = new XMLparser();
+		
 		reset();
-		updateData();
+		updateData(0);
 		
 		initGestureDetector();	
 		view.setOnTouchListener(new OnTouchListener(){
@@ -405,24 +408,16 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			
 		}
 		
-		public void updateData(){
+		public void updateData(int opt){
 			try{
-//				JSONObject j = cityData.getJSONArray("dates").getJSONObject(0);
-//				String date = j.getString("date");
-//				String[] tokens = date.split(" ");
-//				String month  = tokens[0];
-//				int day = Integer.parseInt(tokens[1].replaceAll(",", ""));
-//				int year = Integer.parseInt(tokens[2]);
-//				Log.d("jsoup", "Current Date: "+Calendar.getInstance().get(Calendar.DATE));
-//				Log.d("jsoup", "Current Month: "+Calendar.getInstance().getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
-//				Log.d("jsoup", "Current Year: "+Calendar.getInstance().get(Calendar.YEAR));
 				
 				File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/weatherwheel/saved_files"), "fourdaylive.json");
 		        //Log.d("OUT", "FILE date modified: "+file.lastModified());
 					
-		        if(file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy"))){
+		        if((opt==0 && (file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy")))) || opt==1){
 		        	Log.d("OUT", "weather data: downloading... ");
-					new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+		        	if(fourdayparser.getStatus() == AsyncTask.Status.FINISHED || fourdayparser.getStatus() == AsyncTask.Status.PENDING)
+		        		fourdayparser.execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 					Toast.makeText(getActivity(), "Updating...", Toast.LENGTH_SHORT).show();
 		        }
 		        else{
@@ -456,6 +451,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void setRainText(){
 			if(rainTableLayout==null){
 				rainTableLayout = new TableLayout(this.getActivity());
+				rainTableLayout.setPadding(0, 0, 10, 0);
 				rainLayout.addView(rainTableLayout);
 			}
 			if(dayIndex == 0 && rain_array[0].length()>0){
@@ -532,6 +528,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			wheelView.setTimeStrings(time_array);
 			wheelView.invalidate();
 		}
+		
 		public void setWeatherIcons(int day){
 			int [] arr = new int[8];
 			try {

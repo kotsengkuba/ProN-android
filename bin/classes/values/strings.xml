@@ -12,7 +12,7 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="title_activity_choose_location">Locations</string>
     <string name="typhoon_header">TYPHOON TRACK</string>
-    <string name="loading_text">"Loading takes around a minute. Please wait.</string>
+    <string name="loading_text">"Loading takes around two minutes. Please wait.</string>
 
     <string name="week_view_activity">Week View Activity</string>
     <string name="typhoon_activity">Typhoon Activity</string>
