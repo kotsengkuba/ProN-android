@@ -418,7 +418,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		        	Log.d("OUT", "weather data: downloading... ");
 		        	if(fourdayparser.getStatus() == AsyncTask.Status.FINISHED || fourdayparser.getStatus() == AsyncTask.Status.PENDING)
 		        		fourdayparser.execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
-					Toast.makeText(getActivity(), "Updating...", Toast.LENGTH_SHORT).show();
+		        	else
+		        		Toast.makeText(getActivity(), "Failed to update", Toast.LENGTH_SHORT).show();
 		        }
 		        else{
 		        	Log.d("OUT", "weather data is updated.");
@@ -634,7 +635,9 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    			Log.d("jsoup", "writing RAW..."+params[0]);
 	    			URL url = new URL(params[0]);
 	                URLConnection connection = url.openConnection();
+	                Log.d("OUT", "XMLparser connecting...");
 	                connection.connect();
+	                Log.d("OUT", "XMLparser connected.");
 	                InputStream input = new BufferedInputStream(url.openStream());
 	                
 	                String path = Environment.getExternalStorageDirectory()
@@ -678,6 +681,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 
 	    	    } catch(Exception e){
 	    	    	e.printStackTrace();
+	    	    	Log.d("OUT", "XMLparser error: "+e);
 	    	    }
 	    	    
 	    	    return params[0];
@@ -717,7 +721,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	        protected void onPostExecute(String s) {
 	    	  Log.i("OUT","OpenWeatherMAp temp: "+temp);
 	    	  if(temp!=null && temp.length()>0)
-	    		  owmTextView.setText(Math.round(Double.parseDouble(temp)*100)/100+" from Open Weather Map ");
+	    		  owmTextView.setText(Math.round(Double.parseDouble(temp)*100)/100+"°C from Open Weather Map ");
 	    	  else
 	    		  owmTextView.setText("");
 			}

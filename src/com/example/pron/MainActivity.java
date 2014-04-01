@@ -59,25 +59,6 @@ public class MainActivity extends Activity implements LocationListener{
 				loaded = true;
 				geocoder = new Geocoder(this);
 				initLocation();
-				Thread waiter = new Thread(){
-					int wait = 0;
-					@Override
-				    public void run() {
-			        try {
-			        	Log.d("OUT", "wait start. CurrentCity: "+currentCity);
-			            super.run();
-			            while (wait < 5000) {
-			                sleep(100);
-			                wait += 100;
-			            }
-			            Log.d("OUT", "wait end. CurrentCity: "+currentCity);
-			        } catch (Exception e) {
-			            // ..
-			        } finally {
-			        	// ..
-			        }
-			    }};
-			    //waiter.start();
 			    loadMain();
 			}
 			else
@@ -156,6 +137,8 @@ public class MainActivity extends Activity implements LocationListener{
 		Typeface font = Typeface.createFromAsset(getAssets(), "REGULAR.TTF");
 		locationTextView.setTypeface(font);
 		
+		Log.d("OUT", "locationtextview"+locationTextView.getText());
+		
 		typhoonButton = (ImageView) findViewById(R.id.typhoonButton);
 		typhoonButton.setVisibility(View.INVISIBLE);
 		
@@ -203,7 +186,13 @@ public class MainActivity extends Activity implements LocationListener{
 	}
 	
 	public void refreshclick(View v){
+		Toast.makeText(this, "Getting updates...", Toast.LENGTH_SHORT).show();
 		fragment.updateData(1);
+	}
+	
+	public void loadclick(View v){
+		Toast.makeText(this, "loading...", Toast.LENGTH_SHORT).show();
+		loadNOAH();
 	}
 	
 	private class SetAddressFromLocation extends AsyncTask<Location,Void,String>{
@@ -294,8 +283,6 @@ public class MainActivity extends Activity implements LocationListener{
     
     public void openMap(View view){
     	Intent intent = new Intent(this, MapActivity.class);
-//    	double lat = locationManager.getLastKnownLocation(provider).getLatitude();
-//    	double lon = locationManager.getLastKnownLocation(provider).getLongitude();
     	if(locationManager.getLastKnownLocation(provider) != null){
     		intent.putExtra("Latitude", locationManager.getLastKnownLocation(provider).getLatitude());
         	intent.putExtra("Longitude", locationManager.getLastKnownLocation(provider).getLongitude());
@@ -314,18 +301,6 @@ public class MainActivity extends Activity implements LocationListener{
     }
     
     public void addTyphoonButton(){
-//		final TextView b = new TextView(this);
-//		LinearLayout l = (LinearLayout)findViewById(R.id.stormLinearLayout);
-//		b.setText("Typhoon");
-//		b.setOnClickListener(new OnClickListener(){
-//
-//			@Override
-//			public void onClick(View arg0) {
-//				// TODO Auto-generated method stub
-//				openTyphoon(b);
-//			}});
-//		Log.d("OUT", "addTyphoonButton b: "+b+" l: "+l);
-//		l.addView(b);
 		typhoonButton.setVisibility(View.VISIBLE);
 	}
     
@@ -337,7 +312,6 @@ public class MainActivity extends Activity implements LocationListener{
     public void doPositiveClick() {
         // Do stuff here.
         Log.d("OUT", "Positive click!");
-        loadNOAH();
     }
     
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -234,40 +234,41 @@ containing a value of this type.
         public static final int shot9=0x7f020042;
     }
     public static final class id {
-        public static final int GridLayout1=0x7f060016;
-        public static final int LinearLayout1=0x7f06001e;
-        public static final int RelativeLayout1=0x7f060009;
-        public static final int action_settings=0x7f060021;
-        public static final int cityTextView=0x7f06000d;
-        public static final int dayTextView=0x7f06001a;
-        public static final int detailsTableLayout=0x7f060017;
-        public static final int gpsButton=0x7f06000b;
-        public static final int header_typhoon=0x7f060013;
+        public static final int GridLayout1=0x7f060017;
+        public static final int LinearLayout1=0x7f06001f;
+        public static final int RelativeLayout1=0x7f06000a;
+        public static final int action_settings=0x7f060022;
+        public static final int cityTextView=0x7f06000e;
+        public static final int dayTextView=0x7f06001b;
+        public static final int detailsTableLayout=0x7f060018;
+        public static final int gpsButton=0x7f06000c;
+        public static final int header_typhoon=0x7f060014;
         public static final int helpButton=0x7f060008;
         public static final int helpImageView=0x7f060005;
         public static final int hybrid=0x7f060004;
-        public static final int icon_typhoon=0x7f060014;
-        public static final int iconsLinearLayout=0x7f06000a;
-        public static final int inputSearch=0x7f060011;
-        public static final int linearLayout2=0x7f060018;
-        public static final int list_view=0x7f060012;
-        public static final int map=0x7f060010;
-        public static final int mapActivity=0x7f060015;
+        public static final int icon_typhoon=0x7f060015;
+        public static final int iconsLinearLayout=0x7f06000b;
+        public static final int inputSearch=0x7f060012;
+        public static final int linearLayout2=0x7f060019;
+        public static final int list_view=0x7f060013;
+        public static final int map=0x7f060011;
+        public static final int mapActivity=0x7f060016;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
-        public static final int rainLabelTextView=0x7f06001f;
-        public static final int refreshButton=0x7f06000c;
+        public static final int rainLabelTextView=0x7f060020;
+        public static final int refreshButton=0x7f06000d;
+        public static final int reloadButton=0x7f060009;
         public static final int satellite=0x7f060002;
-        public static final int sourceTextView=0x7f060020;
-        public static final int tempLinearLayout=0x7f06001c;
-        public static final int tempTextView=0x7f06001d;
+        public static final int sourceTextView=0x7f060021;
+        public static final int tempLinearLayout=0x7f06001d;
+        public static final int tempTextView=0x7f06001e;
         public static final int terrain=0x7f060003;
         public static final int textView1=0x7f060006;
         public static final int textView2=0x7f060007;
-        public static final int timeTextView=0x7f060019;
-        public static final int typhoonButton=0x7f06000e;
-        public static final int weather_detail_fragment=0x7f06000f;
-        public static final int wheelView=0x7f06001b;
+        public static final int timeTextView=0x7f06001a;
+        public static final int typhoonButton=0x7f06000f;
+        public static final int weather_detail_fragment=0x7f060010;
+        public static final int wheelView=0x7f06001c;
     }
     public static final class layout {
         public static final int activity_help=0x7f030000;
@@ -288,7 +289,7 @@ containing a value of this type.
         public static final int main=0x7f0a0001;
     }
     public static final class string {
-        public static final int OpenGLES20=0x7f07002e;
+        public static final int OpenGLES20=0x7f07002f;
         public static final int action_settings=0x7f07001a;
         public static final int app_name=0x7f070019;
         /**   Title for notification shown when GooglePlayServices needs to be
@@ -383,24 +384,25 @@ containing a value of this type.
          */
         public static final int common_signin_button_text_long=0x7f070012;
         public static final int hello_world=0x7f07001b;
-        public static final int help_activity=0x7f07002b;
+        public static final int help_activity=0x7f07002c;
         public static final int help_button_label=0x7f070026;
         public static final int humidity=0x7f070020;
         public static final int intro_text=0x7f070025;
-        public static final int load_screen_activity=0x7f07002d;
+        public static final int load_screen_activity=0x7f07002e;
         public static final int loading_text=0x7f070024;
         public static final int location_name=0x7f07001c;
-        public static final int main_activity_v2=0x7f07002c;
-        public static final int map_activity=0x7f07002a;
+        public static final int main_activity_v2=0x7f07002d;
+        public static final int map_activity=0x7f07002b;
         public static final int rain=0x7f07001e;
-        public static final int search_hint=0x7f07002f;
-        public static final int search_view_activity=0x7f070029;
+        public static final int reload_button_label=0x7f070027;
+        public static final int search_hint=0x7f070030;
+        public static final int search_view_activity=0x7f07002a;
         public static final int temperature=0x7f07001d;
         public static final int title_activity_choose_location=0x7f070022;
         public static final int tomorrow=0x7f070021;
-        public static final int typhoon_activity=0x7f070028;
+        public static final int typhoon_activity=0x7f070029;
         public static final int typhoon_header=0x7f070023;
-        public static final int week_view_activity=0x7f070027;
+        public static final int week_view_activity=0x7f070028;
     }
     public static final class style {
         /** 

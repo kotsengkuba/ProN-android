@@ -3,29 +3,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" 
-    android:background="#000000">
+    android:background="#000000"
+    android:gravity="center" >
 
-    <TextView
+	<TextView
         android:id="@+id/textView1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/loading_text"
-        android:gravity="center"
         android:textColor="#ffffff"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textSize="@dimen/smalltext" 
+        android:padding="10dp" />
     
-        <TextView
+     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/intro_text" />
+        android:textColor="#ffffff"
+        android:text="@string/intro_text"
+        android:padding="10dp" />
 
+     <Button
+        android:id="@+id/reloadButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reload_button_label"
+        android:onClick="loadclick" 
+        android:background="#ffffff"
+        android:padding="10dp"/> 
+        
     <Button
         android:id="@+id/helpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/help_button_label"
-        android:onClick="openHelp" />
+        android:onClick="openHelp" 
+        android:background="#ffffff"
+        android:padding="10dp"
+        android:layout_margin="10dp"/>
 
 
 </LinearLayout>
