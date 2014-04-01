@@ -416,7 +416,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					
 		        if((opt==0 && (file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy")))) || opt==1){
 		        	Log.d("OUT", "weather data: downloading... ");
-		        	if(fourdayparser.getStatus() == AsyncTask.Status.FINISHED || fourdayparser.getStatus() == AsyncTask.Status.PENDING)
+		        	if(fourdayparser.getStatus() == AsyncTask.Status.FINISHED || fourdayparser.getStatus() == AsyncTask.Status.RUNNING)
 		        		fourdayparser.execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 		        	else
 		        		Toast.makeText(getActivity(), "Failed to update", Toast.LENGTH_SHORT).show();

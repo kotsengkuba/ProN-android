@@ -243,7 +243,7 @@ containing a value of this type.
         public static final int detailsTableLayout=0x7f060018;
         public static final int gpsButton=0x7f06000c;
         public static final int header_typhoon=0x7f060014;
-        public static final int helpButton=0x7f060008;
+        public static final int helpButton=0x7f060009;
         public static final int helpImageView=0x7f060005;
         public static final int hybrid=0x7f060004;
         public static final int icon_typhoon=0x7f060015;
@@ -257,7 +257,7 @@ containing a value of this type.
         public static final int normal=0x7f060001;
         public static final int rainLabelTextView=0x7f060020;
         public static final int refreshButton=0x7f06000d;
-        public static final int reloadButton=0x7f060009;
+        public static final int reloadButton=0x7f060008;
         public static final int satellite=0x7f060002;
         public static final int sourceTextView=0x7f060021;
         public static final int tempLinearLayout=0x7f06001d;

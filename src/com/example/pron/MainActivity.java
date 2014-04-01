@@ -85,11 +85,12 @@ public class MainActivity extends Activity implements LocationListener{
 	    // Initialize the location fields
 	    if (location != null) {
 	    	Toast.makeText(this, "Finding your location...", Toast.LENGTH_SHORT).show();
+	    	gpsfinder = new SetAddressFromLocation();
 	    	onLocationChanged(location);
 	    } else {
 	      //locationTextView.setText(provider + "Location not available");
 //	    	setCurrentCity("Manila"); //default
-	    	Toast.makeText(this, "Unable to get gps location", Toast.LENGTH_LONG).show();
+	    	Toast.makeText(this, "Unable to get your location", Toast.LENGTH_LONG).show();
 	    }
 	}
 	
@@ -97,8 +98,9 @@ public class MainActivity extends Activity implements LocationListener{
 	public void onLocationChanged(Location location) {
 		// Set text for location textview
 //		gpsfinder.cancel(true);
-		gpsfinder = new SetAddressFromLocation();
-		gpsfinder.execute(location);
+		if(gpsfinder.getStatus() == AsyncTask.Status.FINISHED || gpsfinder.getStatus() == AsyncTask.Status.RUNNING){
+			gpsfinder.execute(location);
+		}
 	}
 	
 	@Override
@@ -186,12 +188,12 @@ public class MainActivity extends Activity implements LocationListener{
 	}
 	
 	public void refreshclick(View v){
-		Toast.makeText(this, "Getting updates...", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Updating...", Toast.LENGTH_SHORT).show();
 		fragment.updateData(1);
 	}
 	
 	public void loadclick(View v){
-		Toast.makeText(this, "loading...", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show();
 		loadNOAH();
 	}
 	
