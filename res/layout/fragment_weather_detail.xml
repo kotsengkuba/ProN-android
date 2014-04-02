@@ -48,46 +48,76 @@
         android:textSize="@dimen/xstext" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:orientation="vertical"
-        android:paddingRight="15dp" 
-        android:paddingTop="200dp" >
+        android:weightSum="100" >
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="80" />
 
         <LinearLayout
-            android:id="@+id/tempLinearLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_weight="1"
+            android:weightSum="100" >
 
-            <TextView
-                android:id="@+id/tempTextView"
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" 
+                android:layout_weight="92" />
+
+            <LinearLayout
+                android:id="@+id/tempLinearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#3A3A3A"
-                android:textSize="@dimen/biggertext" />
+                android:orientation="vertical"
+                android:layout_weight="8" >
+
+                <TextView
+                    android:id="@+id/tempTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#3A3A3A"
+                    android:textSize="@dimen/biggertext" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/LinearLayout1"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="39dp"
-            android:orientation="vertical"
-            android:paddingTop="20dp" >
+            android:layout_weight="19"
+            android:weightSum="10" >
 
-            <TextView
-                android:id="@+id/rainLabelTextView"
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="7" />
+
+            <LinearLayout
+                android:id="@+id/LinearLayout1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="@string/rain"
-                android:textColor="#0B5FA5"
-                android:textSize="@dimen/smalltext" />
+                android:orientation="vertical"
+                android:paddingTop="20dp"
+                android:layout_weight="3" >
+
+                <TextView
+                    android:id="@+id/rainLabelTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/rain"
+                    android:textColor="#0B5FA5"
+                    android:textSize="@dimen/smalltext" />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 

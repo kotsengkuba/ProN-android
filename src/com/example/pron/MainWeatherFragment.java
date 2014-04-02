@@ -451,7 +451,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		}
 		
 		public void setTempText(String s){
-			tempTextView.setText(s);
+			if(s.startsWith("null"))
+				tempTextView.setText("-");
+			else
+				tempTextView.setText(s);
 			new OWMHTask().execute(currentCity);
 		}
 		
