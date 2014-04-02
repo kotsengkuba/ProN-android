@@ -96,9 +96,9 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 				if(label.equalsIgnoreCase("Real Feel"))
 					units = "°C";
 				else if(label.equalsIgnoreCase("Windspeed"))
-					units = "kph";
+					units = "m/s";
 				else if(label.equalsIgnoreCase("Rainfall"))
-					units = "mm";
+					units = "mm/hr";
 				else if(label.equalsIgnoreCase("Temperature"))
 					units = "°C";
 				else if(label.equalsIgnoreCase("Wind Direction"))

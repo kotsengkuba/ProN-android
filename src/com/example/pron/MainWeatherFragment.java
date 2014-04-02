@@ -62,6 +62,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	TableLayout rainTableLayout;
 	boolean center = false;
 	XMLparser fourdayparser;
+	WeatherDetailDialogFragment detailFragment;
 	
 	String DEBUG_TAG = "touch event";
 	
@@ -113,6 +114,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		owmTextView = new TextView(this.getActivity());
 		temperatureLayout = (LinearLayout) view.findViewById(R.id.tempLinearLayout);
 		temperatureLayout.addView(owmTextView);
+		
+		detailFragment = new WeatherDetailDialogFragment();
 		
 		//Get the typeface from assets
 //		font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
@@ -304,11 +307,13 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		}
 		
 		public void loadDetailsFrag(){
-			DialogFragment newFragment = new WeatherDetailDialogFragment();
+			if(detailFragment.isAdded())
+				detailFragment.dismiss();
+			detailFragment = new WeatherDetailDialogFragment();
 			Bundle b = new Bundle();
 			b.putString("s", weatherReader.getAllDetailsString(currentCity, dayIndex, timeIndex));
-			newFragment.setArguments(b);
-		    newFragment.show(this.getActivity().getFragmentManager(), "String");		    
+			detailFragment.setArguments(b);
+		    detailFragment.show(this.getActivity().getFragmentManager(), "String");		    
 		}
 	    
 	    public void viewMap() {
