@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_gravity="right" >
-        
+
         <TextView
             android:id="@+id/timeTextView"
             android:layout_width="wrap_content"
@@ -28,7 +28,6 @@
             android:onClick="toggleFourDay"
             android:textColor="#4D4D4D"
             android:textSize="@dimen/medtext" />
-
     </LinearLayout>
 
     <com.example.pron.Wheel
@@ -37,52 +36,58 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
-    
-	<LinearLayout
-        android:id="@+id/tempLinearLayout"
+
+    <TextView
+        android:id="@+id/sourceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:textColor="#CCCCCC"
+        android:textSize="@dimen/xstext" />
+
+    <LinearLayout
+        android:id="@+id/rightstuffLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_gravity="right"
-        android:orientation="vertical" 
-        android:layout_centerVertical="true" >
-        
-	    <TextView
-	        android:id="@+id/tempTextView"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_marginRight="20dp"
-	        android:textAppearance="?android:attr/textAppearanceLarge"
-	        android:textColor="#3A3A3A"
-	        android:textSize="@dimen/biggertext" />
-	    </LinearLayout>
-    
-    <LinearLayout
-        android:id="@+id/LinearLayout1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tempLinearLayout"
-        android:layout_below="@+id/tempLinearLayout"
-        android:paddingTop="20dp"
-        android:orientation="vertical" >
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:paddingRight="15dp"
+        android:paddingTop="150dp" >
 
-        <TextView
-            android:id="@+id/rainLabelTextView"
+        <LinearLayout
+            android:id="@+id/tempLinearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:text="@string/rain"
-            android:textColor="#0B5FA5"
-            android:textSize="@dimen/smalltext" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tempTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#3A3A3A"
+                android:textSize="@dimen/biggertext" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="20dp" >
+
+            <TextView
+                android:id="@+id/rainLabelTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="@string/rain"
+                android:textColor="#0B5FA5"
+                android:textSize="@dimen/smalltext" />
+        </LinearLayout>
     </LinearLayout>
-    
-    <TextView
-            android:id="@+id/sourceTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="5dp"
-            android:textColor="#CCCCCC"
-            android:textSize="@dimen/xstext" />
 
 </RelativeLayout>

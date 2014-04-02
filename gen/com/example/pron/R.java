@@ -236,9 +236,9 @@ containing a value of this type.
     }
     public static final class id {
         public static final int GridLayout1=0x7f060018;
-        public static final int LinearLayout1=0x7f060020;
+        public static final int LinearLayout1=0x7f060022;
         public static final int RelativeLayout1=0x7f06000a;
-        public static final int action_settings=0x7f060023;
+        public static final int action_settings=0x7f060024;
         public static final int cityTextView=0x7f06000e;
         public static final int dayTextView=0x7f06001c;
         public static final int detailsTableLayout=0x7f060019;
@@ -256,14 +256,15 @@ containing a value of this type.
         public static final int mapActivity=0x7f060017;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
-        public static final int rainLabelTextView=0x7f060021;
+        public static final int rainLabelTextView=0x7f060023;
         public static final int refreshButton=0x7f06000d;
         public static final int reloadButton=0x7f060008;
+        public static final int rightstuffLinearLayout=0x7f06001f;
         public static final int satellite=0x7f060002;
         public static final int searchViewLayout=0x7f060012;
-        public static final int sourceTextView=0x7f060022;
-        public static final int tempLinearLayout=0x7f06001e;
-        public static final int tempTextView=0x7f06001f;
+        public static final int sourceTextView=0x7f06001e;
+        public static final int tempLinearLayout=0x7f060020;
+        public static final int tempTextView=0x7f060021;
         public static final int terrain=0x7f060003;
         public static final int textView1=0x7f060006;
         public static final int textView2=0x7f060007;

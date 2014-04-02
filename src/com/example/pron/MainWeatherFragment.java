@@ -113,7 +113,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		//rainWheelView = (RainWheel) view.findViewById(R.id.rainWheelView);
 		owmTextView = new TextView(this.getActivity());
 		temperatureLayout = (LinearLayout) view.findViewById(R.id.tempLinearLayout);
-		temperatureLayout.addView(owmTextView);
+//		temperatureLayout.addView(owmTextView);
 		
 		detailFragment = new WeatherDetailDialogFragment();
 		
