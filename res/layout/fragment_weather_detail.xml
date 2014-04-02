@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent" 
+    android:layout_weight="1">
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -47,14 +48,13 @@
         android:textSize="@dimen/xstext" />
 
     <LinearLayout
-        android:id="@+id/rightstuffLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:orientation="vertical"
-        android:paddingRight="15dp"
-        android:paddingTop="150dp" >
+        android:paddingRight="15dp" 
+        android:paddingTop="200dp" >
 
         <LinearLayout
             android:id="@+id/tempLinearLayout"
@@ -76,6 +76,7 @@
             android:id="@+id/LinearLayout1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="39dp"
             android:orientation="vertical"
             android:paddingTop="20dp" >
 
