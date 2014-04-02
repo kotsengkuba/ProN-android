@@ -98,7 +98,8 @@ public class MainActivity extends Activity implements LocationListener{
 	public void onLocationChanged(Location location) {
 		// Set text for location textview
 //		gpsfinder.cancel(true);
-		if(gpsfinder.getStatus() == AsyncTask.Status.FINISHED || gpsfinder.getStatus() == AsyncTask.Status.RUNNING){
+		if(gpsfinder.getStatus() == AsyncTask.Status.FINISHED || gpsfinder.getStatus() == AsyncTask.Status.PENDING){
+			gpsfinder = new SetAddressFromLocation();
 			gpsfinder.execute(location);
 		}
 	}
@@ -209,20 +210,16 @@ public class MainActivity extends Activity implements LocationListener{
 		protected String doInBackground(Location... params) {
     		String location = "";
     	    try {
-//    	    	Log.d("OUT", "adresses: "+geocoder);
     	    	List<Address> addresses = geocoder.getFromLocation(params[0].getLatitude(), params[0].getLongitude(), 10);
 
     	    	int index = 2;
     	    	if(addresses.size() != 0) {
 		    		   Address returnedAddress = addresses.get(index);
-		    		   StringBuilder strReturnedAddress = new StringBuilder("");
 		    		   String s = "";
 		    		   for(int i=0; i<returnedAddress.getMaxAddressLineIndex(); i++) {
-//		    			   strReturnedAddress.append(returnedAddress.getAddressLine(i));
 		    			   s = returnedAddress.getAddressLine(i);
 		    			   Log.i("address", returnedAddress.getAddressLine(i));
 		    		   }
-//		    		   location = strReturnedAddress.toString();
 		    		   location = s;
 	    		}
 	    		else{
@@ -469,8 +466,6 @@ public class MainActivity extends Activity implements LocationListener{
     	  Log.i("kml","End parse...");
     	  
     	  // reload displayed data
-    	  //setDataFromLocation();
-    	  //Toast.makeText(null, "New data downloaded.", dayIndex).show();
     	  if(loaded)
     		  loadMain();
     	  else{

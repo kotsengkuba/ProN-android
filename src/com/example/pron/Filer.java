@@ -35,7 +35,6 @@ public class Filer {
         File myDir = new File(root + "/weatherwheel/saved_files");    
         //myDir.mkdirs();
         File file = new File (myDir, filename);
-        String s = "";
         StringBuffer stringBuffer = new StringBuffer();
         try {
         	FileInputStream in = new FileInputStream(file);

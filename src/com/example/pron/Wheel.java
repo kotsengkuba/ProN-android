@@ -16,8 +16,6 @@ import android.view.Display;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class Wheel extends View{
 	ShapeDrawable wheel;
@@ -118,24 +116,6 @@ public class Wheel extends View{
 		p.setStyle(Paint.Style.FILL_AND_STROKE); 
 		p.setStrokeWidth(4.5f);
 		
-//		for(int i=0; i<8; i++){
-//			angle = (float) (i*(Math.PI/4));
-//			nex = cx + (float) (r*Math.cos(rad+angle));
-//			ney = cy + (float) (r*Math.sin(rad+angle));
-//			//canvas.drawLine(cx, cy, nex, ney, p);
-//
-//			p.setColor(pie_colors_array[i]);
-//			p.setStyle(Paint.Style.FILL);
-//			canvas.drawArc(rect, (((rad+angle)*180)/(float)Math.PI)%360, 45, true, p);
-//			
-//			//p.setColor(Color.WHITE);
-//			//p.setStyle(Paint.Style.STROKE); 
-//			//canvas.drawArc(rect, (((rad+angle)*180)/(float)Math.PI)%360, 45, true, p);
-//		
-//			//blue = blue + 10;
-//		}
-		
-		
 		// draw wheel colors
 		int i = offset;
 		int ctr = 0;
@@ -207,9 +187,12 @@ public class Wheel extends View{
 	
 			}
 			
-			if(!snap && (ney<cy-30 || ney>cy+30))
-				canvas.drawText(time_array[i], nex + (float) ((rad1)*Math.cos(rad+angle)), ney + (float) ((rad1)*Math.sin(rad+angle)), textp);
-			
+			if(!snap && (ney<cy-30 || ney>cy+30)){
+				if(ney>cy)
+					canvas.drawText(time_array[i], nex + (float) ((rad1+20)*Math.cos(rad+angle)), ney + (float) ((rad1)*Math.sin(rad+angle))+ 20, textp);
+				else
+					canvas.drawText(time_array[i], nex + (float) ((rad1)*Math.cos(rad+angle)), ney + (float) ((rad1)*Math.sin(rad+angle)), textp);
+			}
 			
 			i++;
 			ctr++;
@@ -249,48 +232,15 @@ public class Wheel extends View{
 
 			}
 			
-			if(!snap && (ney<cy-30 || ney>cy+30))
-				canvas.drawText(time_array[i], nex + (float) ((rad1)*Math.cos(rad+angle)), ney + (float) ((rad1)*Math.sin(rad+angle)), textp);
-			
+			if(!snap && (ney<cy-30 || ney>cy+30)){
+				if(ney>cy)
+					canvas.drawText(time_array[i], nex + (float) ((rad1+20)*Math.cos(rad+angle)), ney + (float) ((rad1)*Math.sin(rad+angle))+ 20, textp);
+				else
+					canvas.drawText(time_array[i], nex + (float) ((rad1)*Math.cos(rad+angle)), ney + (float) ((rad1)*Math.sin(rad+angle)), textp);
+			}
 			
 			i++;
 			ctr = (ctr+1)%8;
-		}
-		
-//		for(int i=0; i<8; i++){
-//			angle = (float) (i*(Math.PI/4));
-//			nex = cx + (float) ((r+10)*Math.cos(rad+angle));
-//			ney = cy + (float) ((r+10)*Math.sin(rad+angle));
-//			
-//			//Bitmap bmp = BitmapFactory.decodeResource(getResources(), icon_array[i]);
-//			///bmp = Bitmap.createScaledBitmap(bmp, 200, 200, true);
-//			
-//			if(!(ney-1>=cy-r*Math.sin(Math.PI/4) && ney+1<=cy+r*Math.sin(Math.PI/4))){
-//				Bitmap bmp = Bitmap.createScaledBitmap(bitmap_array[i], (int)(bitmap_array[i].getWidth()*0.8), (int)(bitmap_array[i].getHeight()*0.8), true);
-//				p.setColor(circle_colors_array[i]);
-//				p.setStyle(Paint.Style.FILL_AND_STROKE);
-//				canvas.drawCircle(nex, ney, 90, p);
-//				
-//				p.setColor(Color.WHITE);
-//				p.setStyle(Paint.Style.FILL_AND_STROKE);
-//				canvas.drawCircle(nex, ney, 70, p);
-//				
-//				canvas.drawBitmap(bmp, nex-bmp.getWidth()/2, ney-bmp.getHeight()/2, null);
-//
-//			}
-//			else{
-//				p.setColor(circle_colors_array[i]);
-//				p.setStyle(Paint.Style.FILL_AND_STROKE);
-//				canvas.drawCircle(nex, ney, 120, p);
-//				
-//				p.setColor(Color.WHITE);
-//				p.setStyle(Paint.Style.FILL_AND_STROKE);
-//				canvas.drawCircle(nex, ney, 100, p);
-//				
-//		        canvas.drawBitmap(bitmap_array[i], nex-bitmap_array[i].getWidth()/2, ney-bitmap_array[i].getHeight()/2, null);
-//
-//			}
-//		}
-		
+		}		
     }
 }

@@ -21,6 +21,7 @@ public class OpenWeatherMapHandler {
 	String rawString = "";
 	JSONObject response;
 	JSONArray list;
+	boolean is_null = true;
 	
 	public OpenWeatherMapHandler(){
 		
@@ -46,6 +47,7 @@ public class OpenWeatherMapHandler {
 	        response = new JSONObject(rawString);
 	        if(response.getString("cod").equals("200")){
 	        	list = response.getJSONArray("list");
+	        	is_null = false;
 	        	return true;
 	        }
 		}catch(Exception e){}
@@ -54,6 +56,10 @@ public class OpenWeatherMapHandler {
 	
 	public String getRawString(){
 		return rawString;
+	}
+	
+	public boolean IsNull(){
+		return is_null;
 	}
 	
 	public String getCurrentTemp(){
@@ -100,6 +106,23 @@ public class OpenWeatherMapHandler {
 			}catch(Exception e){}
 		}
 		return null;
+	}
+	
+	public int getCurrentWeatherIcon(){
+		for(int i=0; i<list.length(); i++){
+			try{
+				JSONObject listItem = list.getJSONObject(i);
+				if(listItem.getDouble("dt")*1000>new Date().getTime()){
+					if(i>0){
+						JSONObject prevItem = list.getJSONObject(i-1);
+						String s = prevItem.getJSONObject("weather").getString("main");
+						if(s.equalsIgnoreCase("cleat"))
+							return R.drawable.clear;
+					}
+				}
+			}catch(Exception e){}
+		}
+		return 0;
 	}
 
 	

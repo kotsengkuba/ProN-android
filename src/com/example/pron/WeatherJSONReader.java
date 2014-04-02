@@ -83,7 +83,6 @@ public class WeatherJSONReader {
 	}
 	
 	public HashMap<String, String> getDetailsHash(String placename, int dayIndex, int timeIndex){
-		String s = "";
 		JSONArray dates;
 		HashMap<String, String> hm = new HashMap<String , String>();
 		try {

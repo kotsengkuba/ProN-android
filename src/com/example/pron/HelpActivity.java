@@ -20,6 +20,7 @@ public class HelpActivity extends Activity{
 		setContentView(R.layout.activity_help);
 		
 		images = new ArrayList<Integer>();
+		images.add(R.drawable.splash);
 		images.add(R.drawable.shot1);
 		images.add(R.drawable.shot2);
 		images.add(R.drawable.shot3);

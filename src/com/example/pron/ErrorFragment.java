@@ -19,7 +19,7 @@ public class ErrorFragment extends DialogFragment{
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_error, null);
         builder.setView(view);
-        builder.setTitle("Error");
+        builder.setTitle("Error: Unable to connect");
         builder.setMessage("Please connect to the internet or try again later.");
         builder.setPositiveButton("OK",
                 new DialogInterface.OnClickListener() {

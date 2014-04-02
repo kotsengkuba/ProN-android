@@ -21,7 +21,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -29,6 +31,9 @@ public class SearchViewActivity extends Activity {
 	// List view
     private ListView lv;
     private ListView ol_lv;
+    
+    //Layout
+    LinearLayout ll;
      
     // Listview Adapter
     public CustomAdapter adapter;
@@ -58,6 +63,8 @@ public class SearchViewActivity extends Activity {
 	List<String> saved_places = new ArrayList<String>();;
 	List<String> all_places = new ArrayList<String>();
 	
+	OnlineSearch online_search_thread;
+	
 	WeatherJSONReader weatherReader; 
  
     @Override
@@ -65,8 +72,12 @@ public class SearchViewActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_view);
 
+        ll = (LinearLayout) findViewById(R.id.searchViewLayout);
         lv = (ListView) findViewById(R.id.list_view);
+        ol_lv = new ListView(this);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
+        
+        online_search_thread = new OnlineSearch();
 
         weatherReader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
 		Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
@@ -127,15 +138,6 @@ public class SearchViewActivity extends Activity {
         	   
         	   if(textLength == 0){
         		   reset();
-//        		   for(int i=0;i<saved_places.size();i++){
-//	        		   if(textLength<=saved_places.get(i).length()){
-//	     	        	    if(searchString.equalsIgnoreCase(saved_places.get(i).substring(0,textLength))){
-//	     	        	    	product_results.add(saved_places.get(i));
-//	     	        	    	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
-//	     	        	    	temperature_results.add(weatherReader.getDetailString(saved_places.get(i), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
-//	     	        	    }
-//	     	        	}
-//        	   		}
         	   }
         	   else{
 	        	   for(int i=0;i<all_places.size();i++){
@@ -161,11 +163,12 @@ public class SearchViewActivity extends Activity {
 	        	   }
         	   }
         	   
+        	   if(product_results.size()==0){
         	   // search online
-//        	   product_results.add("Searching online...");
-// 	    	   imageId_results.add(null);
-// 	      	   temperature_results.add("");
-//        	   new OnlineSearch().execute(searchString);
+        		   Log.d("OUT", "no results");
+        		   
+//        		   doOWMSearch(searchString); // hirap nito D:
+        	   }
         	   
 //        	   Log.d("OUT", "products: "+product_results);
         	   adapter.notifyDataSetChanged();    	
@@ -295,7 +298,27 @@ public class SearchViewActivity extends Activity {
 		return (int) Math.floor(hour/3);
 	}
 	
-	private class OnlineSearch extends AsyncTask<String,Void,String[]>{
+	public void doOWMSearch(String s){
+		if(online_search_thread.getStatus()==AsyncTask.Status.FINISHED || online_search_thread.getStatus()==AsyncTask.Status.PENDING)
+			online_search_thread = (OnlineSearch) new OnlineSearch().execute(s);
+		else if (online_search_thread.getStatus()==AsyncTask.Status.RUNNING){
+			online_search_thread.cancel(true);
+			online_search_thread.execute(s);
+		}
+			
+		TextView tv = new TextView(this);
+		tv.setText("searching OpenWeatherMap...");
+//		ol_lv.addFooterView(tv);
+		ll.addView(tv);
+//		other_results.add("other result test");
+//		product_results.addAll(other_results);
+//		imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(0), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+//    	temperature_results.add("-");
+//    	adapter.notifyDataSetChanged();
+//		
+	}
+	
+	private class OnlineSearch extends AsyncTask<String,Void,OpenWeatherMapHandler>{
 		@Override
     	protected void onPreExecute (){
 			Log.d("OUT", "loading owm search...");
@@ -303,32 +326,32 @@ public class SearchViewActivity extends Activity {
     	}
 		
 		@Override
-		protected String[] doInBackground(String... params) {
+		protected OpenWeatherMapHandler doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			String temp = "";
 			String [] res = {params[0], ""};
 			other_results.clear();
 			OpenWeatherMapHandler owmh = new OpenWeatherMapHandler();
 			if(owmh.load(params[0])){
-				res[1] = owmh.getCurrentTemp();
-				other_results.add(params[0]);
+//				res[1] = owmh.getCurrentTemp();
+//				other_results.add(params[0]);
 				//temperature_results.add(temp+"°");
 			}
 			
-			return res;
+			return owmh;
 		}
 		
 		@Override
-        protected void onPostExecute(String [] s) {
-				Log.d("OUT", "Search text: "+inputSearch.getText()+", own seaerch: "+s);
-			if(other_results.size()>0 && s[0].equalsIgnoreCase(inputSearch.getText().toString())){
+        protected void onPostExecute(OpenWeatherMapHandler o) {
+//			Log.d("OUT", "Search text: "+inputSearch.getText()+", own seaerch: "+s);
+//			if(other_results.size()>0 && s[0].equalsIgnoreCase(inputSearch.getText().toString())){
 //				  product_results.remove(product_results.size()-1);
 //		    	  imageId_results.remove(imageId_results.size()-1);
 //		      	  temperature_results.remove(temperature_results.size()-1);
-		      	  
+			if(!o.IsNull()){
 		      	  product_results.addAll(other_results);
-		      	  imageId_results.add(null);
-		      	  temperature_results.add(s[1]);
+		      	  imageId_results.add(R.drawable.clear);
+		      	  temperature_results.add(o.getCurrentTemp());
 		      	  adapter.notifyDataSetChanged();
 			}
 			else{

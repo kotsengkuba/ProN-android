@@ -416,9 +416,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					
 		        if((opt==0 && (file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy")))) || opt==1){
 		        	Log.d("OUT", "weather data: downloading... ");
-		        	if(fourdayparser.getStatus() == AsyncTask.Status.FINISHED || fourdayparser.getStatus() == AsyncTask.Status.RUNNING)
+		        	if(fourdayparser.getStatus() == AsyncTask.Status.FINISHED || fourdayparser.getStatus() == AsyncTask.Status.PENDING){
+		        		fourdayparser = new XMLparser();
 		        		fourdayparser.execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
-		        	else
+		        	}else
 		        		Toast.makeText(getActivity(), "Failed to update", Toast.LENGTH_SHORT).show();
 		        }
 		        else{
@@ -611,8 +612,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			return formattedDate;
 		}
 		
-		public void displayToast(String s){
-			Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+		public void displayToast(String s, int duration){
+			Toast.makeText(getActivity(), s, duration).show();
 		}
 	    
 	    private class XMLparser extends AsyncTask<String,Void,String>{
@@ -672,7 +673,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    				Log.i("kml","Starting (rainchance) parse... "+params[0]);
 		                saxParser.parse(outputFile, rainchance_handler);
 		                s = rainchance_handler.get_json_string();
-		                Log.i("kml","s = "+s);
+//		                Log.i("kml","s = "+s);
 		                new Filer().saveFile(s,"rainchancelive.json");
 	    			}
 	    			else if(params[1].equals("openweathermmap")){
@@ -684,7 +685,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	    	Log.d("OUT", "XMLparser error: "+e);
 	    	    }
 	    	    
-	    	    return params[0];
+	    	    return params[1];
 			}
 	    	
 	    	@Override
@@ -692,10 +693,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 //	    	  Log.i("OUT","Data updated: "+s);
 	    	  
 	    	  // reload displayed data
-	    	  //setDataFromLocation();
-//	    	  Toast.makeText(null, "New data downloaded.", dayIndex).show();
-	    		if(s.equalsIgnoreCase("fourday"))
-	    			displayToast("Weather data updated");
+	    		if(s.equals("fourday"))
+	    			displayToast("Weather data updated", Toast.LENGTH_LONG);
 	    		reset();
 	        }
 	    }
