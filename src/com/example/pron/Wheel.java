@@ -107,11 +107,8 @@ public class Wheel extends View{
     public void reset(){
     	rad = 0;
     }
-
+    
     protected void onDraw(Canvas canvas) { 
-		ex = cx + (float) (r*Math.cos(rad));
-		ey = cy + (float) (r*Math.sin(rad));
-		
 		p.setAntiAlias(true);
 		p.setStyle(Paint.Style.FILL_AND_STROKE); 
 		p.setStrokeWidth(4.5f);

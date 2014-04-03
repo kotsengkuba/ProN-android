@@ -536,7 +536,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void setWheel(int day){
 			setWeatherIcons(day);
 			wheelView.setTimeStrings(time_array);
-			wheelView.invalidate();
+//			wheelView.invalidate();
 		}
 		
 		public void setWeatherIcons(int day){
@@ -554,6 +554,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				e.printStackTrace();
 			}
 			wheelView.setIcons(arr);
+			wheelView.invalidate();
 		}
 		
 		public void plusDay(){
