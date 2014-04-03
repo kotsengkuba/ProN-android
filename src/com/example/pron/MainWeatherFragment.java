@@ -108,8 +108,11 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		sourceTextView = (TextView) view.findViewById(R.id.sourceTextView);
 		wheelView = (Wheel) view.findViewById(R.id.wheelView);
 		rainLayout = (LinearLayout) view.findViewById(R.id.LinearLayout1);
+		
 		rainTableLayout = new TableLayout(this.getActivity());
+		rainTableLayout.setPadding(0, 0, 10, 0);
 		rainLayout.addView(rainTableLayout);
+		
 		//rainWheelView = (RainWheel) view.findViewById(R.id.rainWheelView);
 		owmTextView = new TextView(this.getActivity());
 		temperatureLayout = (LinearLayout) view.findViewById(R.id.tempLinearLayout);
@@ -459,11 +462,11 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		}
 		
 		public void setRainText(){
-			if(rainTableLayout==null){
-				rainTableLayout = new TableLayout(this.getActivity());
-				rainTableLayout.setPadding(0, 0, 10, 0);
-				rainLayout.addView(rainTableLayout);
-			}
+//			if(rainTableLayout==null){
+//				rainTableLayout = new TableLayout(this.getActivity());
+//				rainTableLayout.setPadding(0, 0, 10, 0);
+//				rainLayout.addView(rainTableLayout);
+//			}
 			if(dayIndex == 0 && rain_array[0].length()>0){
 				rainTableLayout.removeAllViews();
 				for(int i=0; i<rain_array.length; i++){

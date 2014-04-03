@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -22,11 +23,13 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 	
 	AlertDialog.Builder builder;
 	TableLayout tl;
+	Typeface font;
 	
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 		String s = "";
 		JSONObject o;
+		font = Typeface.createFromAsset(this.getActivity().getAssets(), "REGULAR.TTF");
 		
 		// Use the Builder class for convenient dialog construction
         builder = new AlertDialog.Builder(getActivity());
@@ -39,7 +42,6 @@ public class WeatherDetailDialogFragment extends DialogFragment{
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
             }});
-        
         tl = (TableLayout) view.findViewById(R.id.detailsTableLayout);
         tl.setPadding(20, 10, 10, 10);
         
@@ -107,14 +109,14 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 					units = "%";
 				
 				TextView ValueTextViewItem = new TextView(this.getActivity());
-				//RainTextViewItem.setTypeface(font);
+//				ValueTextViewItem.setTypeface(font);
 				ValueTextViewItem.setPadding(20, 10, 20, 10);
 				ValueTextViewItem.setGravity(Gravity.CENTER);
 				ValueTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
 				ValueTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
 				
 				TextView LabelTimeTextViewItem = new TextView(this.getActivity());
-				//RainTimeTextViewItem.setTypeface(font);
+//				LabelTimeTextViewItem.setTypeface(font);
 				LabelTimeTextViewItem.setPadding(10, 10, 10, 10);
 				LabelTimeTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
 				LabelTimeTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
