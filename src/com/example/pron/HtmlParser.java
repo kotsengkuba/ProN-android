@@ -91,7 +91,7 @@ public class HtmlParser {
 					str = data.get(1).text();
 					delims = "[()]";
 					tokens = str.split(delims);
-					Log.d("jsoup", "str: "+str);
+//					Log.d("jsoup", "str: "+str);
 					details.put(labels[1], tokens[1]);
 					
 					//for(Element dataItem : data){							

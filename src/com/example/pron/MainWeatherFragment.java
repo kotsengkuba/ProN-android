@@ -63,6 +63,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	boolean center = false;
 	XMLparser fourdayparser;
 	WeatherDetailDialogFragment detailFragment;
+	OpenWeatherMapHandler owmh;
 	
 	String DEBUG_TAG = "touch event";
 	
@@ -131,6 +132,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		sourceTextView.setTypeface(font);
 		
 		fourdayparser = new XMLparser();
+		owmh = new OpenWeatherMapHandler();
 		
 		reset();
 		updateData(0);
@@ -149,7 +151,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		            case MotionEvent.ACTION_DOWN:
 		            	Log.d(DEBUG_TAG,"onDown: " + event.getX() + event.getY());
 		            	wheelView.lasty = event.getY();
-		            	Log.d("OUT", "set downY = "+event.getY());
 		            	downY = event.getY();
 		            	if(event.getX() > wheelView.width*0.8)
 		            		wheelView.onWheelArea = false;
@@ -206,7 +207,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		                break;
 		            case MotionEvent.ACTION_UP:
 		            	wheelView.snap = true;
-		            	Log.d("OUT", "center: "+center);
+//		            	Log.d("OUT", "center: "+center);
 		            	float deg;
 		            	if(center){
 		            		center = false;
@@ -282,14 +283,17 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			String s = new Filer().fileToString("fourdaylive.json");
 			if(s.length()>0){
 				weatherReader = new WeatherJSONReader(s);
-				Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
+//				Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
 				
 				if((new Filer().fileExists("rainchancelive.json"))){
 					rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
-					Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
+//					Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
 				}
+				
+				owmh = ((MainActivity)this.getActivity()).getOWMH();
 
-				if(((MainActivity) this.getActivity()).getCurrentCity()!= null && weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) != null)
+				if(((MainActivity) this.getActivity()).getCurrentCity()!= null && 
+						(weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) != null || !owmh.IsNull()))
 					currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
 				else if(weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) == null){
 					// kung wala yung default O:
@@ -298,9 +302,15 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					((MainActivity) this.getActivity()).setLocationText();
 				}
 				
-				setToCurrentTime();
-				setDataFromLocation();
-				setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(new Date(new Filer().getFile("fourdaylive.json").lastModified())));
+				if(owmh.IsNull()){
+					setToCurrentTime();
+					setDataFromLocation();
+					setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(new Date(new Filer().getFile("fourdaylive.json").lastModified())));
+				}
+				else{
+					setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(owmh.getDateTime())+" from OpenWeatherMap.org");
+				}
+				
 				return true;
 			}
 			else{
@@ -330,7 +340,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			timeIndex = (int) Math.floor(hour/3);
 			wheelView.setOffset(timeIndex);
 			wheelView.reset();
-			Log.d("OUT", "setToDurrentTime() TimeIndex: "+timeIndex);
 			wheelView.invalidate();
 	    }
 	    		
@@ -458,7 +467,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				tempTextView.setText("-");
 			else
 				tempTextView.setText(s);
-			new OWMHTask().execute(currentCity);
 		}
 		
 		public void setRainText(){
@@ -711,32 +719,32 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	        }
 	    }
 	    
-	    private class OWMHTask extends AsyncTask<String,Void,String>{
-	    	String temp = "";
-	    	
-	    	@Override
-	    	protected void onPreExecute (){
-	    		owmTextView.setText("Loading...");
-	    	}
-	    	
-			@Override
-			protected String doInBackground(String... params) {
-				OpenWeatherMapHandler owmh = new OpenWeatherMapHandler();
-				if(owmh.load(params[0])){
-					temp = owmh.getTemp(dates.get(dayIndex),time_array[timeIndex]);
-				}
-				return "";
-			}
-			
-			@Override
-	        protected void onPostExecute(String s) {
-	    	  Log.i("OUT","OpenWeatherMAp temp: "+temp);
-	    	  if(temp!=null && temp.length()>0)
-	    		  owmTextView.setText(Math.round(Double.parseDouble(temp)*100)/100+"°C from Open Weather Map ");
-	    	  else
-	    		  owmTextView.setText("");
-			}
-		}
+//	    private class OWMHTask extends AsyncTask<String,Void,String>{
+//	    	String temp = "";
+//	    	
+//	    	@Override
+//	    	protected void onPreExecute (){
+//	    		owmTextView.setText("Loading...");
+//	    	}
+//	    	
+//			@Override
+//			protected String doInBackground(String... params) {
+//				OpenWeatherMapHandler owmh = new OpenWeatherMapHandler();
+//				if(owmh.load(params[0])){
+//					temp = owmh.getTemp(dates.get(dayIndex),time_array[timeIndex]);
+//				}
+//				return "";
+//			}
+//			
+//			@Override
+//	        protected void onPostExecute(String s) {
+//	    	  Log.i("OUT","OpenWeatherMAp temp: "+temp);
+//	    	  if(temp!=null && temp.length()>0)
+//	    		  owmTextView.setText(Math.round(Double.parseDouble(temp)*100)/100+"°C from Open Weather Map ");
+//	    	  else
+//	    		  owmTextView.setText("");
+//			}
+//		}
 
 	    /* Gestures */
 	    

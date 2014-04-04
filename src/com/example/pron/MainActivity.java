@@ -12,6 +12,9 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -43,6 +46,7 @@ public class MainActivity extends Activity implements LocationListener{
 	MainWeatherFragment fragment;
 	boolean loaded = false;
 	SetAddressFromLocation gpsfinder;
+	OpenWeatherMapHandler owmh;
 	
 	
 	//Twitter t;
@@ -52,7 +56,9 @@ public class MainActivity extends Activity implements LocationListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_load_screen);
 		Log.d("OUT", "MainAct OnCreate");
-
+		
+		owmh = new OpenWeatherMapHandler();
+		
 		if((new Filer().fileExists("fourdaylive.json"))){
 			File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/weatherwheel/saved_files"), "fourdaylive.json");
 			if(file.lastModified()-System.currentTimeMillis()<240000000){
@@ -198,6 +204,10 @@ public class MainActivity extends Activity implements LocationListener{
 		loadNOAH();
 	}
 	
+	public OpenWeatherMapHandler getOWMH(){
+		return owmh;
+	}
+	
 	private class SetAddressFromLocation extends AsyncTask<Location,Void,String>{
 
     	@Override
@@ -318,11 +328,21 @@ public class MainActivity extends Activity implements LocationListener{
         switch (requestCode) {
         case 0:
             if (resultCode == RESULT_OK) {
-            	// Get city from search view activity
-    			setCurrentCity(data.getStringExtra("key"));
-    			setLocationText();
-    			fragment.reset();
-    			Log.d("jsoup", "intent"); 		
+            	// data is from noah
+            	if(data.getStringExtra("owmJSON") == null){
+	            	// Get city from search view activity
+	    			setCurrentCity(data.getStringExtra("key"));
+	    			setLocationText();
+            	}
+            	// else data is from OWM
+            	else{
+//            		Toast.makeText(this, "OWM Result length="+data.getStringExtra("owmJSON").length(), Toast.LENGTH_LONG).show();
+                	owmh = new OpenWeatherMapHandler();
+					if(owmh.loadFromJSONString(data.getStringExtra("owmJSON"))){
+						setCurrentCity(owmh.getLocation());
+						setLocationText();
+					}
+            	}
             }
             break;
         default:

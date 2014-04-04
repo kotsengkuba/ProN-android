@@ -94,8 +94,6 @@ public class Wheel extends View{
 				time_array[i] = arr[i].substring(0, arr[i].length()-3);
 			else
 				time_array[i] = "";
-			
-			Log.d("OUT", "time array "+i+": "+arr[i]);
 		}
     	
     }

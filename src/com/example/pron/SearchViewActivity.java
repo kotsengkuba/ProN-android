@@ -12,13 +12,16 @@ import java.util.TimeZone;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -50,6 +53,9 @@ public class SearchViewActivity extends Activity {
             R.drawable.clear     
     };
     
+    OpenWeatherMapHandler owmh;
+    TextView tv;
+    
     List<Integer> search_results;
     List<String> product_results = new ArrayList<String>();
     List<String> temperature_results = new ArrayList<String>();
@@ -77,7 +83,13 @@ public class SearchViewActivity extends Activity {
         ol_lv = new ListView(this);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
         
+        owmh = new OpenWeatherMapHandler();
         online_search_thread = new OnlineSearch();
+        tv = new TextView(this);
+        tv.setTypeface(Typeface.createFromAsset(getAssets(), "REGULAR.TTF"));
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.smalltext));
+        tv.setGravity(Gravity.CENTER_HORIZONTAL);
+		ll.addView(tv,1);
 
         weatherReader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
 		Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
@@ -109,6 +121,8 @@ public class SearchViewActivity extends Activity {
         		saveLocationsToFile();
             	Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 				intent.putExtra("key", product_results.get(position).toString());
+				if(!owmh.IsNull())
+					intent.putExtra("owmJSON", owmh.getRawString());
 		        //startActivity(intent);
 				setResult(RESULT_OK, intent); 
 				finish();
@@ -161,14 +175,18 @@ public class SearchViewActivity extends Activity {
 		        	    }
 		        	  }
 	        	   }
+	        	   
+	        	   if(product_results.size()==0){
+            	   // search online
+            		   Log.d("OUT", "no results");
+            		   
+            		   doOWMSearch(searchString); // hirap nito D:
+            	   }
+            	   else{
+            		   tv.setVisibility(View.GONE);
+            	   }
         	   }
         	   
-        	   if(product_results.size()==0){
-        	   // search online
-        		   Log.d("OUT", "no results");
-        		   
-//        		   doOWMSearch(searchString); // hirap nito D:
-        	   }
         	   
 //        	   Log.d("OUT", "products: "+product_results);
         	   adapter.notifyDataSetChanged();    	
@@ -256,10 +274,15 @@ public class SearchViewActivity extends Activity {
 
 	protected void reset() {
 		// TODO Auto-generated method stub
+		
+		if(!online_search_thread.isCancelled())
+			online_search_thread.cancel(true);
+		
 		product_results.clear();
  	   	imageId_results.clear();
  	   	temperature_results.clear();
  	   	other_results.clear();
+ 	   	tv.setVisibility(View.GONE);
  	   	if(saved_places.size()>0){
 			for(int i = 0; i<saved_places.size(); i++){
 	        	product_results.add(saved_places.get(i));
@@ -303,22 +326,31 @@ public class SearchViewActivity extends Activity {
 			online_search_thread = (OnlineSearch) new OnlineSearch().execute(s);
 		else if (online_search_thread.getStatus()==AsyncTask.Status.RUNNING){
 			online_search_thread.cancel(true);
-			online_search_thread.execute(s);
+			if(online_search_thread.isCancelled()){
+				online_search_thread = (OnlineSearch) new OnlineSearch();
+				online_search_thread.execute(s);
+			}
 		}
-			
-		TextView tv = new TextView(this);
-		tv.setText("searching OpenWeatherMap...");
-//		ol_lv.addFooterView(tv);
-		ll.addView(tv);
-//		other_results.add("other result test");
-//		product_results.addAll(other_results);
-//		imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(0), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
-//    	temperature_results.add("-");
-//    	adapter.notifyDataSetChanged();
-//		
+		tv.setText("Searching online...");
+		tv.setVisibility(View.VISIBLE);
 	}
 	
-	private class OnlineSearch extends AsyncTask<String,Void,OpenWeatherMapHandler>{
+	public void addOwmToList(){
+		tv.setText("Result(s) from Open Weather Map");
+		tv.setVisibility(View.VISIBLE);
+		if(!owmh.IsNull()){
+			product_results.add(owmh.getLocation());
+	    	imageId_results.add(owmh.getCurrentWeatherIcon());
+	    	temperature_results.add(owmh.getCurrentTemp());
+	    	adapter.notifyDataSetChanged();
+		}
+	}
+	
+	public void makeToast(String s){
+		Toast.makeText(this, s, Toast.LENGTH_LONG).show();
+	}
+	
+	private class OnlineSearch extends AsyncTask<String,Void,Boolean>{
 		@Override
     	protected void onPreExecute (){
 			Log.d("OUT", "loading owm search...");
@@ -326,39 +358,26 @@ public class SearchViewActivity extends Activity {
     	}
 		
 		@Override
-		protected OpenWeatherMapHandler doInBackground(String... params) {
+		protected Boolean doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			String temp = "";
 			String [] res = {params[0], ""};
 			other_results.clear();
-			OpenWeatherMapHandler owmh = new OpenWeatherMapHandler();
+			
 			if(owmh.load(params[0])){
-//				res[1] = owmh.getCurrentTemp();
-//				other_results.add(params[0]);
-				//temperature_results.add(temp+"°");
+				return true;
 			}
 			
-			return owmh;
+			return false;
 		}
 		
 		@Override
-        protected void onPostExecute(OpenWeatherMapHandler o) {
-//			Log.d("OUT", "Search text: "+inputSearch.getText()+", own seaerch: "+s);
-//			if(other_results.size()>0 && s[0].equalsIgnoreCase(inputSearch.getText().toString())){
-//				  product_results.remove(product_results.size()-1);
-//		    	  imageId_results.remove(imageId_results.size()-1);
-//		      	  temperature_results.remove(temperature_results.size()-1);
-			if(!o.IsNull()){
-		      	  product_results.addAll(other_results);
-		      	  imageId_results.add(R.drawable.clear);
-		      	  temperature_results.add(o.getCurrentTemp());
-		      	  adapter.notifyDataSetChanged();
-			}
+        protected void onPostExecute(Boolean result) {
+			makeToast("OWM Async result:"+result);
+			if(result)
+				addOwmToList();
 			else{
-//				product_results.remove(product_results.size()-1);
-//				imageId_results.remove(imageId_results.size()-1);
-//      	    	temperature_results.remove(temperature_results.size()-1);
-//      	    	adapter.notifyDataSetChanged();
+				tv.setText("Location not found");
 			}
 		}
 		
