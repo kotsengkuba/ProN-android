@@ -249,13 +249,18 @@ public class MainActivity extends Activity implements LocationListener{
     	   Log.d("OUT", "Location: "+s);
     	   
            if(s.length()>0 && new WeatherJSONReader(new Filer().fileToString("fourdaylive.json")).getPlaceObject(s)!=null){
+        	   owmh = new OpenWeatherMapHandler();
         	   setCurrentCity(s);
         	   setLocationText();
         	   showGPSToast("GPS location found: "+s);
            }
            else{
-        	   setCurrentCity("Manila");
-        	   setLocationText();
+        	   if(owmh.IsNull()){
+        		   owmh = new OpenWeatherMapHandler();
+	        	   setCurrentCity("Manila");
+	        	   setLocationText();
+        	   }
+        	   
         	   if(s.length()==0)
         		   showGPSToast("Unable to get location");
         	   else

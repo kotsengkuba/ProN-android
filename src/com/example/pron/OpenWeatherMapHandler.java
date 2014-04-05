@@ -94,7 +94,10 @@ public class OpenWeatherMapHandler {
 	
 	public String getLocation(){
 		try {
-			return response.getJSONObject("city").getString("name")+", "+response.getJSONObject("city").getString("country");
+			if(response.getJSONObject("city").getString("name").length()>0)
+				return response.getJSONObject("city").getString("name")+", "+response.getJSONObject("city").getString("country");
+			else
+				return response.getJSONObject("city").getString("country");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
