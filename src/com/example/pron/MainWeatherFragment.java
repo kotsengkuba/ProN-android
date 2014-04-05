@@ -308,6 +308,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(new Date(new Filer().getFile("fourdaylive.json").lastModified())));
 				}
 				else{
+//					Log.d("OUT", "OWM get dates: "+owmh.getDates());
+//					dates = owmh.getDates();
+//					Log.d("OUT", "OWM get temp array at 0: "+owmh.getTempArray(dates.get(0))[0]);
+					setDataFromLocation();
 					setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(owmh.getDateTime())+" from OpenWeatherMap.org");
 				}
 				
@@ -324,7 +328,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				detailFragment.dismiss();
 			detailFragment = new WeatherDetailDialogFragment();
 			Bundle b = new Bundle();
-			b.putString("s", weatherReader.getAllDetailsString(currentCity, dayIndex, timeIndex));
+			if(owmh.IsNull())
+				b.putString("s", weatherReader.getAllDetailsString(currentCity, dayIndex, timeIndex));
+			else
+				b.putString("s", owmh.getDetails(dates.get(dayIndex),timeIndex));
 			detailFragment.setArguments(b);
 		    detailFragment.show(this.getActivity().getFragmentManager(), "String");		    
 		}
@@ -346,32 +353,42 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void setDataFromLocation(){
 			// read and search files for location data
 			Log.d("OUT", "setDataFromLocation: "+currentCity);
-			cityData = weatherReader.getPlaceObject(currentCity);
-			if(cityData!=null){
-				dates = weatherReader.getDates(currentCity);				
-				dayIndex = 0;
+			if(!owmh.IsNull()){
+				dates = owmh.getDates();
 				for(int i=0; i<dates.size(); i++){
 					if(getCurrentDate("MMMM dd, yyyy").equals(dates.get(i))){
 						dayIndex = i;
 					}
 				}
-				if((new Filer().fileExists("rainchancelive.json"))){
-					rainData = rainReader.getPlaceObject(currentCity);
-					if(rainData == null)
-						Log.d("jsoup", "Rain data from file: NULL");
-				}
-				else{
-					rainData = null;
-				}
-				
 				setDataStrings(dayIndex);
-//				setWeatherIcons(dayIndex);
-				setWheel(dayIndex);
-				reset_textviews();
+				
 			}
 			else{
-				//
+				cityData = weatherReader.getPlaceObject(currentCity);
+				if(cityData!=null){
+					dates = weatherReader.getDates(currentCity);				
+					dayIndex = 0;
+					for(int i=0; i<dates.size(); i++){
+						if(getCurrentDate("MMMM dd, yyyy").equals(dates.get(i))){
+							dayIndex = i;
+						}
+					}
+					if((new Filer().fileExists("rainchancelive.json"))){
+						rainData = rainReader.getPlaceObject(currentCity);
+						if(rainData == null)
+							Log.d("jsoup", "Rain data from file: NULL");
+					}
+					else{
+						rainData = null;
+					}
+				}
+				else{
+					//
+				}
 			}
+			setDataStrings(dayIndex);
+			setWheel(dayIndex);
+			reset_textviews();
 		}
 		
 		public void initGestureDetector(){
@@ -463,7 +480,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		}
 		
 		public void setTempText(String s){
-			if(s.startsWith("null"))
+			if(s==null || s.startsWith("null"))
 				tempTextView.setText("-");
 			else
 				tempTextView.setText(s);
@@ -475,7 +492,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 //				rainTableLayout.setPadding(0, 0, 10, 0);
 //				rainLayout.addView(rainTableLayout);
 //			}
-			if(dayIndex == 0 && rain_array[0].length()>0){
+			if(owmh.IsNull() && dayIndex == 0 && rain_array[0].length()>0){
 				rainTableLayout.removeAllViews();
 				for(int i=0; i<rain_array.length; i++){
 					TableRow rowItem = new TableRow(this.getActivity());
@@ -522,24 +539,31 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		/* set string arrays depende sa day */
 		public void setDataStrings(int day){
 	    	try{
-				for(int j = 0; j < 8; j++){
-					time_array[j] = weatherReader.getDetailString(currentCity, "Time", day, j);
-					String s = weatherReader.getDetailString(currentCity, "Temperature", day, j)+"°C";
-					if(s.equals(null))
-						temp_array[j] = "--";
-					else
-						temp_array[j] = s;					
-				}
-				for(int j = 0; j < 4; j++){
-					if((new Filer().fileExists("rainchancelive.json"))){
-						rain_array[j] = rainReader.getRainData(currentCity, j);
-						raintime_array[j] = rainReader.getRainTimes(currentCity, j);
+	    		if(!owmh.IsNull()){
+	    			time_array = owmh.getTimeArray();
+	    			temp_array = owmh.getTempArray(dates.get(day));
+
+	    		}
+	    		else{
+					for(int j = 0; j < 8; j++){
+						time_array[j] = weatherReader.getDetailString(currentCity, "Time", day, j);
+						String s = weatherReader.getDetailString(currentCity, "Temperature", day, j)+"°C";
+						if(s.equals(null))
+							temp_array[j] = "--";
+						else
+							temp_array[j] = s;					
 					}
-					else{
-						rain_array[j] = "";
-						raintime_array[j] = "";
+					for(int j = 0; j < 4; j++){
+						if((new Filer().fileExists("rainchancelive.json"))){
+							rain_array[j] = rainReader.getRainData(currentCity, j);
+							raintime_array[j] = rainReader.getRainTimes(currentCity, j);
+						}
+						else{
+							rain_array[j] = "";
+							raintime_array[j] = "";
+						}
+						
 					}
-					
 				}
 	    	}catch(Exception e){}
 	    }
@@ -553,12 +577,17 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void setWeatherIcons(int day){
 			int [] arr = new int[8];
 			try {
-				for(int j = 0; j < 8; j++){
-					String img_src = weatherReader.getDetailString(currentCity, "Weather Outlook", day, j);
-					if(img_src == null)
-						arr[j] = R.drawable.null_gray;
-					else
-						arr[j] = weatherReader.getWeatherIcon(img_src);
+				if(!owmh.IsNull()){
+					arr = owmh.getWeatherIconsArray(dates.get(day));
+				}
+				else{
+					for(int j = 0; j < 8; j++){
+						String img_src = weatherReader.getDetailString(currentCity, "Weather Outlook", day, j);
+						if(img_src == null)
+							arr[j] = R.drawable.null_gray;
+						else
+							arr[j] = weatherReader.getWeatherIcon(img_src);
+					}
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -571,7 +600,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void plusDay(){
 			dayIndex = (dayIndex+1)%dates.size();
 			setDataStrings(dayIndex);
-			setWeatherIcons(dayIndex);
+			setWheel(dayIndex);
+//			setWeatherIcons(dayIndex);
 			reset_textviews();
 		}
 		
@@ -581,7 +611,8 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			else
 				dayIndex--;
 			setDataStrings(dayIndex);
-			setWeatherIcons(dayIndex);
+			setWheel(dayIndex);
+//			setWeatherIcons(dayIndex);
 			reset_textviews();
 		}
 		

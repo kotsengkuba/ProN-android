@@ -336,7 +336,7 @@ public class SearchViewActivity extends Activity {
 	}
 	
 	public void addOwmToList(){
-		tv.setText("Result(s) from Open Weather Map");
+		tv.setText("Result from Open Weather Map");
 		tv.setVisibility(View.VISIBLE);
 		if(!owmh.IsNull()){
 			product_results.add(owmh.getLocation());
@@ -373,7 +373,6 @@ public class SearchViewActivity extends Activity {
 		
 		@Override
         protected void onPostExecute(Boolean result) {
-			makeToast("OWM Async result:"+result);
 			if(result)
 				addOwmToList();
 			else{

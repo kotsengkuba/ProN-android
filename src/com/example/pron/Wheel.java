@@ -91,7 +91,7 @@ public class Wheel extends View{
     public void setTimeStrings(String [] arr){
     	for(int i=0; i<arr.length; i++){
 			if(arr[i]!=null)
-				time_array[i] = arr[i].substring(0, arr[i].length()-3);
+				time_array[i] = arr[i].split("[apAP]")[0];
 			else
 				time_array[i] = "";
 		}

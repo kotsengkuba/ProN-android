@@ -180,8 +180,10 @@ public class MainActivity extends Activity implements LocationListener{
 		//for regular font
 		if(l <= 14)
 			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.biggertext));
-		else
+		else if(l>14 && l<18)
 			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.bigtext));
+		else
+			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medtext));
 		
 		locationTextView.setText(currentCity);
 	}
@@ -329,20 +331,16 @@ public class MainActivity extends Activity implements LocationListener{
         case 0:
             if (resultCode == RESULT_OK) {
             	// data is from noah
-            	if(data.getStringExtra("owmJSON") == null){
-	            	// Get city from search view activity
-	    			setCurrentCity(data.getStringExtra("key"));
-	    			setLocationText();
+            	owmh = new OpenWeatherMapHandler();
+            	if(data.getStringExtra("owmJSON") != null && owmh.loadFromJSONString(data.getStringExtra("owmJSON"))){
+            		// Get city from owmh
+            		setCurrentCity(owmh.getLocation());
             	}
-            	// else data is from OWM
             	else{
-//            		Toast.makeText(this, "OWM Result length="+data.getStringExtra("owmJSON").length(), Toast.LENGTH_LONG).show();
-                	owmh = new OpenWeatherMapHandler();
-					if(owmh.loadFromJSONString(data.getStringExtra("owmJSON"))){
-						setCurrentCity(owmh.getLocation());
-						setLocationText();
-					}
+	            	// Get city from key
+	    			setCurrentCity(data.getStringExtra("key"));
             	}
+            	setLocationText();            	
             }
             break;
         default:

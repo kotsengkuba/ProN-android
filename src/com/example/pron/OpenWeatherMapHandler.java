@@ -8,8 +8,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,11 +29,19 @@ public class OpenWeatherMapHandler {
 	JSONArray list;
 	boolean is_null = true;
 	long date_time;
+	String [] time_array = {"02:00AM", "05:00AM","08:00AM","11:00AM","02:00PM","05:00PM","08:00PM","11:00PM"};
+	HashMap <String, Integer> weather_icon_hash = new HashMap<String, Integer>();
 	
 	public OpenWeatherMapHandler(){
-		
-		
+		initIconHash();	
 	}
+	
+	public void initIconHash(){
+    	weather_icon_hash.put("Rain", R.drawable.rainy);
+    	weather_icon_hash.put("Clouds", R.drawable.cloudy);
+    	weather_icon_hash.put("Snow", R.drawable.cloudy);
+    	weather_icon_hash.put("Clear", R.drawable.clear);
+    }
 	
 	public boolean load(String location){
 		is_null = true;
@@ -102,6 +114,10 @@ public class OpenWeatherMapHandler {
 		return date_time;
 	}
 	
+	public int getWeatherIcon(String weather){
+		return weather_icon_hash.get(weather);
+	}
+	
 	public String getCurrentTemp(){
 		for(int i=0; i<list.length(); i++){
 			try{
@@ -166,6 +182,158 @@ public class OpenWeatherMapHandler {
 //		return 0;
 		return R.drawable.clear;
 	}
+	
+	public List<String> getDates(){
+		List<String> l = new ArrayList<String>();
+		if(!IsNull()){
+			try {
+				long now = System.currentTimeMillis();
+				String nowday = new SimpleDateFormat("MMMM dd, yyyy").format(now);
+				for(int i = 0; i<list.length(); i++){
+					long datetime = Long.parseLong(list.getJSONObject(i).getString("dt"))*1000;
+					String day = new SimpleDateFormat("MMMM dd, yyyy").format(datetime);
+					if(nowday.equals(day) || datetime>now){
+						boolean b = true;
+						for(int j=0; j<l.size(); j++){
+							if(l.get(j).equals(day)){
+								b = false;
+								break;
+							}
+						}
+						if(b){
+							l.add(day);
+						}
+					}
+				}
+				Log.d("OUT","owmh get dates: "+l);
+				return l;
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	public String[] getTimeArray(){
+		return time_array;
+	}
+	
+	public String[] getTempArray(String day){
+		String[] arr = new String[time_array.length];
+		boolean found;
+		for(int j=0; j<time_array.length; j++){
+			found = false;
+			for(int i=0; i<list.length();i++){
+				try {
+					long datetime = Long.parseLong(list.getJSONObject(i).getString("dt"))*1000;
+					String listday = new SimpleDateFormat("MMMM dd, yyyy").format(datetime);
+					if(listday.equals(day)){
+						String time_string = new SimpleDateFormat("hh:mma").format(datetime);
+						if(time_array[j].equals(time_string)){
+							found = true;
+							double temp = Double.parseDouble(list.getJSONObject(i).getJSONObject("main").getString("temp")) - 273.15;
+							arr[j] = String.valueOf((int)Math.round(temp))+"°C";
+//							Log.d("OUT", "owmh time_string="+time_string+" temp="+temp);
+						}
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(!found){
+				arr[j] = null;
+			}
+		}
 
+		Log.d("OUT", "owmh temp array: "+day+Arrays.toString(arr));
+		return arr;
+	}
+	
+	public int[] getWeatherIconsArray(String day){
+		int[] arr = new int[time_array.length];
+		boolean found;
+		for(int j=0; j<time_array.length; j++){
+			found = false;
+			for(int i=0; i<list.length();i++){
+				try {
+					long datetime = Long.parseLong(list.getJSONObject(i).getString("dt"))*1000;
+					String listday = new SimpleDateFormat("MMMM dd, yyyy").format(datetime);
+					if(listday.equals(day)){
+						String time_string = new SimpleDateFormat("hh:mma").format(datetime);
+						if(time_array[j].equals(time_string)){
+							found = true;
+							String weather = list.getJSONObject(i).getJSONArray("weather").getJSONObject(0).getString("main");
+							arr[j] = getWeatherIcon(weather);
+						}
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(!found){
+				arr[j] = R.drawable.null_gray;
+			}
+		}
+		return arr;
+	}
+	
+	public String getDetails(String day, int timeIndex){
+		JSONObject details = new JSONObject();
+		boolean found=false;
+		for(int i=0; i<list.length();i++){
+			found = false;
+			try {
+				long datetime = Long.parseLong(list.getJSONObject(i).getString("dt"))*1000;
+				String listday = new SimpleDateFormat("MMMM dd, yyyy").format(datetime);
+				if(listday.equals(day)){
+					String time_string = new SimpleDateFormat("hh:mma").format(datetime);
+					if(time_array[timeIndex].equals(time_string)){
+						found = true;
+						details.put("fromOWM", true);
+						if(list.getJSONObject(i).has("main")){
+							JSONObject main = list.getJSONObject(i).getJSONObject("main");
+							for(int j=0;j<main.length();j++){
+								String name = main.names().getString(j);
+								String value = main.getString(name);
+								String label = name;
+								if(label.equalsIgnoreCase("temp")){
+									label = "Temperature";
+									value = String.valueOf(Math.round(Float.parseFloat(value)-273.15));
+									value += "°C";
+									details.put(label, value);
+								}
+								else if(label.equalsIgnoreCase("pressure")){
+									label = "Pressure";
+									value += " hpa";
+									details.put(label, value);
+								}
+								else if(label.equalsIgnoreCase("humidity")){
+									label = "Humidity";
+									value += "%";
+									details.put(label, value);
+								}	
+							}
+						}
+						if(list.getJSONObject(i).has("wind")){
+							JSONObject wind = list.getJSONObject(i).getJSONObject("wind");
+							details.put("Wind Speed", wind.getString("speed")+"m/s");
+							details.put("Wind Direction", wind.getString("deg")+"°");
+						}
+						return details.toString();
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(!found){
+			return null;
+		}
+		return null;
+	}
 	
 }

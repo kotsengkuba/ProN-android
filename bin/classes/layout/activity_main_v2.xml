@@ -54,7 +54,7 @@
             android:gravity="right"
             android:onClick="searchCity"
             android:scrollHorizontally="true"
-            android:singleLine="true"
+            android:singleLine="false"
             android:textColor="#3A3A3A"
             android:textSize="@dimen/bigtext" />
 

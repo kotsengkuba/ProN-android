@@ -89,24 +89,34 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 	
 	public void setTable(JSONObject o){
 		try{
+			boolean owm = o.has("fromOWM");
 			String units="", label, value;
-			for(int i=2; i<o.length();i++){
+			if (!owm){
+				o.remove("Time");
+				o.remove("Weather Outlook");
+			}
+			else{
+				o.remove("fromOWM");
+			}
+			for(int i=0; i<o.length();i++){
 				TableRow rowItem = new TableRow(this.getActivity());
-				value = o.getString(o.names().getString(i));
 				label = o.names().getString(i);
+				value = o.getString(label);
 				
-				if(label.equalsIgnoreCase("Real Feel"))
-					units = "°C";
-				else if(label.equalsIgnoreCase("Windspeed"))
-					units = "m/s";
-				else if(label.equalsIgnoreCase("Rainfall"))
-					units = "mm/hr";
-				else if(label.equalsIgnoreCase("Temperature"))
-					units = "°C";
-				else if(label.equalsIgnoreCase("Wind Direction"))
-					units = "";
-				else if(label.equalsIgnoreCase("Relative Humidity"))
-					units = "%";
+				if (!owm){
+					if(label.equalsIgnoreCase("Real Feel"))
+						units = "°C";
+					else if(label.equalsIgnoreCase("Windspeed"))
+						units = "m/s";
+					else if(label.equalsIgnoreCase("Rainfall"))
+						units = "mm/hr";
+					else if(label.equalsIgnoreCase("Temperature"))
+						units = "°C";
+					else if(label.equalsIgnoreCase("Wind Direction"))
+						units = "";
+					else if(label.equalsIgnoreCase("Relative Humidity"))
+						units = "%";
+				}
 				
 				TextView ValueTextViewItem = new TextView(this.getActivity());
 //				ValueTextViewItem.setTypeface(font);
