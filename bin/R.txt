@@ -88,7 +88,8 @@ int drawable shot6 0x7f020030
 int drawable shot7 0x7f020031
 int drawable shot8 0x7f020032
 int drawable shot9 0x7f020033
-int drawable splash 0x7f020034
+int drawable snow 0x7f020034
+int drawable splash 0x7f020035
 int id GridLayout1 0x7f060018
 int id LinearLayout1 0x7f060021
 int id RelativeLayout1 0x7f06000a

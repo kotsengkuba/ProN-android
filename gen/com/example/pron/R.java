@@ -217,7 +217,8 @@ containing a value of this type.
         public static final int shot7=0x7f020031;
         public static final int shot8=0x7f020032;
         public static final int shot9=0x7f020033;
-        public static final int splash=0x7f020034;
+        public static final int snow=0x7f020034;
+        public static final int splash=0x7f020035;
     }
     public static final class id {
         public static final int GridLayout1=0x7f060018;

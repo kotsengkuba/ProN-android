@@ -39,7 +39,7 @@ public class OpenWeatherMapHandler {
 	public void initIconHash(){
     	weather_icon_hash.put("Rain", R.drawable.rainy);
     	weather_icon_hash.put("Clouds", R.drawable.cloudy);
-    	weather_icon_hash.put("Snow", R.drawable.cloudy);
+    	weather_icon_hash.put("Snow", R.drawable.snow);
     	weather_icon_hash.put("Clear", R.drawable.clear);
     }
 	
