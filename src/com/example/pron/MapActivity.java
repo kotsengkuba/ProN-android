@@ -35,10 +35,10 @@ public class MapActivity extends Fragment{
 	
 	int latitude, longitude;
 	GoogleMap mMap;
-	LatLng currLocation;
+	LatLng default_location;
 	ArrayList<Double> PARcoor = new ArrayList<Double>();
-	ArrayList<Double> actualTrack = new ArrayList<Double>();
-	ArrayList<Double> forecastTrack = new ArrayList<Double>();
+	ArrayList<Double> actual_track = new ArrayList<Double>();
+	ArrayList<Double> forecast_track = new ArrayList<Double>();
 	JSONArray track, forecast_error;
 	PolylineOptions PAROptions;
 	ArrayList<Marker> marker_array = new ArrayList<Marker>();
@@ -53,7 +53,7 @@ public class MapActivity extends Fragment{
         view = inflater.inflate(R.layout.activity_map,
 		        container, false);
         
-        currLocation = new LatLng(14.5833,121.0);
+        default_location = new LatLng(14.5833,121.0);
         
         new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML", "storm");
         setupMap();
@@ -80,7 +80,7 @@ public class MapActivity extends Fragment{
         
 
         mMap.setMyLocationEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLocation, 3));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(default_location, 3));
         mMap.setOnCameraChangeListener(new OnCameraChangeListener(){
 
 			@Override
@@ -178,8 +178,8 @@ public class MapActivity extends Fragment{
 	            stormtrack_handler = new StormTrackXMLParser();
 	            saxParser.parse(params[0], stormtrack_handler);
                 PARcoor = stormtrack_handler.getPARcoor();
-                actualTrack = stormtrack_handler.getActualTrack();
-                forecastTrack = stormtrack_handler.getForecastTrack();
+                actual_track = stormtrack_handler.getActualTrack();
+                forecast_track = stormtrack_handler.getForecastTrack();
                 track = stormtrack_handler.getActualTrackJSON();
                 forecast_error = stormtrack_handler.getForecastErrorJSON();
                 storm_name = stormtrack_handler.getStormName();

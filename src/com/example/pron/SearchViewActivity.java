@@ -43,14 +43,6 @@ public class SearchViewActivity extends Activity {
     // Search EditText
     EditText inputSearch;
     
-    // Listview Data hardcode
-    
-    Integer[] imageId = {
-            R.drawable.rainy,
-            R.drawable.cloudy,
-            R.drawable.clear     
-    };
-    
     OpenWeatherMapHandler owmh;
     TextView tv;
     
@@ -69,7 +61,7 @@ public class SearchViewActivity extends Activity {
 	
 	OnlineSearch online_search_thread;
 	
-	WeatherJSONReader weatherReader; 
+	WeatherJSONReader weather_reader; 
  
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,12 +80,12 @@ public class SearchViewActivity extends Activity {
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
 		ll.addView(tv,1);
 
-        weatherReader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
-		Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
+        weather_reader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
+		Log.d("OUT", "weather_reader getLength: "+weather_reader.getLength());
 
 		// load all places list
        	try{
-       		all_places = weatherReader.getAllPlaces();
+       		all_places = weather_reader.getAllPlaces();
        		java.util.Collections.sort(all_places);
        	} catch(Exception e){}
        	
@@ -105,7 +97,6 @@ public class SearchViewActivity extends Activity {
         
         reset();
         
-//        Log.d("OUT", "products: "+product_results);
         adapter = new CustomAdapter(SearchViewActivity.this, product_results, imageId_results, temperature_results);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -125,12 +116,6 @@ public class SearchViewActivity extends Activity {
 				finish();
             }
         });
-        
-        //ol_adapter = new CustomAdapter(SearchViewActivity.this, ol_product_results, ol_imageId_results, ol_temperature_results);
-//        ol_lv = new ListView(this);
-//        ol_lv.addView(new TextView(this));
-//        LinearLayout ll = (LinearLayout)findViewById(R.id.list_view).getParent();
-//        ll.addView(ol_lv);
         
         inputSearch.addTextChangedListener(new TextWatcher() {
             
@@ -159,8 +144,8 @@ public class SearchViewActivity extends Activity {
 		        	    	boolean saved = false;
 		        	    	for(int j=0;j<saved_places.size();j++){
 		 	        		   if(all_places.get(i).equalsIgnoreCase(saved_places.get(j))){
-		 	        			  imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(j), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
-		 	        			  temperature_results.add(weatherReader.getDetailString(saved_places.get(j), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
+		 	        			  imageId_results.add(weather_reader.getWeatherIcon(weather_reader.getDetailString(saved_places.get(j), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+		 	        			  temperature_results.add(weather_reader.getDetailString(saved_places.get(j), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
 		 	        			  saved = true;
 		 	        			  break;
 		 	     	        	}
@@ -174,18 +159,13 @@ public class SearchViewActivity extends Activity {
 	        	   }
 	        	   
 	        	   if(product_results.size()==0){
-            	   // search online
-            		   Log.d("OUT", "no results");
-            		   
-            		   doOWMSearch(searchString); // hirap nito D:
+	        		   // search online
+            		   doOWMSearch(searchString);
             	   }
             	   else{
             		   tv.setVisibility(View.GONE);
             	   }
         	   }
-        	   
-        	   
-//        	   Log.d("OUT", "products: "+product_results);
         	   adapter.notifyDataSetChanged();    	
                
             }
@@ -221,7 +201,6 @@ public class SearchViewActivity extends Activity {
                             @Override
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    //adapter.remove(adapter.getItem(position));
                                 	removeLocation(lv.getItemAtPosition(position).toString());
                                 }
                                 adapter.notifyDataSetChanged();
@@ -284,8 +263,8 @@ public class SearchViewActivity extends Activity {
 			for(int i = 0; i<saved_places.size(); i++){
 	        	product_results.add(saved_places.get(i));
 	        	//imageId_results.add(imageId[0]);
-	        	imageId_results.add(weatherReader.getWeatherIcon(weatherReader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
-	        	temperature_results.add(weatherReader.getDetailString(saved_places.get(i), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
+	        	imageId_results.add(weather_reader.getWeatherIcon(weather_reader.getDetailString(saved_places.get(i), "Weather Outlook", getCurrentDayIndex(), getCurrentTimeIndex())));
+	        	temperature_results.add(weather_reader.getDetailString(saved_places.get(i), "Temperature", getCurrentDayIndex(), getCurrentTimeIndex())+"°");
 			}
  	   	}
  	   	else{
@@ -357,8 +336,6 @@ public class SearchViewActivity extends Activity {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			// TODO Auto-generated method stub
-//			String temp = "";
-//			String [] res = {params[0], ""};
 			other_results.clear();
 			
 			if(owmh.load(params[0])){

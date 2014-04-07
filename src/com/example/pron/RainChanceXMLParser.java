@@ -20,8 +20,6 @@ public class RainChanceXMLParser extends DefaultHandler{
     {
 		is_name = false;
 		is_body = false;	
-		
-		Log.i("kml","rainchance kml start");
     }
 
     public void endDocument ()
@@ -37,9 +35,6 @@ public class RainChanceXMLParser extends DefaultHandler{
     	else if(qName.equals("description")){
     		is_body = true;
     		html = "";
-    	}
-    	else if(qName.equals("Document")){
-    		Log.d("jsoup", "Document start tag");
     	}
     }
 
@@ -61,7 +56,6 @@ public class RainChanceXMLParser extends DefaultHandler{
     		} catch(JSONException e){}
     	}
     	else if(qName.equals("Document")){
-    		Log.i("kml","End: "+qName);
 			try{
 				json_final.put("places", json_array);
 			} catch(JSONException e){}
@@ -74,7 +68,6 @@ public class RainChanceXMLParser extends DefaultHandler{
     	String s = new String(ch, start, length);
     	if(is_name && !s.equalsIgnoreCase("rain-forecast.KML")){
     		counter ++;
-    		//Log.i("kml",s);
     		
     		try{
     			json_obj.put("name", s);
@@ -93,6 +86,4 @@ public class RainChanceXMLParser extends DefaultHandler{
     public String get_json_string(){
     	return json_final.toString();
     }
-	
-	//private class HTMLParser{}
 }

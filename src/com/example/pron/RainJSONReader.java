@@ -29,10 +29,9 @@ public class RainJSONReader {
 		try {
 			for(int i = 0; i < places.length(); i++){
 			place = places.getJSONObject(i);
-			//Log.d("OUT", "getPlaceObject: "+place.getString("name")+", "+placename);
-				if(place.getString("name").indexOf(placename) == 0){
-					return place;
-				}
+			if(place.getString("name").indexOf(placename) == 0){
+				return place;
+			}
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -53,7 +52,6 @@ public class RainJSONReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		Log.d("OUT", "getRainData: NOTFOUND");
 		return s;
 	}
 	
@@ -68,7 +66,6 @@ public class RainJSONReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		Log.d("OUT", "getRainData: NOTFOUND");
 		return s;
 	}
 }

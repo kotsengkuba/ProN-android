@@ -51,7 +51,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	MainActivity mainActivity;
 	TextView tempTextView, timeTextView, dayTextView, rainLabelTextView, owmTextView, sourceTextView;
 	Wheel wheelView;
-	RainWheel rainWheelView;
 	WebView webview;
 	LinearLayout rainLayout, temperatureLayout;
 	TableLayout rainTableLayout;

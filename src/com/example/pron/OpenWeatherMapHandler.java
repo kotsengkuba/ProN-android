@@ -23,12 +23,12 @@ import android.util.Log;
 
 public class OpenWeatherMapHandler {
 	String location = "";
-	String rawString = "";
+	String raw_string = "";
 	JSONObject response;
 	JSONArray list;
 	boolean is_null = true;
 	long date_time;
-	String [] time_array = {"02:00AM", "05:00AM","08:00AM","11:00AM","02:00PM","05:00PM","08:00PM","11:00PM"};
+	String [] time_array = {"02:00AM", "05:00AM","08:00AM","11:00AM","02:00PM","05:00PM","08:00PM","11:00PM"}; //aw hard-coded
 	HashMap <String, Integer> weather_icon_hash = new HashMap<String, Integer>();
 	
 	public OpenWeatherMapHandler(){
@@ -46,7 +46,6 @@ public class OpenWeatherMapHandler {
 		is_null = true;
 		try{
 			String query = URLEncoder.encode(location, "utf-8");
-			Log.d("OUT", "query: "+query);
 			URL url = new URL("http://api.openweathermap.org/data/2.5/forecast?q="+query+"&mode=json");
 	        URLConnection connection = url.openConnection();
 	        connection.connect();
@@ -58,27 +57,23 @@ public class OpenWeatherMapHandler {
 	        while ((count = input.read(data)) != -1) {
 	            output.write(data, 0, count);    
 	        }
-	        rawString = output.toString();
+	        raw_string = output.toString();
 	        return setHandlerFromResponse();
-//	        response = new JSONObject(rawString);
-//	        if(response.getString("cod").equals("200")){
-//	        	list = response.getJSONArray("list");
-//	        	is_null = false;
-//	        	return true;
-//	        }
+
 		}catch(Exception e){}
+		
 		return false;
 	}
 	
 	public boolean loadFromJSONString(String s){
-		rawString = s;
+		raw_string = s;
 		return(setHandlerFromResponse());
 	}
 	
 	public boolean setHandlerFromResponse(){
 		date_time = System.currentTimeMillis();
 		try {
-			response = new JSONObject(rawString);
+			response = new JSONObject(raw_string);
 	        if(response.getString("cod").equals("200")){
 	        	list = response.getJSONArray("list");
 	        	is_null = false;
@@ -105,7 +100,7 @@ public class OpenWeatherMapHandler {
 	}
 	
 	public String getRawString(){
-		return rawString;
+		return raw_string;
 	}
 	
 	public boolean IsNull(){
@@ -127,7 +122,6 @@ public class OpenWeatherMapHandler {
 				if(listItem.getDouble("dt")*1000>new Date().getTime()){
 					if(i>0){
 						JSONObject prevItem = list.getJSONObject(i-1);
-//						double d = Double.parseDouble(prevItem.getJSONObject("main").getString("temp")) - 273.15;
 						int n = (int)Math.round(Double.parseDouble(prevItem.getJSONObject("main").getString("temp")) - 273.15);
 						return String.valueOf(n)+"°";
 					}
@@ -155,7 +149,6 @@ public class OpenWeatherMapHandler {
 				SimpleDateFormat postFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				
 				String newDateStr = postFormater.format(date);
-//				Log.d("OUT", "main: "+newDateStr+", owm: "+listItem.getString("dt_txt"));
 				if(listItem.getString("dt_txt").equals(newDateStr)){
 					if(i>0){
 						double d = Double.parseDouble(listItem.getJSONObject("main").getString("temp")) - 273.15;
@@ -174,15 +167,13 @@ public class OpenWeatherMapHandler {
 				if(listItem.getDouble("dt")*1000>new Date().getTime()){
 					if(i>0){
 						JSONObject prevItem = list.getJSONObject(i-1);
-						String s = prevItem.getJSONObject("weather").getString("main");
-						if(s.equalsIgnoreCase("cleat"))
-							return R.drawable.clear;
+						String s = prevItem.getJSONArray("weather").getJSONObject(0).getString("main");;
+						return getWeatherIcon(s);
 					}
 				}
 			}catch(Exception e){}
 		}
-//		return 0;
-		return R.drawable.clear;
+		return R.drawable.null_gray;
 	}
 	
 	public List<String> getDates(){
