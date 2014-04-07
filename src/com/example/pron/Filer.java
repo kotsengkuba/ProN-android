@@ -17,7 +17,6 @@ public class Filer {
         File myDir = new File(root + "/weatherwheel/saved_files");    
         myDir.mkdirs();
         File file = new File (myDir, filename);
-        //Log.d("OUT", "FILE date modified: "+file.lastModified());
         if (file.exists ()) file.delete (); 
         try {
                FileOutputStream out = new FileOutputStream(file);
@@ -33,7 +32,6 @@ public class Filer {
     public String fileToString(String filename){
     	String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/weatherwheel/saved_files");    
-        //myDir.mkdirs();
         File file = new File (myDir, filename);
         StringBuffer stringBuffer = new StringBuffer();
         try {
@@ -41,7 +39,6 @@ public class Filer {
         	BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         	String content = "";
         	while((content = reader.readLine()) != null){
-	        	//s = s+content;
         		stringBuffer.append(content);
         	}
             in.close();
@@ -56,7 +53,6 @@ public class Filer {
     public File getFile(String filename){
     	String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/weatherwheel/saved_files");    
-        //myDir.mkdirs();
         return new File (myDir, filename);
     }
     

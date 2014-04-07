@@ -1,5 +1,7 @@
 package com.example.pron;
-
+/*
+ * Minnie was here.
+ */
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,15 +46,11 @@ public class MainActivity extends Activity implements LocationListener{
 	boolean loaded = false;
 	SetAddressFromLocation gpsfinder;
 	OpenWeatherMapHandler owmh;
-	
-	
-	//Twitter t;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_load_screen);
-		Log.d("OUT", "MainAct OnCreate");
 		
 		owmh = new OpenWeatherMapHandler();
 		
@@ -91,17 +89,15 @@ public class MainActivity extends Activity implements LocationListener{
 	    	gpsfinder = new SetAddressFromLocation();
 	    	onLocationChanged(location);
 	    } else {
-	      //locationTextView.setText(provider + "Location not available");
-//	    	setCurrentCity("Manila"); //default
 	    	Toast.makeText(this, "Unable to get your location", Toast.LENGTH_LONG).show();
 	    }
 	}
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		// Set text for location textview
-//		gpsfinder.cancel(true);
 		if(gpsfinder.getStatus() == AsyncTask.Status.FINISHED || gpsfinder.getStatus() == AsyncTask.Status.PENDING){
+			if(!gpsfinder.isCancelled())
+				gpsfinder.cancel(true);
 			gpsfinder = new SetAddressFromLocation();
 			gpsfinder.execute(location);
 		}
@@ -139,7 +135,6 @@ public class MainActivity extends Activity implements LocationListener{
 		setContentView(R.layout.activity_main_v2);
 		
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
-//		Typeface font = Typeface.createFromAsset(getAssets(), "TRACK.OTF");
 		Typeface font = Typeface.createFromAsset(getAssets(), "REGULAR.TTF");
 		locationTextView.setTypeface(font);
 		
@@ -151,29 +146,13 @@ public class MainActivity extends Activity implements LocationListener{
 		new StormParser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML");
 		
 		setLocationText();
-		//Log.d("OUT", "Twitter: "+t);
 		
 		fragment = (MainWeatherFragment) getFragmentManager().
 				  findFragmentById(R.id.weather_detail_fragment);
-				if (fragment==null || ! fragment.isInLayout()) {
-				  // start new Activity
-				  }
-				else {
-				  //fragment.update(...);
-				} 
 	}
 	
 	public void setLocationText(){
 		int l = currentCity.length();
-		
-		//for track font:
-//		if(l <= 11)
-//			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.bigtext));
-//		else if(currentCity.length()>11 && currentCity.length()<=14)
-//			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medbigtext));
-//		else if(currentCity.length()>14)
-//			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medtext));
-		
 		//for regular font
 		if(l <= 14)
 			locationTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.biggertext));
@@ -211,7 +190,6 @@ public class MainActivity extends Activity implements LocationListener{
 
     	@Override
     	protected void onPreExecute (){
-    		//locationTextView.setText("loading location...");
     		Log.d("OUT", "Finding location...");
     	}
     	
@@ -272,16 +250,13 @@ public class MainActivity extends Activity implements LocationListener{
 	
 	@Override
 	protected void onResume() {
-	  super.onResume();
-	  //locationManager.requestLocationUpdates(provider, 400, 1, this);
-	  //setDataFromLocation();	  
+	  super.onResume();  
 	}
 	
 	/* Remove the locationlistener updates when Activity is paused */
     @Override
     protected void onPause() {
       super.onPause();
-      //locationManager.removeUpdates(this);
     }
 
     public void searchCity(View view) {

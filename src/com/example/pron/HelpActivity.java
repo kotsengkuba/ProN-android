@@ -32,6 +32,7 @@ public class HelpActivity extends Activity{
 		images.add(R.drawable.shot9);
 		images.add(R.drawable.shot10);
 		images.add(R.drawable.shot11);
+		images.add(R.drawable.shot12);
 		
 		index = 0;
 		
@@ -54,7 +55,6 @@ public class HelpActivity extends Activity{
 	}
 	
 	public void setImage(){
-//		image.setImageResource(images.get(index));
 		image.setImageDrawable(getResources().getDrawable(images.get(index)));
 	}
 }

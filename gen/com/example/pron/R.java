@@ -209,16 +209,17 @@ containing a value of this type.
         public static final int shot1=0x7f020029;
         public static final int shot10=0x7f02002a;
         public static final int shot11=0x7f02002b;
-        public static final int shot2=0x7f02002c;
-        public static final int shot3=0x7f02002d;
-        public static final int shot4=0x7f02002e;
-        public static final int shot5=0x7f02002f;
-        public static final int shot6=0x7f020030;
-        public static final int shot7=0x7f020031;
-        public static final int shot8=0x7f020032;
-        public static final int shot9=0x7f020033;
-        public static final int snow=0x7f020034;
-        public static final int splash=0x7f020035;
+        public static final int shot12=0x7f02002c;
+        public static final int shot2=0x7f02002d;
+        public static final int shot3=0x7f02002e;
+        public static final int shot4=0x7f02002f;
+        public static final int shot5=0x7f020030;
+        public static final int shot6=0x7f020031;
+        public static final int shot7=0x7f020032;
+        public static final int shot8=0x7f020033;
+        public static final int shot9=0x7f020034;
+        public static final int snow=0x7f020035;
+        public static final int splash=0x7f020036;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f060020;

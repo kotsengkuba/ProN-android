@@ -18,7 +18,6 @@ public class HtmlParser {
 		
 		try{
 			Elements tables = doc.select("table");
-			//Log.d("jsoup", "Four day: Parsing html table: " + tables.size());
 			for(Element table : tables){
 				Elements rows = table.select("tr");
 				
@@ -45,8 +44,6 @@ public class HtmlParser {
 							}
 							else{
 								img_src = img.get(0).attr("src");
-								tokens = img_src.split("/");
-								//Log.d("jsoup", "img: "+tokens[tokens.length-1]);
 								details.put(labels[data.indexOf(dataItem)], tokens[tokens.length-1]);
 							}
 						}
@@ -87,12 +84,8 @@ public class HtmlParser {
 					str = data.get(1).text();
 					delims = "[()]";
 					tokens = str.split(delims);
-//					Log.d("jsoup", "str: "+str);
 					details.put(labels[1], tokens[1]);
 					
-					//for(Element dataItem : data){							
-					//	details.put(labels[data.indexOf(dataItem)], dataItem.text());
-					//}
 					times.put(details);
 				}
 			}
@@ -100,9 +93,6 @@ public class HtmlParser {
 		}catch (JSONException e){
 			e.printStackTrace();
 		}
-		
-		//Log.d("jsoup", times.toString());
-		//return s;
 		
 		return times;
 	}

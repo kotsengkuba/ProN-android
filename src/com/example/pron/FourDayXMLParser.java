@@ -24,21 +24,18 @@ public class FourDayXMLParser extends DefaultHandler{
 
     public void endDocument ()
     {
-    	Log.d("jsoup", "Document end...");
     }
 
     public void startElement (String uri, String name, String qName, Attributes atts)
     {	
     	if(qName.equals("name")){
     		is_name = true;
-    		
     	}
     	else if(qName.equals("description")){
     		is_body = true;
     		html = "";
     	}
     	else if(qName.equals("Document")){
-    		Log.d("jsoup", "Document start...");
     	}
     }
 
@@ -73,10 +70,8 @@ public class FourDayXMLParser extends DefaultHandler{
     		    	
     	if(is_name && !s.equalsIgnoreCase("4-Day Forecast")){
     		counter ++;
-    		//Log.i("kml",s);
     		
     		try{
-    			//json_obj = new JSONObject();
     			json_obj.put("name", s);
     		} catch(JSONException e){}
 
@@ -93,6 +88,5 @@ public class FourDayXMLParser extends DefaultHandler{
     public String get_json_string(){
     	return json_final.toString();
     }
-	
-	//private class HTMLParser{}
+
 }

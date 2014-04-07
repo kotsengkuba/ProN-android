@@ -55,7 +55,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	LinearLayout rainLayout, temperatureLayout;
 	TableLayout rainTableLayout;
 	boolean center = false;
-	XMLparser fourdayparser;
+	XMLparser fourday_parser;
 	WeatherDetailDialogFragment detailFragment;
 	OpenWeatherMapHandler owmh;
 	
@@ -80,7 +80,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	WeatherJSONReader weatherReader;
 	RainJSONReader rainReader;
 	
-	String fourdaydata;
+	String fourday_data;
 	
 	GestureDetectorCompat dayGDetector;
 	
@@ -108,15 +108,12 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		rainTableLayout.setPadding(0, 0, 10, 0);
 		rainLayout.addView(rainTableLayout);
 		
-		//rainWheelView = (RainWheel) view.findViewById(R.id.rainWheelView);
 		owmTextView = new TextView(this.getActivity());
 		temperatureLayout = (LinearLayout) view.findViewById(R.id.tempLinearLayout);
-//		temperatureLayout.addView(owmTextView);
 		
 		detailFragment = new WeatherDetailDialogFragment();
 		
 		//Get the typeface from assets
-//		font = Typeface.createFromAsset(this.getActivity().getAssets(), "TRACK.OTF");
 		font = Typeface.createFromAsset(this.getActivity().getAssets(), "REGULAR.TTF");
 		//Set the TextView's typeface (font)
 		tempTextView.setTypeface(font);
@@ -125,7 +122,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		rainLabelTextView.setTypeface(font);
 		sourceTextView.setTypeface(font);
 		
-		fourdayparser = new XMLparser();
+		fourday_parser = new XMLparser();
 		owmh = new OpenWeatherMapHandler();
 		
 		reset();
@@ -201,7 +198,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		                break;
 		            case MotionEvent.ACTION_UP:
 		            	wheelView.snap = true;
-//		            	Log.d("OUT", "center: "+center);
 		            	float deg;
 		            	if(center){
 		            		center = false;
@@ -238,7 +234,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			            		else
 			            			i-=(float) 2*Math.PI;
 			            	}
-//			            	Log.d("snap", "i="+i);
+			            	
 			            	int temp = timeIndex;
 			            	timeIndex = (int) (Math.round(4*i/Math.PI)%8);
 			            	timeIndex = (timeIndex+wheelView.offset) %8;
@@ -277,11 +273,9 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			String s = new Filer().fileToString("fourdaylive.json");
 			if(s.length()>0){
 				weatherReader = new WeatherJSONReader(s);
-//				Log.d("OUT", "weatherReader getLength: "+weatherReader.getLength());
 				
 				if((new Filer().fileExists("rainchancelive.json"))){
 					rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
-//					Log.d("OUT", "rainReader getLength: "+rainReader.getLength());
 				}
 				
 				owmh = ((MainActivity)this.getActivity()).getOWMH();
@@ -302,9 +296,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(new Date(new Filer().getFile("fourdaylive.json").lastModified())));
 				}
 				else{
-//					Log.d("OUT", "OWM get dates: "+owmh.getDates());
-//					dates = owmh.getDates();
-//					Log.d("OUT", "OWM get temp array at 0: "+owmh.getTempArray(dates.get(0))[0]);
 					setDataFromLocation();
 					setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(owmh.getDateTime())+" from OpenWeatherMap.org");
 				}
@@ -369,8 +360,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 					}
 					if((new Filer().fileExists("rainchancelive.json"))){
 						rainData = rainReader.getPlaceObject(currentCity);
-						if(rainData == null)
-							Log.d("jsoup", "Rain data from file: NULL");
 					}
 					else{
 						rainData = null;
@@ -398,19 +387,11 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				@Override
 				public void onRightToLeft() {
 					plusDay();
-//					dayIndex = (dayIndex+1)%4;
-//					setDataStrings(dayIndex);
-//					setWeatherIcons(dayIndex);
-//					reset_textviews();
 				}
 
 				@Override
 				public void onLeftToRight() {
 					minusDay();
-//					dayIndex = (dayIndex+3)%4;
-//					setDataStrings(dayIndex);
-//					setWeatherIcons(dayIndex);
-//					reset_textviews();
 				}
 
 				@Override
@@ -440,13 +421,12 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			try{
 				
 				File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/weatherwheel/saved_files"), "fourdaylive.json");
-		        //Log.d("OUT", "FILE date modified: "+file.lastModified());
 					
 		        if((opt==0 && (file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy")))) || opt==1){
 		        	Log.d("OUT", "weather data: downloading... ");
-		        	if(fourdayparser.getStatus() == AsyncTask.Status.FINISHED || fourdayparser.getStatus() == AsyncTask.Status.PENDING){
-		        		fourdayparser = new XMLparser();
-		        		fourdayparser.execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+		        	if(fourday_parser.getStatus() == AsyncTask.Status.FINISHED || fourday_parser.getStatus() == AsyncTask.Status.PENDING){
+		        		fourday_parser = new XMLparser();
+		        		fourday_parser.execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
 		        	}else
 		        		Toast.makeText(getActivity(), "Failed to update", Toast.LENGTH_SHORT).show();
 		        }
@@ -481,11 +461,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		}
 		
 		public void setRainText(){
-//			if(rainTableLayout==null){
-//				rainTableLayout = new TableLayout(this.getActivity());
-//				rainTableLayout.setPadding(0, 0, 10, 0);
-//				rainLayout.addView(rainTableLayout);
-//			}
 			if(owmh.IsNull() && dayIndex == 0 && rain_array[0].length()>0){
 				rainTableLayout.removeAllViews();
 				for(int i=0; i<rain_array.length; i++){
@@ -511,7 +486,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				}
 				setRainVisibility(View.VISIBLE);
 				
-				// static pa yung width ng rainLayout
 			}
 			else
 				setRainVisibility(View.INVISIBLE);
@@ -565,7 +539,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void setWheel(int day){
 			setWeatherIcons(day);
 			wheelView.setTimeStrings(time_array);
-//			wheelView.invalidate();
 		}
 		
 		public void setWeatherIcons(int day){
@@ -595,7 +568,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 			dayIndex = (dayIndex+1)%dates.size();
 			setDataStrings(dayIndex);
 			setWheel(dayIndex);
-//			setWeatherIcons(dayIndex);
 			reset_textviews();
 		}
 		
@@ -606,7 +578,6 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 				dayIndex--;
 			setDataStrings(dayIndex);
 			setWheel(dayIndex);
-//			setWeatherIcons(dayIndex);
 			reset_textviews();
 		}
 		
@@ -706,23 +677,19 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		            
 		            
 	    			if(params[1].equals("fourday")){
-	    				Log.d("jsoup", "writing PARSED...");
 	    				fourday_handler = new FourDayXMLParser();
 		                saxParser.parse(outputFile, fourday_handler);
 		                s = fourday_handler.get_json_string();
 		                new Filer().saveFile(s,"fourdaylive.json");
-		                Log.d("jsoup", "PARSED written.");
 	    			}
 	    			else if(params[1].equals("rainchance")){
 	    				rainchance_handler = new RainChanceXMLParser();
-	    				Log.i("kml","Starting (rainchance) parse... "+params[0]);
 		                saxParser.parse(outputFile, rainchance_handler);
 		                s = rainchance_handler.get_json_string();
-//		                Log.i("kml","s = "+s);
 		                new Filer().saveFile(s,"rainchancelive.json");
 	    			}
 	    			else if(params[1].equals("openweathermmap")){
-	    				Log.d("OUT", "OWM"+(new Filer().fileToString(params[1]+"RAW.txt")));
+	    				new Filer().fileToString(params[1]+"RAW.txt");
 	    			}
 
 	    	    } catch(Exception e){
@@ -735,41 +702,12 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	
 	    	@Override
 	        protected void onPostExecute(String s) {
-//	    	  Log.i("OUT","Data updated: "+s);
-	    	  
 	    	  // reload displayed data
 	    		if(s.equals("fourday"))
 	    			displayToast("Weather data updated", Toast.LENGTH_LONG);
 	    		reset();
 	        }
 	    }
-	    
-//	    private class OWMHTask extends AsyncTask<String,Void,String>{
-//	    	String temp = "";
-//	    	
-//	    	@Override
-//	    	protected void onPreExecute (){
-//	    		owmTextView.setText("Loading...");
-//	    	}
-//	    	
-//			@Override
-//			protected String doInBackground(String... params) {
-//				OpenWeatherMapHandler owmh = new OpenWeatherMapHandler();
-//				if(owmh.load(params[0])){
-//					temp = owmh.getTemp(dates.get(dayIndex),time_array[timeIndex]);
-//				}
-//				return "";
-//			}
-//			
-//			@Override
-//	        protected void onPostExecute(String s) {
-//	    	  Log.i("OUT","OpenWeatherMAp temp: "+temp);
-//	    	  if(temp!=null && temp.length()>0)
-//	    		  owmTextView.setText(Math.round(Double.parseDouble(temp)*100)/100+"°C from Open Weather Map ");
-//	    	  else
-//	    		  owmTextView.setText("");
-//			}
-//		}
 
 	    /* Gestures */
 	    

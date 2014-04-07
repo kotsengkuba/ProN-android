@@ -31,8 +31,6 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapActivity extends Fragment{
-	MapViewFragment fragment;
-	
 	int latitude, longitude;
 	GoogleMap mMap;
 	LatLng default_location;

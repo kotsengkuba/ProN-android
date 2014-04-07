@@ -25,9 +25,7 @@ public class CityItemView extends LinearLayout{
 		tv.setTextSize(30);
 		tv.setPadding(10, 30, 10, 10);
 		temptv.setTextSize(30);	
-		temptv.setPadding(10, 30, 10, 10);
-		//this.setPadding(10, 10, 10, 10);
-		
+		temptv.setPadding(10, 30, 10, 10);	
     }
 	
 	public void setSavedLocation(){
@@ -38,24 +36,11 @@ public class CityItemView extends LinearLayout{
 	
 	public void setUnsavedLocation(){
 		this.addView(add_iv);
-		this.addView(tv);
-		//this.addView(temptv);		
+		this.addView(tv);	
 		
 		add_iv.setImageDrawable(getResources().getDrawable(R.drawable.plus_icon2));
 		add_iv.setPadding(20, 40, 10, 10);
 		add_iv.setTag("add_me");
-		//add_iv.setClickable(true);
-		/*add_iv.setOnClickListener(new View.OnClickListener(){
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				addme = true;
-				Log.d("jsoup", "addme");
-			}
-			
-		});*/
-		//add_iv.setFocusableInTouchMode(true);
 	}
 	
 	public void setText(String s){
