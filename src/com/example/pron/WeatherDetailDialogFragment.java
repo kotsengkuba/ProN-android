@@ -27,7 +27,6 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 	
 	@Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-		String s = "";
 		JSONObject o;
 		font = Typeface.createFromAsset(this.getActivity().getAssets(), "REGULAR.TTF");
 		
@@ -47,18 +46,8 @@ public class WeatherDetailDialogFragment extends DialogFragment{
         
 		try {
 			o = new JSONObject(getArguments().getString("s"));
-//	        s = getString(o);
-//	        builder.setMessage(s)
-//	               .setNegativeButton("Back", new DialogInterface.OnClickListener() {
-//	                   public void onClick(DialogInterface dialog, int id) {
-//	                       // User cancelled the dialog
-//	                   }
-//	               })
-//	        		.setTitle("Details");
 	        setTable(o);
-	        
-	        
-	        
+	          
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,10 +70,6 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 	        }
 	    }
 		return s;
-	}
-	
-	public String getWeatherIcon(String img){
-		return "";
 	}
 	
 	public void setTable(JSONObject o){
@@ -119,14 +104,12 @@ public class WeatherDetailDialogFragment extends DialogFragment{
 				}
 				
 				TextView ValueTextViewItem = new TextView(this.getActivity());
-//				ValueTextViewItem.setTypeface(font);
 				ValueTextViewItem.setPadding(20, 10, 20, 10);
 				ValueTextViewItem.setGravity(Gravity.CENTER);
 				ValueTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
 				ValueTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));
 				
 				TextView LabelTimeTextViewItem = new TextView(this.getActivity());
-//				LabelTimeTextViewItem.setTypeface(font);
 				LabelTimeTextViewItem.setPadding(10, 10, 10, 10);
 				LabelTimeTextViewItem.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.xstext));
 				LabelTimeTextViewItem.setTextColor(Color.parseColor("#3F8FD2"));

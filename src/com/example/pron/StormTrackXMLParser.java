@@ -41,7 +41,7 @@ public class StormTrackXMLParser extends DefaultHandler{
 
     public void startElement (String uri, String name, String qName, Attributes atts)
     {
-//    	Log.i("OUT","start element: "+qName);
+
     	if(qName.equals("name")){
     		is_name = true;
     		
@@ -73,7 +73,7 @@ public class StormTrackXMLParser extends DefaultHandler{
 
     public void endElement (String uri, String name, String qName)
     {	
-//    	Log.i("OUT","end element: "+qName);
+
     	if(qName.equals("name")){
     		is_name = false;
     	}
@@ -127,17 +127,17 @@ public class StormTrackXMLParser extends DefaultHandler{
     		for(int i = 0; i<toks.length;i++){
     			if(toks[i].contains("0 "))
     				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
-    			//Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
+
     			if(!toks[i].equals("0"))
     				PARcoor.add(Double.parseDouble(toks[i]));
     		}
     	}
     	else if(is_name && is_placemark && storm_name.length()==0){
     		storm_name = s;
-//    		Log.d("OUT", "storm placemark: "+s);
+
     	}
     	else if(is_name && s.equals("Actual Position")){
-//    		Log.d("OUT", "is_actualtrack");
+
     		is_actualtrack = true;
     		obj = new JSONObject();
     	}
@@ -149,7 +149,7 @@ public class StormTrackXMLParser extends DefaultHandler{
     		is_error = true;
     	}
     	else if(is_actualtrack && is_coordinates){
-//    		Log.d("OUT", "is_actualtrack and is_coordinates");
+
     		if(s.length()>0){
     			storm = true;
     			String [] toks = s.split(",");
@@ -158,7 +158,7 @@ public class StormTrackXMLParser extends DefaultHandler{
         			if(toks[i].contains("0 ")){
         				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
         			}
-//        			Log.d("OUT", "actual track toks int "+Double.parseDouble(toks[i]));
+
         			if(!toks[i].equals("0")){
         				actualTrackCoor.add(Double.parseDouble(toks[i]));
         				try {
@@ -229,7 +229,7 @@ public class StormTrackXMLParser extends DefaultHandler{
         		for(int i = 0; i<toks.length;i++){
         			if(toks[i].contains("0 "))
         				toks[i] = (String) toks[i].subSequence(2, toks[i].length());
-//        			Log.d("OUT", "toks int "+Double.parseDouble(toks[i]));
+
         			if(!toks[i].equals("0"))
         				//forecastTrackCoor.add(Double.parseDouble(toks[i]));
         			try {

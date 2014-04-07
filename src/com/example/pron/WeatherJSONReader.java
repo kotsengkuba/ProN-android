@@ -53,7 +53,6 @@ public class WeatherJSONReader {
 			try {
 				for(int i = 0; i < places.length(); i++){
 					place = places.getJSONObject(i);
-//					Log.d("OUT", "getPlaceObject: "+place.getString("name")+", "+placename);
 					if(place.getString("name").indexOf(placename) == 0){
 						currentPlace = place;
 						return currentPlace;
@@ -95,8 +94,6 @@ public class WeatherJSONReader {
 				//o.getString(locnames.getString(i));
 				hm.put(locnames.getString(i), o.getString(locnames.getString(i)));
 			}
-//			s += o.toString();
-//			return s;
 			return hm;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

@@ -1,6 +1,5 @@
 package com.example.pron;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParser;
@@ -51,12 +50,8 @@ public class MapActivity extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
   	      Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("OUT", "MapActivity");
-//        setContentView(R.layout.activity_map);
         view = inflater.inflate(R.layout.activity_map,
 		        container, false);
-//        Intent intent = getIntent();
-//        currLocation = new LatLng(intent.getDoubleExtra("Latitude", 14.5833), intent.getDoubleExtra("Longitude", 121));
         
         currLocation = new LatLng(14.5833,121.0);
         
@@ -148,10 +143,13 @@ public class MapActivity extends Fragment{
 	
 	public void setShape(JSONArray arr){
 		// Instantiates a new Polygon object and adds points to define a rectangle
-		PolygonOptions poly = new PolygonOptions().fillColor(Color.YELLOW).strokeColor(Color.YELLOW);
+		PolygonOptions poly = new PolygonOptions().fillColor(0x70FFFF00).strokeColor(0x7FFFFF00);
 		for(int i = 0; i<arr.length()/2; i++){
 			try {
-				poly.add(new LatLng(arr.getDouble(i*2+1), arr.getDouble(i*2)));
+				double lat = arr.getDouble(i*2+1);
+				double lon = arr.getDouble(i*2);
+				if(i!=0 && (Math.abs(lat-(arr.getDouble((i-1)*2+1)))<25 && (Math.abs(lon-(arr.getDouble((i-1)*2)))<20)))
+						poly.add(new LatLng(lat, lon));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -179,11 +177,6 @@ public class MapActivity extends Fragment{
     			saxParser = factory.newSAXParser();
 	            stormtrack_handler = new StormTrackXMLParser();
 	            saxParser.parse(params[0], stormtrack_handler);
-//	            File testfile = new Filer().getFile("storm-track-YOLANDA-4.KML");
-//	            saxParser.parse(testfile, stormtrack_handler);
-//	            Log.d("OUT", "kml testfile: "+new Filer().fileExists("storm-track-YOLANDA-4.KML"));
-	            Log.d("OUT", "kml file: "+new Filer().fileExists(params[0]+"RAW.txt"));
-                Log.d("OUT", "PARcoor "+stormtrack_handler.getPARcoor());
                 PARcoor = stormtrack_handler.getPARcoor();
                 actualTrack = stormtrack_handler.getActualTrack();
                 forecastTrack = stormtrack_handler.getForecastTrack();
@@ -200,13 +193,13 @@ public class MapActivity extends Fragment{
     	@Override
         protected void onPostExecute(String s) {
     		setPAR();
-    		Log.d("OUT", "Track: "+track);
-//    		Log.d("OUT", "Forecast Error: "+forecast_error);
+
     		if(track.length()>0){
     			setTrack(track);
     		}
     		for(int i = 0;i<forecast_error.length()-1;i++){
     			try {
+    				// map forecast error
 					setShape(forecast_error.getJSONArray(i));
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block

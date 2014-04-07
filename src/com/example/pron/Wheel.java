@@ -28,7 +28,7 @@ public class Wheel extends View{
 	float width,height,cx,cy,r,delta,lasty,ex,ey,rad,circle_rad, rad1,rad2,rad3,rad4;
 	float nex, ney, angle;
 	boolean snap = true, onWheelArea = false;
-	int [] icon_array = new int[]{R.drawable.clear, R.drawable.cloudy, R.drawable.cloudy, R.drawable.rainy, R.drawable.rainy, R.drawable.rainy, R.drawable.clear, R.drawable.cloudy};
+	int [] icon_array = new int[8];
 	Paint p = new Paint();
 	Paint textp = new Paint();
 	int [] pie_colors_array = new int [] {Color.rgb(50,55,140),Color.rgb(50,55,120),Color.rgb(255,241,151),Color.rgb(255,236,95),Color.rgb(255,221,0),Color.rgb(242,201,0),Color.rgb(50,55,180),Color.rgb(50,55,160)};

@@ -1,7 +1,5 @@
 package com.example.pron;
 
-import java.util.StringTokenizer;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,8 +7,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import android.util.Log;
 
 public class HtmlParser {
 	public HtmlParser(){

@@ -21,7 +21,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -33,7 +32,6 @@ import android.widget.Toast;
 public class SearchViewActivity extends Activity {
 	// List view
     private ListView lv;
-    private ListView ol_lv;
     
     //Layout
     LinearLayout ll;
@@ -80,7 +78,6 @@ public class SearchViewActivity extends Activity {
 
         ll = (LinearLayout) findViewById(R.id.searchViewLayout);
         lv = (ListView) findViewById(R.id.list_view);
-        ol_lv = new ListView(this);
         inputSearch = (EditText) findViewById(R.id.inputSearch);
         
         owmh = new OpenWeatherMapHandler();
@@ -360,8 +357,8 @@ public class SearchViewActivity extends Activity {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			String temp = "";
-			String [] res = {params[0], ""};
+//			String temp = "";
+//			String [] res = {params[0], ""};
 			other_results.clear();
 			
 			if(owmh.load(params[0])){

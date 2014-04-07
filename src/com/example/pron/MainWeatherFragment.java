@@ -11,14 +11,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.json.JSONObject;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -39,11 +37,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -52,7 +48,6 @@ import android.widget.Toast;
 
 public class MainWeatherFragment extends Fragment implements GestureDetector.OnGestureListener{
 
-	private static final int RESULT_OK = 0;
 	MainActivity mainActivity;
 	TextView tempTextView, timeTextView, dayTextView, rainLabelTextView, owmTextView, sourceTextView;
 	Wheel wheelView;
