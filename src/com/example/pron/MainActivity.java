@@ -194,6 +194,13 @@ public class MainActivity extends Activity implements LocationListener{
 	
 	public void loadclick(View v){
 		Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show();
+		if(!new Filer().fileExists("fourdaylive.json")){
+			if(!owmhl.isCancelled())
+				owmhl.cancel(true);
+			owmhl = new OWMHLoader();
+			owmhl.execute("Manila Ph");
+		}
+			
 		loadNOAH();
 	}
 	
@@ -478,22 +485,23 @@ public class MainActivity extends Activity implements LocationListener{
     }
 	
 	private class OWMHLoader extends AsyncTask<String,Void,String>{
-
+		boolean owmloaded = false;
+		
     	@Override
     	protected void onPreExecute (){
     	}
     	@Override
 		protected String doInBackground(String... params) {
-    	    owmh.load(params[0]);
+    	    owmloaded = owmh.load(params[0]);
     	    Log.d("OUT", "loading owmh "+params[0]);
-    	    return owmh.getLocation();
+    	    return "";
 		}
     	
     	@Override
         protected void onPostExecute(String s) {
     		Log.d("OUT", "loading owmh post execute "+s);
-    		if(!owmh.IsNull()){
-	    		setCurrentCity(s);
+    		if(owmloaded && !owmh.IsNull()){
+	    		setCurrentCity(owmh.getLocation());
 	    		loadMain();
     		}
     		else{
