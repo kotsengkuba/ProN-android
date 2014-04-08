@@ -12,7 +12,7 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="title_activity_choose_location">Locations</string>
     <string name="typhoon_header">TYPHOON TRACK</string>
-    <string name="loading_text">"Internet connection required. Loading takes around two minutes. Please wait."</string>
+    <string name="loading_text">"Loading..."</string>
     <string name="intro_text">""</string>
     <string name="help_button_label">"How to use"</string>
     <string name="reload_button_label">"Reload"</string>

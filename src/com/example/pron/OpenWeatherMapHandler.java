@@ -44,6 +44,7 @@ public class OpenWeatherMapHandler {
 	
 	public boolean load(String location){
 		is_null = true;
+		Log.d("OUT", "OWM loading: "+location);
 		try{
 			String query = URLEncoder.encode(location, "utf-8");
 			URL url = new URL("http://api.openweathermap.org/data/2.5/forecast?q="+query+"&mode=json");

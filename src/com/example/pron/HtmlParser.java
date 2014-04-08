@@ -8,6 +8,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import android.util.Log;
+
 public class HtmlParser {
 	public HtmlParser(){
 	}
@@ -44,6 +46,7 @@ public class HtmlParser {
 							}
 							else{
 								img_src = img.get(0).attr("src");
+								tokens = img_src.split("/");
 								details.put(labels[data.indexOf(dataItem)], tokens[tokens.length-1]);
 							}
 						}

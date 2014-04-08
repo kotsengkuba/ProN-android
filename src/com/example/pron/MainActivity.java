@@ -46,26 +46,42 @@ public class MainActivity extends Activity implements LocationListener{
 	boolean loaded = false;
 	SetAddressFromLocation gpsfinder;
 	OpenWeatherMapHandler owmh;
+	OWMHLoader owmhl;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_load_screen);
 		
+		geocoder = new Geocoder(this);
 		owmh = new OpenWeatherMapHandler();
+		owmhl = new OWMHLoader();
+		
 		
 		if((new Filer().fileExists("fourdaylive.json"))){
 			File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/weatherwheel/saved_files"), "fourdaylive.json");
 			if(file.lastModified()-System.currentTimeMillis()<240000000){
 				loaded = true;
-				geocoder = new Geocoder(this);
 				initLocation();
 			    loadMain();
 			}
-			else
+			else{
+				if(owmh.IsNull()){
+					if(!owmhl.isCancelled())
+						owmhl.cancel(true);
+					owmhl = new OWMHLoader();
+					owmhl.execute("Manila Ph");
+				}
 				loadNOAH();
+			}
 		} 
 		else{
+			if(owmh.IsNull()){
+				if(!owmhl.isCancelled())
+					owmhl.cancel(true);
+				owmhl = new OWMHLoader();
+				owmhl.execute("Manila Ph");
+			}
 			loadNOAH();
 		}
 	}
@@ -137,6 +153,7 @@ public class MainActivity extends Activity implements LocationListener{
 		locationTextView = (TextView) findViewById(R.id.cityTextView);
 		Typeface font = Typeface.createFromAsset(getAssets(), "REGULAR.TTF");
 		locationTextView.setTypeface(font);
+		setLocationText();
 		
 		Log.d("OUT", "locationtextview"+locationTextView.getText());
 		
@@ -144,8 +161,6 @@ public class MainActivity extends Activity implements LocationListener{
 		typhoonButton.setVisibility(View.INVISIBLE);
 		
 		new StormParser().execute("http://mahar.pscigrid.gov.ph/static/kmz/storm-track.KML");
-		
-		setLocationText();
 		
 		fragment = (MainWeatherFragment) getFragmentManager().
 				  findFragmentById(R.id.weather_detail_fragment);
@@ -458,16 +473,34 @@ public class MainActivity extends Activity implements LocationListener{
     	
     	@Override
         protected void onPostExecute(String s) {
-    	  Log.i("kml","End parse...");
-    	  
-    	  // reload displayed data
-    	  if(loaded)
-    		  loadMain();
-    	  else{
-    		 loadErrorFrag(); 
-    	  }
-    		  
+    	  Log.i("kml","End parse...");  
         }
+    }
+	
+	private class OWMHLoader extends AsyncTask<String,Void,String>{
+
+    	@Override
+    	protected void onPreExecute (){
+    	}
+    	@Override
+		protected String doInBackground(String... params) {
+    	    owmh.load(params[0]);
+    	    Log.d("OUT", "loading owmh "+params[0]);
+    	    return owmh.getLocation();
+		}
+    	
+    	@Override
+        protected void onPostExecute(String s) {
+    		Log.d("OUT", "loading owmh post execute "+s);
+    		if(!owmh.IsNull()){
+	    		setCurrentCity(s);
+	    		loadMain();
+    		}
+    		else{
+    			loadErrorFrag();
+    		}
+    	}
+    	  
     }
 }
     

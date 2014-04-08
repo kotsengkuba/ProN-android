@@ -80,21 +80,6 @@ public class SearchViewActivity extends Activity {
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
 		ll.addView(tv,1);
 
-        weather_reader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
-		Log.d("OUT", "weather_reader getLength: "+weather_reader.getLength());
-
-		// load all places list
-       	try{
-       		all_places = weather_reader.getAllPlaces();
-       		java.util.Collections.sort(all_places);
-       	} catch(Exception e){}
-       	
-    	String fileString = new Filer().fileToString("savedLocations.csv");
-    	if(fileString.length()>0){
-    		saved_places = new ArrayList<String>(Arrays.asList(new Filer().fileToString("savedLocations.csv").split("[,]")));
-    	}
-    	Log.d("OUT","saved_places: "+saved_places.size());
-        
         reset();
         
         adapter = new CustomAdapter(SearchViewActivity.this, product_results, imageId_results, temperature_results);
@@ -253,6 +238,23 @@ public class SearchViewActivity extends Activity {
 		
 		if(!online_search_thread.isCancelled())
 			online_search_thread.cancel(true);
+		
+		if(new Filer().fileExists("fourdaylive.json")){
+			weather_reader = new WeatherJSONReader(new Filer().fileToString("fourdaylive.json"));
+			Log.d("OUT", "weather_reader getLength: "+weather_reader.getLength());
+	
+			// load all places list
+	       	try{
+	       		all_places = weather_reader.getAllPlaces();
+	       		java.util.Collections.sort(all_places);
+	       	} catch(Exception e){}
+	       	
+	    	String fileString = new Filer().fileToString("savedLocations.csv");
+	    	if(fileString.length()>0){
+	    		saved_places = new ArrayList<String>(Arrays.asList(new Filer().fileToString("savedLocations.csv").split("[,]")));
+	    	}
+	    	Log.d("OUT","saved_places: "+saved_places.size());
+		}        
 		
 		product_results.clear();
  	   	imageId_results.clear();

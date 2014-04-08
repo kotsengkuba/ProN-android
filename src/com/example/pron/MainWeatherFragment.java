@@ -270,42 +270,41 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	  }	  
 	  
 		public boolean reset(){
-			String s = new Filer().fileToString("fourdaylive.json");
-			if(s.length()>0){
-				weatherReader = new WeatherJSONReader(s);
-				
-				if((new Filer().fileExists("rainchancelive.json"))){
-					rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
+			owmh = ((MainActivity)this.getActivity()).getOWMH();
+			Log.d("OUT","reset() owmh:"+owmh.IsNull());
+			if(new Filer().fileExists("fourdaylive.json") && owmh.IsNull()){
+				String s = new Filer().fileToString("fourdaylive.json");
+				if(s.length()>0){
+					weatherReader = new WeatherJSONReader(s);
+					
+					if((new Filer().fileExists("rainchancelive.json"))){
+						rainReader = new RainJSONReader(new Filer().fileToString("rainchancelive.json"));
+					}
+	
+					if(((MainActivity) this.getActivity()).getCurrentCity()!= null && 
+							(weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) != null || !owmh.IsNull()))
+						currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
+					else if(weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) == null){
+						// kung wala yung default O:
+						currentCity = weatherReader.getFirstPlace();
+						((MainActivity) this.getActivity()).setCurrentCity(currentCity);
+						((MainActivity) this.getActivity()).setLocationText();
+					}
+					
+					if(owmh.IsNull()){
+						setToCurrentTime();
+						setDataFromLocation();
+						setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(new Date(new Filer().getFile("fourdaylive.json").lastModified())));
+					}
 				}
-				
-				owmh = ((MainActivity)this.getActivity()).getOWMH();
-
-				if(((MainActivity) this.getActivity()).getCurrentCity()!= null && 
-						(weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) != null || !owmh.IsNull()))
-					currentCity = ((MainActivity) this.getActivity()).getCurrentCity();
-				else if(weatherReader.getPlaceObject(((MainActivity) this.getActivity()).getCurrentCity()) == null){
-					// kung wala yung default O:
-					currentCity = weatherReader.getFirstPlace();
-					((MainActivity) this.getActivity()).setCurrentCity(currentCity);
-					((MainActivity) this.getActivity()).setLocationText();
-				}
-				
-				if(owmh.IsNull()){
-					setToCurrentTime();
-					setDataFromLocation();
-					setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(new Date(new Filer().getFile("fourdaylive.json").lastModified())));
-				}
-				else{
-					setDataFromLocation();
-					setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(owmh.getDateTime())+" from OpenWeatherMap.org");
-				}
-				
 				return true;
 			}
 			else{
-				return false;
+				setToCurrentTime();
+				setDataFromLocation();
+				setSourceText(new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(owmh.getDateTime())+" from OpenWeatherMap.org");
+				return true;
 			}
-			
 		}
 		
 		public void loadDetailsFrag(){
@@ -329,7 +328,10 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    public void setToCurrentTime(){
 	    	//Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+7"), Locale.US);
 			int hour = Integer.parseInt((new SimpleDateFormat("HH")).format(new Date()));
-			timeIndex = (int) Math.floor(hour/3);
+			if(owmh.IsNull())
+				timeIndex = (int) Math.floor(hour/3);
+			else
+				timeIndex = (int) Math.floor((hour+1)/3);
 			wheelView.setOffset(timeIndex);
 			wheelView.reset();
 			wheelView.invalidate();
@@ -345,7 +347,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 						dayIndex = i;
 					}
 				}
-				setDataStrings(dayIndex);
+//				setDataStrings(dayIndex);
 				
 			}
 			else{
@@ -420,19 +422,31 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		public void updateData(int opt){
 			try{
 				
-				File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/weatherwheel/saved_files"), "fourdaylive.json");
+				if(new Filer().fileExists("fourdaylive.json")){
+					File file = new File (new File(Environment.getExternalStorageDirectory().toString() + "/weatherwheel/saved_files"), "fourdaylive.json");
+						
+			        if((opt==0 && (file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy")))) || opt==1){
+			        	Log.d("OUT", "weather data: downloading... ");
+			        	if(fourday_parser.getStatus() == AsyncTask.Status.FINISHED || fourday_parser.getStatus() == AsyncTask.Status.PENDING){
+			        		fourday_parser = new XMLparser();
+			        		fourday_parser.execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
+			        	}else
+			        		Toast.makeText(getActivity(), "Failed to update", Toast.LENGTH_SHORT).show();
+			        }
+			        else{
+			        	Log.d("OUT", "weather data is updated.");
+			        }
 					
-		        if((opt==0 && (file.lastModified()-System.currentTimeMillis()>3600000 || !(dates.get(0)).equals(getCurrentDate("MMMM dd, yyyy")))) || opt==1){
-		        	Log.d("OUT", "weather data: downloading... ");
-		        	if(fourday_parser.getStatus() == AsyncTask.Status.FINISHED || fourday_parser.getStatus() == AsyncTask.Status.PENDING){
-		        		fourday_parser = new XMLparser();
+				}
+				
+				else{
+					if(fourday_parser.getStatus() == AsyncTask.Status.FINISHED || fourday_parser.getStatus() == AsyncTask.Status.PENDING){
+						Log.d("OUT", "weather data: downloading... ");
+						fourday_parser = new XMLparser();
 		        		fourday_parser.execute("http://mahar.pscigrid.gov.ph/static/kmz/four_day-forecast.KML", "fourday");
-		        	}else
-		        		Toast.makeText(getActivity(), "Failed to update", Toast.LENGTH_SHORT).show();
-		        }
-		        else{
-		        	Log.d("OUT", "weather data is updated.");
-		        }
+					}
+				}
+				
 		        Log.d("OUT", "rain data: downloading... ");
 				new XMLparser().execute("http://mahar.pscigrid.gov.ph/static/kmz/rain-forecast.KML", "rainchance");
 				
@@ -673,7 +687,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 		
 		            output.flush();
 		            output.close();
-		            Log.d("jsoup", "RAW written.");
+		            Log.d("OUT", params[1]+" RAW written.");
 		            
 		            
 	    			if(params[1].equals("fourday")){
@@ -703,7 +717,7 @@ public class MainWeatherFragment extends Fragment implements GestureDetector.OnG
 	    	@Override
 	        protected void onPostExecute(String s) {
 	    	  // reload displayed data
-	    		if(s.equals("fourday"))
+	    		if(s.equals("fourday") && new Filer().fileExists("fourdaylive.json"))
 	    			displayToast("Weather data updated", Toast.LENGTH_LONG);
 	    		reset();
 	        }
